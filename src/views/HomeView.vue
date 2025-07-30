@@ -38,7 +38,7 @@
           <CategoryCard v-for="cat in categories" :key="cat.name" :category="cat" />
         </div>
         <h2 class="divider">文章列表</h2>
-        <div class="segments posts">
+        <div class="articles">
           <PostCard v-for="post in posts" :key="post.id" :post="post" />
         </div>
         <Pagination
@@ -270,7 +270,11 @@ const totalPages = computed(() => Math.ceil(posts.value.length / pageSize))
   padding: 40px 0;
   background: transparent;
   border: none;
-  box-shadow: 0 2px 16px rgba(237, 110, 160, 0.08);
+  box-shadow:
+    0 8px 48px 0 rgba(237, 110, 160, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  padding-left: 28px;
+  padding-right: 28px;
 }
 
 .divider {
@@ -321,6 +325,15 @@ const totalPages = computed(() => Math.ceil(posts.value.length / pageSize))
   margin: 2rem 0;
   justify-items: center;
   justify-content: center;
+  /* 精选分类卡片区域左右间距 */
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.articles {
+  /* 文章卡片区域左右间距 */
+  margin-left: 16px;
+  margin-right: 16px;
 }
 
 .segments {

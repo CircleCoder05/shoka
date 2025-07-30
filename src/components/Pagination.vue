@@ -1,18 +1,15 @@
 <template>
   <nav class="pagination">
-    <button :disabled="currentPage === 1" @click="$emit('update:currentPage', currentPage - 1)">
-      上一页
+    <button v-if="currentPage > 1" @click="$emit('update:currentPage', currentPage - 1)">
+      &lt;
     </button>
     <span v-for="page in totalPages" :key="page">
       <button :class="{ active: page === currentPage }" @click="$emit('update:currentPage', page)">
         {{ page }}
       </button>
     </span>
-    <button
-      :disabled="currentPage === totalPages"
-      @click="$emit('update:currentPage', currentPage + 1)"
-    >
-      下一页
+    <button v-if="currentPage < totalPages" @click="$emit('update:currentPage', currentPage + 1)">
+      &gt;
     </button>
   </nav>
 </template>
@@ -37,9 +34,13 @@ button {
   border-radius: 4px;
   padding: 4px 12px;
   cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 button.active {
-  color: #409eff;
+  color: #fff;
+  background: #409eff;
   border-color: #409eff;
 }
 button:disabled {

@@ -57,10 +57,13 @@ const active = ref(false)
   width: 100%;
   height: 100%;
   position: relative;
-  transition: transform 1.2s cubic-bezier(0.4, 2, 0.6, 1);
+  transition: transform 2s cubic-bezier(0.4, 2, 0.6, 1);
   transform-style: preserve-3d;
 }
 .card-inner.active {
+  transform: rotateY(-180deg);
+}
+.category-card:nth-child(2n) .card-inner.active {
   transform: rotateY(180deg);
 }
 .card-front,
@@ -102,9 +105,12 @@ const active = ref(false)
   align-items: center;
   justify-content: center;
   border: none;
-  transform: rotateY(180deg);
+  transform: rotateY(-180deg);
   padding: 0;
   position: relative;
+}
+.category-card:nth-child(2n) .card-back {
+  transform: rotateY(180deg);
 }
 .ribbon {
   position: absolute;
