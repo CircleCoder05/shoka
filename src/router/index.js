@@ -9,6 +9,7 @@ import Friends from '../views/Friends.vue'
 import Statistics from '../views/Statistics.vue'
 import Home from '../views/HomeView.vue'
 import About from '../views/AboutView.vue'
+import PostView from '../views/PostView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,6 +63,11 @@ const router = createRouter({
       path: '/statistics',
       name: 'statistics',
       component: Statistics,
+    },
+    {
+      path: '/post-demo',
+      name: 'post-demo',
+      component: PostView,
     },
   ],
 })
