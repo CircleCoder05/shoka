@@ -23,7 +23,9 @@
             </li>
           </ul>
           <div class="meta-footer">
-            <span class="count"><i class="ic i-file"></i>{{ category.posts.length }} 篇文章</span>
+            <span class="count"
+              ><i class="fas fa-file-alt"></i> {{ category.posts.length }} 篇文章</span
+            >
             <router-link :to="`/categories/${category.name}`" class="btn">more...</router-link>
           </div>
         </div>

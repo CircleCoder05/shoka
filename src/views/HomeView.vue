@@ -154,7 +154,7 @@ const pagedPosts = computed(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   background: #fff;
   z-index: 1;
 }
@@ -175,15 +175,20 @@ const pagedPosts = computed(() => {
   text-align: center;
   margin-bottom: 32px;
   text-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .banner-title h1 {
   font-size: 2.8rem;
   font-weight: 900;
   letter-spacing: 2px;
+  margin: 0 0 16px 0;
 }
 .banner-title p {
   font-size: 1.2rem;
-  margin-top: 8px;
+  margin: 0;
 }
 .waves {
   position: absolute;
