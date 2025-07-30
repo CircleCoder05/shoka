@@ -2,24 +2,28 @@
   <section class="category-card" @mouseenter="active = true" @mouseleave="active = false">
     <div class="card-inner" :class="{ active }">
       <!-- 正面 -->
-      <div class="card-front" :style="{ backgroundImage: `url(${category.cover})` }">
-        <h2 class="title">{{ category.title }}</h2>
+      <div
+        class="card-front"
+        :style="{
+          // backgroundImage: `url(${category.cover || 'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202507301820707.jpg'})`,
+          backgroundImage: `url(${'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202507301820707.jpg'})`,
+        }"
+      >
+        <span class="title">{{ category.title }}</span>
       </div>
       <!-- 背面 -->
       <div class="card-back">
-        <div class="info">
-          <div class="ribbon">
-            <router-link :to="`/categories/${category.name}`">{{ category.title }}</router-link>
-          </div>
-          <div class="inner">
-            <ul class="posts">
-              <li v-for="post in category.posts" :key="post.slug">
-                <router-link :to="`/post/${post.slug}`">{{ post.title }}</router-link>
-              </li>
-            </ul>
-            <div class="meta footer">
-              <span><i class="ic i-file"></i>{{ category.posts.length }} 篇文章</span>
-            </div>
+        <div class="ribbon">
+          <router-link :to="`/categories/${category.name}`">{{ category.title }}</router-link>
+        </div>
+        <div class="inner">
+          <ul class="posts">
+            <li v-for="(post, index) in category.posts.slice(0, 6)" :key="post.slug">
+              <router-link :to="`/post/${post.slug}`">{{ post.title }}</router-link>
+            </li>
+          </ul>
+          <div class="meta-footer">
+            <span class="count"><i class="ic i-file"></i>{{ category.posts.length }} 篇文章</span>
             <router-link :to="`/categories/${category.name}`" class="btn">more...</router-link>
           </div>
         </div>
@@ -30,7 +34,9 @@
 
 <script setup>
 import { ref } from 'vue'
-const props = defineProps({ category: Object })
+const props = defineProps({
+  category: Object,
+})
 const active = ref(false)
 </script>
 
@@ -39,10 +45,11 @@ const active = ref(false)
   perspective: 1200px;
   width: 100%;
   max-width: 400px;
-  height: 260px;
+  height: 220px;
   background: transparent;
   position: relative;
   box-shadow: none;
+  overflow: visible;
 }
 .card-inner {
   width: 100%;
@@ -60,104 +67,131 @@ const active = ref(false)
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 16px;
+  border-radius: 8px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.card-front {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-front .title {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  letter-spacing: 2px;
+  text-align: center;
+  padding: 0 12px;
+  background: none;
+}
+.card-back {
   background: #fcfcfc;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* 边框 */
-  border: 1px solid #e0e0e0;
-}
-.card-front {
-  background-size: cover;
-  background-position: center;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  background-repeat: no-repeat;
-}
-.card-front .title {
-  color: #fff;
-  background: rgba(237, 110, 160, 0.7);
-  padding: 12px 28px;
-  border-radius: 0 0 16px 16px;
-  font-size: 24px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  margin-bottom: 0;
-  box-shadow: 0 2px 8px rgba(237, 110, 160, 0.12);
-}
-.card-back {
-  background: linear-gradient(135deg, #fff 60%, #ffe6fa 100%);
+  border: none;
   transform: rotateY(180deg);
-  z-index: 1;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  position: relative;
 }
-.info {
+.ribbon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  padding: 8px 16px;
+  border-radius: 0 0 8px 0;
+  z-index: 2;
+}
+.ribbon a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+.inner {
   width: 100%;
-  padding: 18px 20px 16px 20px;
+  height: 100%;
+  padding: 40px 16px 0 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: flex-start;
-}
-.ribbon {
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: var(--color-pink);
-}
-.inner {
-  font-size: 16px;
 }
 .posts {
-  margin: 0 0 8px 0;
-  padding: 0;
   list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .posts li {
-  margin-bottom: 4px;
-  color: var(--color-blue);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin: 0;
+  padding: 0;
 }
-.posts li a {
-  color: var(--color-blue);
+.posts a {
+  color: #333;
   text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: block;
+  padding: 4px 0;
   transition: color 0.2s;
+  padding-left: 12px;
 }
-.posts li a:hover {
-  color: var(--color-pink);
+.posts a:hover {
+  color: #ed6ea0;
 }
-.meta.footer {
-  margin-top: 8px;
-  color: var(--color-grey);
-  font-size: 14px;
+.meta-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding: 12px 0 0 0;
+  /* border-top: 1px solid #eee; */
+  margin-bottom: 0;
+  /* 垂直居中 */
+  min-height: 40px;
+}
+.count {
+  color: #666;
+  font-size: 0.85rem;
+  padding-left: 16px;
+  /* 垂直居中 */
+  display: flex;
+  align-items: center;
+}
+.count i {
+  margin-right: 4px;
 }
 .btn {
-  display: inline-block;
-  margin-top: 8px;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
   color: #fff;
-  background: linear-gradient(to right, var(--color-pink), var(--color-orange));
-  border-radius: 16px 0 16px 0;
-  padding: 4px 18px;
-  font-size: 15px;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgba(237, 110, 160, 0.08);
-  transition:
-    background 0.2s,
-    color 0.2s;
+  padding: 8px 16px;
+  border-radius: 8px 0 8px 0;
+  font-size: 0.8rem;
+  font-weight: bold;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(237, 110, 160, 0.2);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 0;
 }
 .btn:hover {
-  background: linear-gradient(to right, var(--color-orange), var(--color-pink));
-  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3);
 }
 </style>
