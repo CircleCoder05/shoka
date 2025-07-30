@@ -324,6 +324,13 @@ const social = ref({
   font-family: 'SimHei', '黑体', sans-serif;
 }
 
+.overview .menu .item a.router-link-active {
+  color: #fff;
+  background-image: linear-gradient(to right, var(--color-pink) 0, var(--color-orange) 100%);
+  box-shadow: 0 0 0.75rem var(--color-pink-a3);
+  border-radius: 0.9375rem;
+}
+
 .overview .menu .item .submenu {
   display: none;
   padding: 0;
@@ -410,5 +417,7 @@ const social = ref({
   --grey-9: #000;
   --body-bg-shadow: var(--grey-2);
   --color-pink: #ed6ea0;
+  --color-orange: #ec8c69;
+  --color-pink-a3: rgba(237, 110, 160, 0.3);
 }
 </style>
