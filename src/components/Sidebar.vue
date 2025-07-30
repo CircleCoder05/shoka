@@ -115,11 +115,12 @@ const social = ref({
 
 <style scoped>
 #sidebar {
-  position: static;
+  position: sticky;
+  top: 56px;
   width: 15rem;
-  top: 0;
-  bottom: 0;
+  max-height: calc(100vh - 56px);
   transition: all 0.2s ease-in-out 0s;
+  z-index: 5;
 }
 
 #sidebar > .inner {
