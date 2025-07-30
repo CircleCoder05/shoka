@@ -46,7 +46,7 @@ const active = ref(false)
 .category-card {
   perspective: 1200px;
   width: 100%;
-  max-width: 400px;
+  max-width: 440px;
   height: 220px;
   background: transparent;
   position: relative;
