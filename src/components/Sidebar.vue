@@ -1,21 +1,413 @@
 <template>
-  <aside class="sidebar">
-    <div class="author">
-      <img
-        src="https://avatars.githubusercontent.com/u/9919?s=200&v=4"
-        alt="avatar"
-        class="avatar"
-      />
-      <div class="name">CircleCoder</div>
-      <div class="desc">空天报国，敢为人先</div>
+  <div id="sidebar">
+    <div class="inner">
+      <div class="panels">
+        <div class="inner">
+          <div class="overview panel" data-title="站点概览">
+            <!-- 作者信息 -->
+            <div class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+              <img class="image" itemprop="image" alt="CircleCoder" :src="author.avatar" />
+              <p class="name" itemprop="name">{{ author.name }}</p>
+              <div class="description" itemprop="description">{{ author.description }}</div>
+            </div>
+
+            <!-- 统计数据 -->
+            <nav class="state">
+              <div class="item posts">
+                <a href="/archives/">
+                  <span class="count">{{ stats.posts }}</span>
+                  <span class="name">文章</span>
+                </a>
+              </div>
+              <div class="item categories">
+                <a href="/categories/">
+                  <span class="count">{{ stats.categories }}</span>
+                  <span class="name">分类</span>
+                </a>
+              </div>
+              <div class="item tags">
+                <a href="/tags/">
+                  <span class="count">{{ stats.tags }}</span>
+                  <span class="name">标签</span>
+                </a>
+              </div>
+            </nav>
+
+            <!-- 社交链接 -->
+            <div class="social">
+              <span class="exturl item github" :data-url="social.github" title="GitHub">
+                <i class="ic i-github"></i>
+              </span>
+              <span class="exturl item music" :data-url="social.music" title="Music">
+                <i class="ic i-cloud-music"></i>
+              </span>
+              <a href="mailto:3196932484@qq.com" title="3196932484@qq.com" class="item email">
+                <i class="ic i-envelope"></i>
+              </a>
+            </div>
+
+            <!-- 导航菜单 -->
+            <ul class="menu">
+              <li class="item">
+                <router-link to="/" rel="section"> <i class="ic i-home"></i>首页 </router-link>
+              </li>
+              <li class="item">
+                <router-link to="/about" rel="section"> <i class="ic i-user"></i>关于 </router-link>
+              </li>
+              <li class="item dropdown">
+                <a href="javascript:void(0);"> <i class="ic i-feather"></i>文章 </a>
+                <ul class="submenu">
+                  <li class="item">
+                    <router-link to="/archives" rel="section">
+                      <i class="ic i-list-alt"></i>归档
+                    </router-link>
+                  </li>
+                  <li class="item">
+                    <router-link to="/categories" rel="section">
+                      <i class="ic i-th"></i>分类
+                    </router-link>
+                  </li>
+                  <li class="item">
+                    <router-link to="/tags" rel="section">
+                      <i class="ic i-tags"></i>标签
+                    </router-link>
+                  </li>
+                </ul>
+              </li>
+              <li class="item">
+                <router-link to="/statistics" rel="section">
+                  <i class="ic i-clock"></i>统计
+                </router-link>
+              </li>
+              <li class="item">
+                <router-link to="/friends" rel="section">
+                  <i class="ic i-heart"></i>友链
+                </router-link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="sidebar-section">
-      <!-- 可放分类、标签、公告等 -->
-      <p>侧边栏内容</p>
-    </div>
-  </aside>
+  </div>
 </template>
 
 <script setup>
-// 侧边栏逻辑
+import { ref } from 'vue'
+
+const author = ref({
+  name: 'CircleCoder',
+  avatar: 'https://avatars.githubusercontent.com/u/9919?s=200&v=4',
+  description: '空天报国，敢为人先',
+})
+
+const stats = ref({
+  posts: 45,
+  categories: 7,
+  tags: 9,
+})
+
+const social = ref({
+  github: 'https://github.com/CircleCoder05',
+  music: 'https://music.163.com/#/user/home?id=yourid',
+})
 </script>
+
+<style scoped>
+#sidebar {
+  position: static;
+  width: 15rem;
+  top: 0;
+  bottom: 0;
+  transition: all 0.2s ease-in-out 0s;
+}
+
+#sidebar > .inner {
+  position: relative;
+  width: 15rem;
+  color: var(--grey-6);
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  z-index: 1;
+}
+
+.panels {
+  padding: 4.6875rem 0 2rem;
+  width: 100%;
+  overflow: hidden;
+}
+
+.panels .inner {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  width: auto;
+  height: 100%;
+}
+
+.panels .inner::-webkit-scrollbar {
+  display: none;
+}
+
+.panels .panel {
+  display: block;
+  padding: 0.875rem 0.9375rem 2rem;
+}
+
+/* 作者信息样式 */
+.overview .author .image {
+  border: 0.0625rem solid var(--body-bg-shadow);
+  display: block;
+  margin: 0 auto;
+  max-width: 10rem;
+  padding: 0.125rem;
+  box-shadow: 0 0 1rem 0.625rem var(--body-bg-shadow);
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out;
+}
+
+.overview .author:hover .image {
+  animation: shake 1s;
+}
+
+.overview .author .name {
+  color: var(--grey-7);
+  font-weight: 400;
+  margin: 0.3125rem 0 0.625rem 0;
+  text-align: center;
+  font-family: 'SimHei', '黑体', sans-serif;
+}
+
+.overview .author .description {
+  color: var(--grey-4);
+  font-size: 1em;
+  margin-top: 0.3125rem;
+  text-align: center;
+  font-family: 'SimHei', '黑体', sans-serif;
+}
+
+/* 统计数据样式 */
+.state {
+  display: flex;
+  justify-content: center;
+  line-height: 1.4;
+  margin-top: 0.625rem;
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.state .item {
+  padding: 0 0.9375rem;
+}
+
+.state .item:not(:first-child) {
+  border-left: 1px solid #ccc;
+}
+
+.state .item a {
+  border-bottom: none;
+  color: inherit;
+  text-decoration: none;
+}
+
+.state .item .count {
+  display: block;
+  font-size: 1.25em;
+  font-weight: 700;
+  text-align: center;
+  font-family: 'SimHei', '黑体', sans-serif;
+}
+
+.state .item .name {
+  color: inherit;
+  font-size: 0.875em;
+  font-family: 'SimHei', '黑体', sans-serif;
+}
+
+/* 社交链接样式 */
+.social {
+  margin-top: 0.9375rem;
+  text-align: center;
+}
+
+.social .item {
+  display: inline-block;
+  width: 1.875rem;
+  height: 1.875rem;
+  line-height: 1.875rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 38%;
+  margin: 0 0.25rem;
+}
+
+.social .item i {
+  font-size: 1.4em;
+  vertical-align: middle;
+  transform: scale(0.8);
+  transition: all 0.35s cubic-bezier(0.31, -0.105, 0.43, 1.59) 0s;
+}
+
+.social .item::before {
+  top: 90%;
+  left: -110%;
+  content: '';
+  width: 120%;
+  height: 120%;
+  position: absolute;
+  transform: rotate(45deg);
+  transition: all 0.35s cubic-bezier(0.31, -0.105, 0.43, 1.59) 0s;
+}
+
+.social .item:focus::before,
+.social .item:hover::before {
+  top: -10%;
+  left: -10%;
+}
+
+.social .item:focus i,
+.social .item:hover i {
+  color: var(--grey-0);
+  transform: scale(1);
+}
+
+.social .item.github::before {
+  background-color: #191717;
+}
+
+.social .item.github i {
+  color: #191717;
+}
+
+.social .item.music::before {
+  background-color: #e60026;
+}
+
+.social .item.music i {
+  color: #e60026;
+}
+
+.social .item.email::before {
+  background-color: #55acd5;
+}
+
+.social .item.email i {
+  color: #55acd5;
+}
+
+/* 导航菜单样式 */
+.overview .menu {
+  padding: 1.25rem;
+  margin: 0;
+  background-color: transparent;
+}
+
+.overview .menu .item {
+  border-radius: 0.9375rem;
+  margin-bottom: 0.625rem;
+  display: block;
+  color: var(--grey-5);
+  transition: all 0.2s ease-in-out 0s;
+}
+
+.overview .menu .item a {
+  color: inherit;
+  display: block;
+  line-height: 3;
+  text-decoration: none;
+  font-family: 'SimHei', '黑体', sans-serif;
+}
+
+.overview .menu .item .submenu {
+  display: none;
+  padding: 0;
+}
+
+.overview .menu .item:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: inherit;
+}
+
+.overview .menu .item:hover .submenu {
+  display: block;
+}
+
+.overview .menu .item .ic {
+  margin-right: 0.625rem;
+}
+
+.overview .menu .item.active:hover {
+  box-shadow: 0 0 0.75rem var(--color-pink);
+  color: var(--grey-0);
+}
+
+.overview .menu .item.active .item {
+  color: currentColor;
+}
+
+.overview .menu .item.expand {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.overview .menu .item.expand .submenu {
+  display: block;
+}
+
+/* 抖动动画 */
+@keyframes shake {
+  0% {
+    transform: scale(1);
+  }
+  10%,
+  20% {
+    transform: scale(0.9) rotate(3deg);
+  }
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: scale(1.1) rotate(-3deg);
+  }
+  40%,
+  60%,
+  80% {
+    transform: scale(1.1) rotate(3deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 991px) {
+  #sidebar {
+    display: none;
+    position: fixed;
+    right: 0;
+    background: var(--grey-1);
+    box-shadow: 0 0.375rem 0.9375rem 0.3125rem rgba(0, 0, 0, 0.2);
+    z-index: 99;
+  }
+}
+
+/* CSS变量定义 */
+:root {
+  --grey-0: #fff;
+  --grey-1: #fdfdfd;
+  --grey-2: #f7f7f7;
+  --grey-3: #eff2f3;
+  --grey-4: #ccc;
+  --grey-5: #999;
+  --grey-6: #666;
+  --grey-7: #333;
+  --grey-8: #222;
+  --grey-9: #000;
+  --body-bg-shadow: var(--grey-2);
+  --color-pink: #ed6ea0;
+}
+</style>

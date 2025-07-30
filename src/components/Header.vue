@@ -1,19 +1,19 @@
 <template>
   <header class="header">
     <nav class="nav">
-      <router-link to="/"><i class="fas fa-home"></i> 首页</router-link>
-      <router-link to="/archives"><i class="fas fa-archive"></i> 归档</router-link>
-      <router-link to="/categories"><i class="fas fa-th-large"></i> 分类</router-link>
-      <router-link to="/tags"><i class="fas fa-tags"></i> 标签</router-link>
-      <router-link to="/about"><i class="fas fa-user"></i> 关于</router-link>
-      <router-link to="/friends"><i class="fas fa-heart"></i> 友链</router-link>
-      <router-link to="/statistics"><i class="fas fa-chart-bar"></i> 统计</router-link>
+      <router-link to="/"> <i class="ic i-home"></i>首页 </router-link>
+      <router-link to="/archives"> <i class="ic i-archive"></i>归档 </router-link>
+      <router-link to="/categories"> <i class="ic i-th"></i>分类 </router-link>
+      <router-link to="/tags"> <i class="ic i-tags"></i>标签 </router-link>
+      <router-link to="/about"> <i class="ic i-user"></i>关于 </router-link>
+      <router-link to="/friends"> <i class="ic i-heart"></i>友链 </router-link>
+      <router-link to="/statistics"> <i class="ic i-clock"></i>统计 </router-link>
     </nav>
   </header>
 </template>
 
 <script setup>
-// 导航栏逻辑
+// 组件逻辑
 </script>
 
 <style scoped>
@@ -29,6 +29,7 @@
   box-shadow: 0 2px 8px rgba(237, 110, 160, 0.04);
   backdrop-filter: blur(8px);
 }
+
 .nav {
   display: flex;
   gap: 32px;
@@ -36,6 +37,7 @@
   align-items: center;
   margin-left: 120px;
 }
+
 .nav a {
   color: #222;
   text-decoration: none;
@@ -52,16 +54,17 @@
   position: relative;
   overflow: hidden;
 }
+
 .nav a:hover {
   background: rgba(237, 110, 160, 0.1);
   color: #ed6ea0;
 }
+
 .nav a.router-link-active {
   color: #ed6ea0;
   background: rgba(237, 110, 160, 0.1);
-  /* 使用伪元素创建下划线，不会超出容器 */
-  border-bottom: none;
 }
+
 .nav a.router-link-active::after {
   content: '';
   position: absolute;
@@ -72,7 +75,8 @@
   background: #ed6ea0;
   border-radius: 1px;
 }
+
 .nav i {
-  font-size: 14px;
+  font-size: 16px;
 }
 </style>
