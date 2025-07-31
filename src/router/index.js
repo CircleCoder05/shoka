@@ -72,9 +72,19 @@ const router = createRouter({
   ],
 })
 
-// 添加路由守卫来调试
+// 添加路由守卫来调试和管理banner
 router.beforeEach((to, from, next) => {
   console.log('🚨 路由跳转:', { from: from.path, to: to.path, params: to.params })
+
+  // 如果不是文章详情页，设置默认banner
+  if (to.name !== 'post') {
+    // 动态导入banner store
+    import('../stores/banner.js').then(({ useBannerStore }) => {
+      const bannerStore = useBannerStore()
+      bannerStore.setDefaultBanner()
+    })
+  }
+
   next()
 })
 
