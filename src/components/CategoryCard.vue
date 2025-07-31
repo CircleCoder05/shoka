@@ -17,11 +17,13 @@
           <router-link :to="`/categories/${category.name}`">{{ category.title }}</router-link>
         </div>
         <div class="inner">
-          <ul class="posts">
-            <li v-for="(post, index) in category.posts.slice(0, 6)" :key="post.slug">
-              <router-link :to="`/post/${post.slug}`">{{ post.title }}</router-link>
-            </li>
-          </ul>
+          <div class="posts-container">
+            <ul class="posts">
+              <li v-for="post in category.posts.slice(0, 8)" :key="post.slug">
+                <router-link :to="`/post/${post.slug}`">{{ post.title }}</router-link>
+              </li>
+            </ul>
+          </div>
           <div class="meta-footer">
             <span class="count"
               ><i class="fas fa-file-alt"></i> {{ category.posts.length }} 篇文章</span
@@ -36,7 +38,7 @@
 
 <script setup>
 import { ref } from 'vue'
-const props = defineProps({
+defineProps({
   category: Object,
 })
 const active = ref(false)
@@ -52,6 +54,7 @@ const active = ref(false)
   position: relative;
   box-shadow: none;
   overflow: visible;
+  margin-bottom: 26px;
 }
 .card-inner {
   width: 100%;
@@ -90,7 +93,7 @@ const active = ref(false)
 }
 .card-front .title {
   color: #fff;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
   letter-spacing: 2px;
@@ -130,33 +133,47 @@ const active = ref(false)
 .inner {
   width: 100%;
   height: 100%;
-  padding: 40px 16px 0 16px;
+  padding: 40px 12px 0 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
+.posts-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+  width: 100%;
+  padding-left: 8px;
+}
+
 .posts {
   list-style: none;
   padding: 0;
   margin: 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(4, auto);
+  gap: 6px 12px;
+  max-height: 120px;
+  overflow: hidden;
 }
 .posts li {
   margin: 0;
   padding: 0;
 }
 .posts a {
-  color: #333;
+  color: #25c9f7;
   text-decoration: none;
   font-size: 0.9rem;
-  line-height: 1.4;
+  line-height: 1.3;
   display: block;
-  padding: 4px 0;
+  padding: 2px 4px;
   transition: color 0.2s;
-  padding-left: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .posts a:hover {
   color: #ed6ea0;

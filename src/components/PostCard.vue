@@ -47,17 +47,17 @@ defineProps({
 </script>
 
 <style scoped>
+/* 卡片基础样式 */
 .post-card {
   display: flex;
   height: 14rem;
-  border-radius: 0.625rem;
   width: calc(100% - 2rem);
   min-width: calc(100% - 2rem);
   border-radius: 0.5rem;
   box-shadow:
     0 8px 32px -4px rgba(237, 110, 160, 0.18),
     0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: all 0.2s ease-in-out 0s;
+  transition: all 0.2s ease-in-out;
   margin-bottom: 2rem;
   background: #fff;
   overflow: visible;
@@ -71,6 +71,7 @@ defineProps({
   transform: scale(1.05) rotate(1deg);
 }
 
+/* 封面图样式 */
 .cover {
   width: 50%;
   height: 100%;
@@ -90,9 +91,10 @@ defineProps({
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transition: all 0.2s ease-in-out 0s;
+  transition: all 0.2s ease-in-out;
 }
 
+/* 信息区域样式 */
 .info {
   position: relative;
   width: 50%;
@@ -101,13 +103,14 @@ defineProps({
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: 0 !important;
+  padding: 0;
 }
 
 .info-content {
   padding: 1rem 1.5rem 0 0;
 }
 
+/* 元信息样式 */
 .meta {
   display: flex;
   justify-content: flex-end;
@@ -125,6 +128,7 @@ defineProps({
   margin-right: 0.0625rem;
 }
 
+/* 标题样式 */
 .info h3 {
   text-overflow: ellipsis;
   overflow: hidden;
@@ -143,6 +147,7 @@ defineProps({
   color: #38a1db;
 }
 
+/* 摘要样式 */
 .excerpt {
   overflow: hidden;
   font-size: 0.875em;
@@ -156,6 +161,7 @@ defineProps({
   margin-bottom: 0.5rem;
 }
 
+/* 底部按钮区域 */
 .info-footer {
   display: flex;
   flex-direction: row;
@@ -187,17 +193,12 @@ defineProps({
   border-radius: 0.5rem 0 0.5rem 0;
 }
 
-.post-card:nth-child(2n) .info-footer a.btn {
-  border-radius: 0 0.5rem 0 0.5rem;
-  background-image: linear-gradient(to right, #ec8c69 0, #ed6ea0 100%);
-}
-
 .info-footer a.btn:hover {
   transform: scale(1.08);
   color: #fff;
 }
 
-/* 偶数卡片反向布局 */
+/* 偶数卡片样式 */
 .post-card:nth-child(2n) {
   flex-direction: row-reverse;
 }
@@ -207,26 +208,22 @@ defineProps({
   margin-left: 1.5rem;
   clip-path: polygon(0 0%, 100% 0%, 100% 100%, 8% 100%);
   border-radius: 0 0.625rem 0.625rem 0;
-  position: relative;
-}
-
-.post-card:nth-child(2n) .info {
-  padding: 0;
 }
 
 .post-card:nth-child(2n) .info-content {
   padding: 1rem 0 0 1.5rem;
 }
 
-.post-card:nth-child(2n) .meta {
-  justify-content: flex-end;
-}
-
 .post-card:nth-child(2n) .info-footer {
   flex-direction: row-reverse;
-  justify-content: space-between;
 }
 
+.post-card:nth-child(2n) .info-footer a.btn {
+  border-radius: 0 0.5rem 0 0.5rem;
+  background-image: linear-gradient(to right, #ec8c69 0, #ed6ea0 100%);
+}
+
+/* 移动端适配 */
 @media (max-width: 767px) {
   .post-card,
   .post-card:nth-child(2n) {
