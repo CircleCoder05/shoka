@@ -116,11 +116,12 @@ const social = ref({
 <style scoped>
 #sidebar {
   position: sticky;
-  top: 56px;
+  top: 40px;
   width: 15rem;
   max-height: calc(100vh - 56px);
   transition: all 0.2s ease-in-out 0s;
   z-index: 5;
+  margin-left: 16px;
 }
 
 #sidebar > .inner {
@@ -391,15 +392,168 @@ const social = ref({
   }
 }
 
-/* 响应式设计 */
-@media (max-width: 991px) {
+/* 平板端适配 */
+@media (max-width: 1024px) {
   #sidebar {
-    display: none;
-    position: fixed;
-    right: 0;
-    background: var(--grey-1);
-    box-shadow: 0 0.375rem 0.9375rem 0.3125rem rgba(0, 0, 0, 0.2);
-    z-index: 99;
+    width: 14rem;
+  }
+
+  #sidebar > .inner {
+    width: 14rem;
+  }
+
+  .panels {
+    padding: 3.5rem 0 1.5rem;
+  }
+
+  .overview .author .image {
+    max-width: 8rem;
+  }
+
+  .state .item {
+    padding: 0 0.75rem;
+  }
+
+  .state .count {
+    font-size: 1.1em;
+  }
+
+  .state .name {
+    font-size: 0.8em;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  #sidebar {
+    position: relative;
+    top: 0;
+    width: 100%;
+    max-height: none;
+    margin-left: 0;
+  }
+
+  #sidebar > .inner {
+    width: 100%;
+  }
+
+  .panels {
+    padding: 1.5rem 0 1rem;
+  }
+
+  .panels .panel {
+    padding: 0.5rem 0.75rem 1.5rem;
+  }
+
+  .overview .author .image {
+    max-width: 6rem;
+  }
+
+  .overview .author .name {
+    font-size: 1.1em;
+  }
+
+  .overview .author .description {
+    font-size: 0.9em;
+  }
+
+  .state {
+    margin-top: 0.5rem;
+  }
+
+  .state .item {
+    padding: 0 0.5rem;
+  }
+
+  .state .count {
+    font-size: 1em;
+  }
+
+  .state .name {
+    font-size: 0.75em;
+  }
+
+  .social {
+    margin-top: 0.75rem;
+  }
+
+  .social .item {
+    width: 1.5rem;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    margin: 0 0.2rem;
+  }
+
+  .social .item i {
+    font-size: 1.2em;
+  }
+
+  .overview .menu {
+    padding: 1rem;
+  }
+
+  .overview .menu .item {
+    margin-bottom: 0.5rem;
+  }
+
+  .overview .menu .item a {
+    line-height: 2.5;
+    font-size: 0.95em;
+  }
+}
+
+/* 小屏手机适配 */
+@media (max-width: 480px) {
+  .panels {
+    padding: 1rem 0 0.5rem;
+  }
+
+  .panels .panel {
+    padding: 0.25rem 0.5rem 1rem;
+  }
+
+  .overview .author .image {
+    max-width: 5rem;
+  }
+
+  .overview .author .name {
+    font-size: 1em;
+  }
+
+  .overview .author .description {
+    font-size: 0.85em;
+  }
+
+  .state .item {
+    padding: 0 0.4rem;
+  }
+
+  .state .count {
+    font-size: 0.9em;
+  }
+
+  .state .name {
+    font-size: 0.7em;
+  }
+
+  .social .item {
+    width: 1.3rem;
+    height: 1.3rem;
+    line-height: 1.3rem;
+    margin: 0 0.15rem;
+  }
+
+  .social .item i {
+    font-size: 1em;
+  }
+
+  .overview .menu {
+    padding: 0.75rem;
+  }
+
+  .overview .menu .item a {
+    line-height: 2.2;
+    font-size: 0.9em;
   }
 }
 

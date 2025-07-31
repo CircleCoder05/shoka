@@ -22,4 +22,33 @@ import Footer from './components/Footer.vue'
   box-shadow: 0 2px 8px rgba(237, 110, 160, 0.04);
   backdrop-filter: blur(8px);
 }
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .floating-header {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+  }
+
+  #app {
+    padding-top: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-header {
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  #app {
+    padding-top: 44px;
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  .floating-header {
+    background: rgba(255, 255, 255, 0.95);
+  }
+}
 </style>
