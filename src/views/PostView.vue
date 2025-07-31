@@ -19,7 +19,7 @@
           </div>
         </div>
       </div>
-      <div class="post-content" v-html="article.html" v-code-block></div>
+      <div class="post-content" v-html="article.html" v-code-block v-image-optimize></div>
     </div>
   </div>
 </template>
@@ -129,6 +129,11 @@ watch(
     line-height: 1.8;
   }
 
+  .post-content img {
+    margin: 1em auto;
+    border-radius: 6px;
+  }
+
   .post-content h1 {
     font-size: 1.8em;
   }
@@ -163,6 +168,11 @@ watch(
 
   .post-content {
     font-size: 0.95em;
+  }
+
+  .post-content img {
+    margin: 0.8em auto;
+    border-radius: 4px;
   }
 
   .post-content pre {
@@ -356,11 +366,34 @@ watch(
 
 .post-content img {
   max-width: 100%;
+  width: auto;
   height: auto;
   border-radius: 8px;
   margin: 1.5em auto;
   display: block;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  object-fit: contain;
+  overflow: hidden;
+}
+
+/* 优化后的图片样式 */
+.optimized-image {
+  transition: all 0.3s ease;
+}
+
+.optimized-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 确保图片容器也不会超出 */
+.post-content {
+  font-size: 1.1em;
+  line-height: 2;
+  color: #222;
+  word-break: break-word;
+  background: #fff;
+  overflow: hidden;
 }
 
 .post-content table {

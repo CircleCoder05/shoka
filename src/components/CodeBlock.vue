@@ -3,7 +3,10 @@
     <!-- 代码块头部 -->
     <div class="code-header">
       <div class="code-info">
-        <span v-if="language" class="language-tag">{{ language }}</span>
+        <span v-if="language" class="language-tag" :data-lang="language.toLowerCase()">
+          <span class="lang-icon">{{ getLanguageIcon(language) }}</span>
+          {{ language }}
+        </span>
         <span class="line-count">{{ lineCount }} lines</span>
       </div>
       <div class="code-actions">
@@ -88,6 +91,33 @@ const toggleExpand = () => {
   isExpanded.value = !isExpanded.value
 }
 
+// 获取语言图标
+const getLanguageIcon = (lang) => {
+  const icons = {
+    javascript: '⚡',
+    js: '⚡',
+    typescript: '📘',
+    ts: '📘',
+    python: '🐍',
+    java: '☕',
+    cpp: '⚙️',
+    'c++': '⚙️',
+    c: '🔧',
+    html: '🌐',
+    css: '🎨',
+    vue: '💚',
+    react: '⚛️',
+    jsx: '⚛️',
+    php: '🐘',
+    go: '🚀',
+    rust: '🦀',
+    sql: '🗄️',
+    bash: '💻',
+    shell: '💻',
+  }
+  return icons[lang.toLowerCase()] || '📄'
+}
+
 // 复制代码
 const copyCode = async () => {
   if (copyStatus.value === 'copying') return
@@ -137,13 +167,109 @@ const copyCode = async () => {
 }
 
 .language-tag {
-  background: #61afef;
   color: white;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.8em;
-  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75em;
+  font-weight: 600;
   text-transform: uppercase;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* 不同语言的样式 */
+.language-tag[data-lang='javascript'],
+.language-tag[data-lang='js'] {
+  background: linear-gradient(135deg, #f7df1e 0%, #f0db4f 100%);
+  color: #000;
+}
+
+.language-tag[data-lang='typescript'],
+.language-tag[data-lang='ts'] {
+  background: linear-gradient(135deg, #3178c6 0%, #235a97 100%);
+  color: white;
+}
+
+.language-tag[data-lang='python'] {
+  background: linear-gradient(135deg, #3776ab 0%, #ffde57 100%);
+  color: #000;
+}
+
+.language-tag[data-lang='java'] {
+  background: linear-gradient(135deg, #ed8b00 0%, #ff6b35 100%);
+  color: white;
+}
+
+.language-tag[data-lang='cpp'],
+.language-tag[data-lang='c++'] {
+  background: linear-gradient(135deg, #00599c 0%, #004482 100%);
+  color: white;
+}
+
+.language-tag[data-lang='c'] {
+  background: linear-gradient(135deg, #a8b9cc 0%, #555555 100%);
+  color: white;
+}
+
+.language-tag[data-lang='html'] {
+  background: linear-gradient(135deg, #e34c26 0%, #f06529 100%);
+  color: white;
+}
+
+.language-tag[data-lang='css'] {
+  background: linear-gradient(135deg, #264de4 0%, #2965f1 100%);
+  color: white;
+}
+
+.language-tag[data-lang='vue'] {
+  background: linear-gradient(135deg, #42b883 0%, #35495e 100%);
+  color: white;
+}
+
+.language-tag[data-lang='react'],
+.language-tag[data-lang='jsx'] {
+  background: linear-gradient(135deg, #61dafb 0%, #282c34 100%);
+  color: #000;
+}
+
+.language-tag[data-lang='php'] {
+  background: linear-gradient(135deg, #777bb4 0%, #4f5b93 100%);
+  color: white;
+}
+
+.language-tag[data-lang='go'] {
+  background: linear-gradient(135deg, #00add8 0%, #007d9c 100%);
+  color: white;
+}
+
+.language-tag[data-lang='rust'] {
+  background: linear-gradient(135deg, #ce422b 0%, #a73e24 100%);
+  color: white;
+}
+
+.language-tag[data-lang='sql'] {
+  background: linear-gradient(135deg, #336791 0%, #1e4d7b 100%);
+  color: white;
+}
+
+.language-tag[data-lang='bash'],
+.language-tag[data-lang='shell'] {
+  background: linear-gradient(135deg, #4eaa25 0%, #3a7c1f 100%);
+  color: white;
+}
+
+/* 默认样式 */
+.language-tag:not([data-lang]) {
+  background: linear-gradient(135deg, #61afef 0%, #4a9fd8 100%);
+  color: white;
+}
+
+.lang-icon {
+  font-size: 0.9em;
+  margin-right: 2px;
 }
 
 .line-count {
