@@ -113,15 +113,15 @@ onMounted(async () => {
 
 <style scoped>
 .home-content {
-  width: 100%;
-  max-width: 960px;
+  width: 80%;
+  max-width: 1660px;
   background: #fff;
   border-radius: 16px;
   box-shadow:
     0 8px 48px 0 rgba(237, 110, 160, 0.18),
     0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 2.5rem;
-  margin: 0 auto;
+  margin: 0;
   overflow: visible;
 }
 
@@ -319,6 +319,7 @@ onMounted(async () => {
 /* 平板端适配 */
 @media (max-width: 1024px) {
   .home-content {
+    width: 85%;
     padding: 2rem;
   }
 
@@ -338,6 +339,7 @@ onMounted(async () => {
 /* 移动端适配 */
 @media (max-width: 768px) {
   .home-content {
+    width: 90%;
     padding: 1.5rem;
     border-radius: 12px;
   }
@@ -362,6 +364,7 @@ onMounted(async () => {
 /* 小屏手机适配 */
 @media (max-width: 480px) {
   .home-content {
+    width: 95%;
     padding: 1rem;
     border-radius: 8px;
   }

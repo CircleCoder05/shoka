@@ -116,16 +116,6 @@ body {
   min-height: 400px;
 }
 
-.footer {
-  background: var(--color-card);
-  border-top: 1px solid var(--color-divider);
-  text-align: center;
-  padding: 18px 0;
-  color: var(--color-grey);
-  font-size: 15px;
-  margin-top: 32px;
-}
-
 /* 首页分割线 */
 .divider {
   font-size: 22px;
@@ -492,12 +482,6 @@ body {
     font-size: 18px;
     margin: 32px 0 20px 0;
   }
-
-  .footer {
-    padding: 16px 0;
-    font-size: 14px;
-    margin-top: 24px;
-  }
 }
 
 /* 小屏手机适配 */
@@ -542,11 +526,5 @@ body {
   .divider {
     font-size: 16px;
     margin: 24px 0 16px 0;
-  }
-
-  .footer {
-    padding: 12px 0;
-    font-size: 13px;
-    margin-top: 16px;
   }
 }
