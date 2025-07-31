@@ -2,13 +2,7 @@
   <section class="category-card" @mouseenter="active = true" @mouseleave="active = false">
     <div class="card-inner" :class="{ active }">
       <!-- 正面 -->
-      <div
-        class="card-front"
-        :style="{
-          // backgroundImage: `url(${category.cover || 'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202507301820707.jpg'})`,
-          backgroundImage: `url(${'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202507301820707.jpg'})`,
-        }"
-      >
+      <div class="card-front" :style="{ backgroundImage: `url(${bgUrl})` }">
         <span class="title">{{ category.title }}</span>
       </div>
       <!-- 背面 -->
@@ -25,9 +19,9 @@
             </ul>
           </div>
           <div class="meta-footer">
-            <span class="count"
-              ><i class="fas fa-file-alt"></i> {{ category.posts.length }} 篇文章</span
-            >
+            <span class="count">
+              <i class="fas fa-file-alt"></i> {{ category.posts.length }} 篇文章
+            </span>
             <router-link :to="`/categories/${category.name}`" class="btn">more...</router-link>
           </div>
         </div>
@@ -37,14 +31,70 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-defineProps({
-  category: Object,
-})
+import { ref, watch, onMounted } from 'vue'
+const props = defineProps({ category: Object })
 const active = ref(false)
+const defaultCover = '/default-cover.jpg'
+const bgUrl = ref(defaultCover)
+const coverMap = ref({})
+
+async function loadCoverMap() {
+  try {
+    const res = await fetch('/category-cover-map.json')
+    if (res.ok) {
+      coverMap.value = await res.json()
+    }
+  } catch {
+    coverMap.value = {}
+  }
+}
+
+function getDirName(name) {
+  // 优先查映射表，否则用原名
+  return coverMap.value[name] || name
+}
+
+function tryLoad(url, fallback) {
+  return new Promise((resolve) => {
+    const img = new window.Image()
+    img.onload = () => resolve(url)
+    img.onerror = () => resolve(fallback)
+    img.src = url
+  })
+}
+
+async function setCover() {
+  const dir = getDirName(props.category.name)
+  let url = `/posts/${dir}/cover.jpg`
+  let fallback = `/posts/${dir}/cover.png`
+  let result = await tryLoad(url, fallback)
+  if (result === fallback) {
+    // png也失败
+    result = await tryLoad(fallback, defaultCover)
+  }
+  bgUrl.value = result
+}
+
+// 初始化加载映射表
+onMounted(async () => {
+  await loadCoverMap()
+  setCover()
+})
+
+// 分类名变化时重新设置图片
+watch(
+  () => props.category.name,
+  () => setCover(),
+)
+// 映射表加载后也要重新设置图片
+watch(
+  () => coverMap.value,
+  () => setCover(),
+)
 </script>
 
 <style scoped>
+/* 样式保持原样 */
 .category-card {
   perspective: 1200px;
   width: 100%;
@@ -147,7 +197,6 @@ const active = ref(false)
   width: 100%;
   padding-left: 8px;
 }
-
 .posts {
   list-style: none;
   padding: 0;
@@ -184,16 +233,13 @@ const active = ref(false)
   align-items: center;
   margin-top: 16px;
   padding: 12px 0 0 0;
-  /* border-top: 1px solid #eee; */
   margin-bottom: 0;
-  /* 垂直居中 */
   min-height: 40px;
 }
 .count {
   color: #666;
   font-size: 0.85rem;
   padding-left: 16px;
-  /* 垂直居中 */
   display: flex;
   align-items: center;
 }
