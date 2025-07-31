@@ -340,7 +340,6 @@ const copyCode = async () => {
 
 .code-content code {
   background: transparent;
-  padding: 0;
   color: inherit;
   font-family: 'JetBrains Mono', 'Consolas' !important;
   font-weight: 600;
