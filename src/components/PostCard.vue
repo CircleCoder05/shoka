@@ -31,13 +31,14 @@
         <a :href="post.category.url" :title="post.category.name">
           <i class="ic i-flag"></i>{{ post.category.name }}
         </a>
-        <a :href="post.url" :title="post.title" class="btn">more...</a>
+        <router-link :to="post.url" :title="post.title" class="btn">more...</router-link>
       </div>
     </div>
   </article>
 </template>
 
 <script setup>
+import { RouterLink } from 'vue-router'
 defineProps({
   post: {
     type: Object,
@@ -185,6 +186,7 @@ defineProps({
   border-radius: 1rem 0;
   background: none;
   transition: all 0.2s;
+  cursor: pointer;
 }
 
 .info-footer a.btn {

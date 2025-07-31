@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import yaml from 'js-yaml'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -35,133 +36,14 @@ function scanMarkdownFiles(dir, basePath = '') {
 
 // 解析 front matter
 function parseFrontMatter(content) {
-  // 更宽松的正则表达式，处理可能的换行符差异
   const frontMatterRegex = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/
   const match = content.match(frontMatterRegex)
-
   if (!match) {
-    console.log('No front matter found in content')
-    return {
-      frontMatter: {},
-      content: content,
-    }
+    return { frontMatter: {}, content }
   }
-
-  const frontMatterText = match[1]
+  const frontMatter = yaml.load(match[1])
   const markdownContent = match[2]
-
-  const frontMatter = {}
-  let currentKey = null
-  let currentValue = []
-
-  frontMatterText.split('\n').forEach((line) => {
-    const colonIndex = line.indexOf(':')
-
-    if (colonIndex > 0 && !line.startsWith(' ')) {
-      // 新的键值对
-      if (currentKey) {
-        // 处理特殊字段
-        let finalValue = currentValue.length === 1 ? currentValue[0] : currentValue
-
-        // 处理 tags 字段：如果是字符串形式的数组，转换为数组
-        if (
-          currentKey === 'tags' &&
-          typeof finalValue === 'string' &&
-          finalValue.startsWith('[') &&
-          finalValue.endsWith(']')
-        ) {
-          finalValue = finalValue
-            .slice(1, -1)
-            .split(',')
-            .map((item) => item.trim())
-        }
-
-        // 处理 categories 字段：如果是字符串形式的数组，转换为数组
-        if (
-          currentKey === 'categories' &&
-          typeof finalValue === 'string' &&
-          finalValue.startsWith('[') &&
-          finalValue.endsWith(']')
-        ) {
-          finalValue = finalValue
-            .slice(1, -1)
-            .split(',')
-            .map((item) => item.trim())
-            .filter((item) => item !== '') // 过滤掉空字符串
-        }
-
-        frontMatter[currentKey] = finalValue
-      }
-
-      const key = line.substring(0, colonIndex).trim()
-      let value = line.substring(colonIndex + 1).trim()
-
-      // 处理带引号的值
-      if (value.startsWith('"') && value.endsWith('"')) {
-        value = value.slice(1, -1)
-      }
-
-      currentKey = key
-      // 如果值是空的，不要添加到 currentValue 中
-      currentValue = value ? [value] : []
-    } else if (line.startsWith('-') && currentKey) {
-      // 数组项
-      const item = line.substring(1).trim()
-      if (item.startsWith('[') && item.endsWith(']')) {
-        // 处理嵌套数组
-        const nestedArray = item
-          .slice(1, -1)
-          .split(',')
-          .map((item) => item.trim().replace(/['"]/g, ''))
-        currentValue.push(...nestedArray)
-      } else {
-        currentValue.push(item)
-      }
-    } else if (line.trim() && currentKey) {
-      // 多行值
-      currentValue.push(line.trim())
-    }
-  })
-
-  // 处理最后一个键值对
-  if (currentKey) {
-    // 处理特殊字段
-    let finalValue = currentValue.length === 1 ? currentValue[0] : currentValue
-
-    // 处理 tags 字段：如果是字符串形式的数组，转换为数组
-    if (
-      currentKey === 'tags' &&
-      typeof finalValue === 'string' &&
-      finalValue.startsWith('[') &&
-      finalValue.endsWith(']')
-    ) {
-      finalValue = finalValue
-        .slice(1, -1)
-        .split(',')
-        .map((item) => item.trim())
-    }
-
-    // 处理 categories 字段：如果是字符串形式的数组，转换为数组
-    if (
-      currentKey === 'categories' &&
-      typeof finalValue === 'string' &&
-      finalValue.startsWith('[') &&
-      finalValue.endsWith(']')
-    ) {
-      finalValue = finalValue
-        .slice(1, -1)
-        .split(',')
-        .map((item) => item.trim())
-        .filter((item) => item !== '') // 过滤掉空字符串
-    }
-
-    frontMatter[currentKey] = finalValue
-  }
-
-  return {
-    frontMatter,
-    content: markdownContent,
-  }
+  return { frontMatter, content: markdownContent }
 }
 
 // 生成文章索引

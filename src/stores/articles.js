@@ -82,8 +82,9 @@ export const useArticlesStore = defineStore('articles', () => {
             .slice(1, -1)
             .split(',')
             .map((item) => item.trim().replace(/['"]/g, ''))
-        } else if (value.startsWith('"') && value.endsWith('"')) {
-          value = value.slice(1, -1)
+        } else {
+          // 去除单引号或双引号包裹
+          value = value.replace(/^(['"])(.*)\1$/, '$2').trim()
         }
 
         frontMatter[key] = value

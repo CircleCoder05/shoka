@@ -7,7 +7,11 @@
     <div v-else>
       <h2 class="divider">精选分类</h2>
       <div class="cards">
-        <CategoryCard v-for="cat in featuredCategories" :key="cat.name" :category="cat" />
+        <CategoryCard
+          v-for="(posts, name) in articlesStore.articlesByCategory"
+          :key="name"
+          :category="{ name, title: name, posts }"
+        />
       </div>
       <h2 class="divider">文章列表</h2>
       <div class="articles">
@@ -30,36 +34,50 @@ import PostCard from '../components/PostCard.vue'
 import Pagination from '../components/Pagination.vue'
 
 const articlesStore = useArticlesStore()
-
-// 精选分类数据
-const featuredCategories = ref([
-  {
-    name: 'Web',
-    title: 'Web 开发',
-    cover: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
-    posts: [],
-    count: 0,
-  },
-  {
-    name: 'OS',
-    title: '操作系统',
-    cover: 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=400&h=300&fit=crop',
-    posts: [],
-    count: 0,
-  },
-  {
-    name: 'ML',
-    title: '机器学习',
-    cover: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop',
-    posts: [],
-    count: 0,
-  },
-])
-
 const currentPage = ref(1)
 const pageSize = 6
+const randomImages = ref([])
 
-// 计算属性
+// 加载随机图片列表
+async function loadRandomImages() {
+  try {
+    const response = await fetch('/img/images.yml')
+    if (response.ok) {
+      const yamlText = await response.text()
+      // 简单的YAML解析，提取URL
+      const urls = yamlText
+        .split('\n')
+        .filter((line) => line.trim().startsWith('- '))
+        .map((line) => line.trim().substring(2))
+      randomImages.value = urls
+    }
+  } catch (error) {
+    console.warn('Failed to load random images:', error)
+    // 使用默认图片
+    randomImages.value = [
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+    ]
+  }
+}
+
+// 根据slug生成固定的随机图片
+function getRandomImage(slug) {
+  if (randomImages.value.length === 0) {
+    return 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop'
+  }
+
+  // 使用slug生成固定的随机数
+  let hash = 0
+  for (let i = 0; i < slug.length; i++) {
+    const char = slug.charCodeAt(i)
+    hash = (hash << 5) - hash + char
+    hash = hash & hash // 转换为32位整数
+  }
+
+  const index = Math.abs(hash) % randomImages.value.length
+  return randomImages.value[index]
+}
+
 const totalPages = computed(() => {
   return Math.ceil(articlesStore.articles.length / pageSize)
 })
@@ -67,47 +85,32 @@ const totalPages = computed(() => {
 const paginatedArticles = computed(() => {
   const start = (currentPage.value - 1) * pageSize
   const end = start + pageSize
-  const articles = articlesStore.articles.slice(start, end).map((article) => {
-    console.log('Processing article:', article.slug, 'title:', article.title)
+  return articlesStore.articles.slice(start, end).map((article) => {
+    // 处理分类名，确保是字符串而不是数组
+    let categoryName = '未分类'
+    if (article.categories && article.categories.length > 0) {
+      const firstCategory = article.categories[0]
+      // 如果是字符串，直接使用；如果是数组，取第一个元素
+      categoryName = Array.isArray(firstCategory) ? firstCategory[0] : firstCategory
+      // 去除可能的引号和方括号
+      categoryName = categoryName.replace(/^['"[\]]+|['"[\]]+$/g, '')
+    }
+
     return {
-      id: article.slug,
-      title: article.title,
+      ...article,
       url: `/post/${article.slug}`,
-      cover:
-        article.cover ||
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
-      date: article.date,
-      wordCount: article.wordCount || '2k',
-      readTime: article.readTime || '5',
-      excerpt: article.excerpt || article.content?.substring(0, 200) + '...',
+      cover: getRandomImage(article.slug), // 使用随机图片作为封面
       category: {
-        name: article.categories?.[0] || '未分类',
-        url: `/categories/${article.categories?.[0] || 'uncategorized'}`,
+        name: categoryName,
+        url: `/categories/${categoryName}`,
       },
     }
   })
-  console.log(
-    'Generated paginated articles:',
-    articles.map((a) => ({ slug: a.id, url: a.url })),
-  )
-  return articles
 })
 
-// 更新精选分类数据
-const updateFeaturedCategories = () => {
-  featuredCategories.value.forEach((category) => {
-    const categoryArticles = articlesStore.getArticlesByCategory(category.name)
-    category.count = categoryArticles.length
-    category.posts = categoryArticles.slice(0, 6).map((article) => ({
-      title: article.title,
-      slug: article.slug,
-    }))
-  })
-}
-
 onMounted(async () => {
-  await articlesStore.loadArticles()
-  updateFeaturedCategories()
+  await loadRandomImages()
+  if (!articlesStore.articles.length) await articlesStore.loadArticles()
 })
 </script>
 
