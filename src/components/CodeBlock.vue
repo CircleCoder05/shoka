@@ -194,15 +194,21 @@ const copyCode = async () => {
   overflow: hidden;
 }
 
+.code-content pre,
+.code-content pre *,
+.code-content code,
+.code-content code * {
+  font-family: 'JetBrains Mono', 'Consolas' !important;
+  font-weight: 400 !important;
+}
+
 .code-content pre {
   margin: 0;
   padding: 16px;
   background: transparent;
-  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace !important;
   font-size: 0.9em;
   line-height: 1.6;
   color: #abb2bf;
-  font-weight: 400;
   letter-spacing: 0.3px;
 }
 
@@ -210,6 +216,8 @@ const copyCode = async () => {
   background: transparent;
   padding: 0;
   color: inherit;
+  font-family: 'JetBrains Mono', 'Consolas' !important;
+  font-weight: 600;
 }
 
 .expand-hint {
