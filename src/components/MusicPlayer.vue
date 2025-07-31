@@ -21,14 +21,14 @@
 
         <!-- 歌词区域 -->
         <div class="lrc">
-          <div class="inner" :style="{ transform: `translateY(-${currentLyricIndex * 1.5}rem)` }">
+          <div class="inner">
             <p
-              v-for="(line, index) in lyrics"
+              v-for="(line, index) in windowLyrics"
               :key="index"
               class="lyric-line"
-              :class="{ current: currentLyricIndex === index }"
+              :class="{ current: windowCurrentIndex === index }"
             >
-              {{ line }}
+              {{ line.text }}
             </p>
           </div>
         </div>
@@ -82,6 +82,7 @@ const props = defineProps({
   url: { type: String, required: true },
   title: { type: String, default: '未知歌曲' },
   artist: { type: String, default: '未知歌手' },
+  lyrics: { type: Array, default: () => [] },
 })
 
 // 响应式数据
@@ -92,18 +93,33 @@ const duration = ref(0)
 const progressPercent = ref(0)
 const currentLyricIndex = ref(0)
 
+// 歌词中央定位逻辑
+const VISIBLE_LINES = 4
+const CENTER_LINE = 2
+
+const startLine = computed(() => {
+  if (lyrics.value.length <= VISIBLE_LINES) return 0
+  if (currentLyricIndex.value < CENTER_LINE) return 0
+  if (currentLyricIndex.value > lyrics.value.length - CENTER_LINE - 1)
+    return lyrics.value.length - VISIBLE_LINES
+  return currentLyricIndex.value - CENTER_LINE
+})
+const windowLyrics = computed(() =>
+  lyrics.value.slice(startLine.value, startLine.value + VISIBLE_LINES),
+)
+const windowCurrentIndex = computed(() => currentLyricIndex.value - startLine.value)
+
 // 歌曲信息（优先用 props）
 const songTitle = computed(() => props.title)
 const artistName = computed(() => props.artist)
 const albumCover = ref(
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjRjVGNUY1Ii8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjQwIiBmaWxsPSIjRkZGNkZCIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjE1IiBmaWxsPSIjRkZGRkZGIi8+Cjwvc3ZnPgo=',
 )
-const lyrics = ref([
-  '轻轻敲醒沉睡的心灵',
-  '慢慢张开你的眼睛',
-  '看看忙碌的世界是否依然',
-  '孤独地转个不停',
-])
+const lyrics = computed(() =>
+  Array.isArray(props.lyrics) && props.lyrics.length && typeof props.lyrics[0] === 'object'
+    ? props.lyrics
+    : [{ time: 0, text: '暂无歌词' }],
+)
 
 // 音频元素
 let audio = null
@@ -178,11 +194,7 @@ const initAudio = () => {
   audio.addEventListener('timeupdate', () => {
     currentTime.value = audio.currentTime
     progressPercent.value = (currentTime.value / duration.value) * 100
-
-    // 歌词滚动逻辑
-    const timePerLyric = duration.value / lyrics.value.length
-    const currentIndex = Math.floor(currentTime.value / timePerLyric)
-    currentLyricIndex.value = Math.min(currentIndex, lyrics.value.length - 1)
+    updateLyricIndex()
   })
 
   audio.addEventListener('ended', () => {
@@ -212,6 +224,17 @@ onMounted(() => {
   initAudio()
   console.log('MusicPlayer mounted, controls section should be visible')
 })
+
+// 歌词同步高亮
+function updateLyricIndex() {
+  if (!audio || !lyrics.value.length) return
+  let idx = 0
+  for (let i = 0; i < lyrics.value.length; i++) {
+    if (lyrics.value[i].time <= currentTime.value) idx = i
+    else break
+  }
+  currentLyricIndex.value = idx
+}
 
 onUnmounted(() => {
   if (audio) {
@@ -334,7 +357,8 @@ onUnmounted(() => {
 
 /* 歌词区域 */
 .lrc {
-  max-height: 3rem;
+  max-height: 6rem;
+  height: 6rem;
   margin-top: 0.3125rem;
   font-size: 0.8rem;
   position: relative;
@@ -346,18 +370,18 @@ onUnmounted(() => {
 
 .inner {
   width: 100%;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 2, 0.6, 1);
   text-align: center;
 }
 
 .lyric-line {
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   color: #888;
   line-height: 1.5rem;
   height: 1.5rem;
   padding: 0;
   margin: 0;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
   opacity: 0.3;
   display: flex;
   align-items: center;
@@ -367,7 +391,8 @@ onUnmounted(() => {
 .lyric-line.current {
   opacity: 1;
   color: #333;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
 /* 下盒子：控制按钮和进度条 */
