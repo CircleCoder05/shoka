@@ -53,6 +53,8 @@ const loadArticle = async (slug) => {
   try {
     article.value = await articlesStore.getArticleBySlug(slug)
     console.log('Article loaded successfully:', article.value)
+    console.log('Article HTML content:', article.value.html)
+    console.log('Article content length:', article.value.content.length)
   } catch (err) {
     error.value = err.message
     console.error('Failed to load article:', err)
