@@ -61,12 +61,13 @@ const bannerStore = useBannerStore()
 .app-main-layout {
   display: flex;
   width: 100%;
-  max-width: none;
+  max-width: 100%;
   margin: 0;
   padding: 0 20px;
   gap: 32px;
   flex: 1;
   min-height: calc(100vh - 66vh - 56px);
+  box-sizing: border-box;
 }
 
 .app-sidebar-wrapper {

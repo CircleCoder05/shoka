@@ -220,9 +220,7 @@ onUnmounted(() => {
 <style scoped>
 /* Banner样式 */
 .app-banner {
-  width: 100vw;
-  min-width: 100vw;
-  max-width: 100vw;
+  width: 100%;
   height: 66vh;
   min-height: 320px;
   max-height: 600px;
