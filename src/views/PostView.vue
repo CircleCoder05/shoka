@@ -1,28 +1,25 @@
 <template>
-  <div class="post-main-layout">
-    <Sidebar class="sidebar" />
-    <div class="main-content">
-      <div v-if="loading" class="loading">
-        <div class="loading-spinner"></div>
-        <p>加载中...</p>
-      </div>
-      <div v-else-if="error" class="error">
-        <h2>文章加载失败</h2>
-        <p>{{ error }}</p>
-      </div>
-      <div v-else-if="article" class="post-card-outer">
-        <div class="post-header">
-          <h1 class="post-title">{{ article.title }}</h1>
-          <div class="post-meta">
-            <span class="post-date">{{ formatDate(article.date) }}</span>
-            <span v-if="article.author" class="post-author">作者: {{ article.author }}</span>
-            <div v-if="article.tags && article.tags.length" class="post-tags">
-              <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
-            </div>
+  <div class="post-content-wrapper">
+    <div v-if="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>加载中...</p>
+    </div>
+    <div v-else-if="error" class="error">
+      <h2>文章加载失败</h2>
+      <p>{{ error }}</p>
+    </div>
+    <div v-else-if="article" class="post-card-outer">
+      <div class="post-header">
+        <h1 class="post-title">{{ article.title }}</h1>
+        <div class="post-meta">
+          <span class="post-date">{{ formatDate(article.date) }}</span>
+          <span v-if="article.author" class="post-author">作者: {{ article.author }}</span>
+          <div v-if="article.tags && article.tags.length" class="post-tags">
+            <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
           </div>
         </div>
-        <div class="post-content" v-html="article.html"></div>
       </div>
+      <div class="post-content" v-html="article.html"></div>
     </div>
   </div>
 </template>
@@ -31,7 +28,6 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticlesStore } from '@/stores/articles'
-import Sidebar from '@/components/Sidebar.vue'
 
 const route = useRoute()
 const articlesStore = useArticlesStore()
@@ -82,27 +78,10 @@ watch(
 )
 </script>
 <style scoped>
-.post-main-layout {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+.post-content-wrapper {
   width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 32px 0 64px 0;
-  box-sizing: border-box;
-}
-
-.sidebar {
-  flex: 0 0 280px;
-  margin-right: 24px;
-  margin-top: -16px;
-  min-width: 220px;
-}
-
-.main-content {
-  flex: 1 1 0;
-  min-width: 0;
+  max-width: 960px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -110,17 +89,6 @@ watch(
 
 /* 平板端适配 */
 @media (max-width: 1024px) {
-  .post-main-layout {
-    padding: 24px 16px 48px 16px;
-  }
-
-  .sidebar {
-    flex: 0 0 240px;
-    margin-right: 16px;
-    margin-top: -12px;
-    min-width: 200px;
-  }
-
   .post-card-outer {
     padding: 2rem;
   }
@@ -132,24 +100,6 @@ watch(
 
 /* 移动端适配 */
 @media (max-width: 768px) {
-  .post-main-layout {
-    flex-direction: column;
-    padding: 16px 12px 32px 12px;
-  }
-
-  .sidebar {
-    flex: none;
-    width: 100%;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 20px;
-    min-width: auto;
-  }
-
-  .main-content {
-    width: 100%;
-  }
-
   .post-card-outer {
     padding: 1.5rem;
     border-radius: 12px;
@@ -190,10 +140,6 @@ watch(
 
 /* 小屏手机适配 */
 @media (max-width: 480px) {
-  .post-main-layout {
-    padding: 12px 8px 24px 8px;
-  }
-
   .post-card-outer {
     padding: 1rem;
     border-radius: 8px;
