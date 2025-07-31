@@ -169,9 +169,12 @@ export const useArticlesStore = defineStore('articles', () => {
       console.log('existingArticle:', existingArticle)
       if (existingArticle) {
         console.log('Found existing article, returning with HTML')
+        // 确保 content 中没有 Front Matter
+        const cleanContent = existingArticle.content.replace(/^---[\s\S]*?---\s*\n?/, '')
         return {
           ...existingArticle,
-          html: md.render(existingArticle.content),
+          content: cleanContent,
+          html: md.render(cleanContent),
         }
       }
 
@@ -201,13 +204,15 @@ export const useArticlesStore = defineStore('articles', () => {
 
       const content = await response.text()
       console.log('Article content loaded, length:', content.length)
-      const { frontMatter, content: markdownContent } = parseFrontMatter(content)
-      console.log('Parsed frontMatter:', frontMatter)
-      console.log('Markdown content length:', markdownContent.length)
+
+      // 简单删除 Front Matter，不解析它
+      const markdownContent = content.replace(/^---[\s\S]*?---\s*\n?/, '')
+      console.log('Markdown content length after removing front matter:', markdownContent.length)
+      console.log('Original content preview:', content.substring(0, 200))
+      console.log('Cleaned content preview:', markdownContent.substring(0, 200))
 
       const result = {
         ...articleInfo,
-        ...frontMatter,
         content: markdownContent,
         html: md.render(markdownContent),
         slug,
