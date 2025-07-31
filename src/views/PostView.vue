@@ -19,7 +19,13 @@
           </div>
         </div>
       </div>
-      <div class="post-content" v-html="article.html" v-code-block v-image-optimize></div>
+      <div
+        class="post-content"
+        v-html="article.html"
+        v-code-block
+        v-image-optimize
+        v-media-block
+      ></div>
     </div>
   </div>
 </template>
