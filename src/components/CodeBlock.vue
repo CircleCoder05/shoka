@@ -41,7 +41,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import hljs from 'highlight.js'
-import 'highlight.js/styles/github.css'
+import 'highlight.js/styles/atom-one-dark.css'
 
 const props = defineProps({
   code: {
@@ -114,8 +114,8 @@ const copyCode = async () => {
   margin: 1.5rem 0;
   border-radius: 12px;
   overflow: hidden;
-  background: #1e1e1e;
-  border: 1px solid #333;
+  background: #282c34;
+  border: 1px solid #3e4451;
   transition: all 0.3s ease;
 }
 
@@ -124,8 +124,8 @@ const copyCode = async () => {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #2d2d2d;
-  border-bottom: 1px solid #333;
+  background: #21252b;
+  border-bottom: 1px solid #3e4451;
   font-size: 0.9em;
 }
 
@@ -137,7 +137,7 @@ const copyCode = async () => {
 }
 
 .language-tag {
-  background: #007acc;
+  background: #61afef;
   color: white;
   padding: 2px 8px;
   border-radius: 4px;
@@ -158,8 +158,8 @@ const copyCode = async () => {
 
 .action-btn {
   background: transparent;
-  border: 1px solid #555;
-  color: #ccc;
+  border: 1px solid #4a4a4a;
+  color: #abb2bf;
   padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
@@ -171,8 +171,8 @@ const copyCode = async () => {
 }
 
 .action-btn:hover {
-  background: #3a3a3a;
-  border-color: #666;
+  background: #3e4451;
+  border-color: #5c6370;
   color: white;
 }
 
@@ -198,10 +198,12 @@ const copyCode = async () => {
   margin: 0;
   padding: 16px;
   background: transparent;
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace !important;
   font-size: 0.9em;
-  line-height: 1.5;
-  color: #d4d4d4;
+  line-height: 1.6;
+  color: #abb2bf;
+  font-weight: 400;
+  letter-spacing: 0.3px;
 }
 
 .code-content code {
@@ -216,16 +218,16 @@ const copyCode = async () => {
   justify-content: center;
   gap: 8px;
   padding: 12px 16px;
-  background: #2d2d2d;
-  color: #ccc;
+  background: #21252b;
+  color: #abb2bf;
   cursor: pointer;
   font-size: 0.9em;
-  border-top: 1px solid #333;
+  border-top: 1px solid #3e4451;
   transition: all 0.2s ease;
 }
 
 .expand-hint:hover {
-  background: #3a3a3a;
+  background: #3e4451;
   color: white;
 }
 
