@@ -79,16 +79,20 @@ watch(
 </script>
 <style scoped>
 .post-content-wrapper {
-  width: 100%;
+  width: 80%;
   max-width: 960px;
-  margin: 0 auto;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 /* 平板端适配 */
 @media (max-width: 1024px) {
+  .post-content-wrapper {
+    width: 85%;
+  }
+
   .post-card-outer {
     padding: 2rem;
   }
@@ -100,6 +104,10 @@ watch(
 
 /* 移动端适配 */
 @media (max-width: 768px) {
+  .post-content-wrapper {
+    width: 90%;
+  }
+
   .post-card-outer {
     padding: 1.5rem;
     border-radius: 12px;
@@ -140,6 +148,10 @@ watch(
 
 /* 小屏手机适配 */
 @media (max-width: 480px) {
+  .post-content-wrapper {
+    width: 95%;
+  }
+
   .post-card-outer {
     padding: 1rem;
     border-radius: 8px;

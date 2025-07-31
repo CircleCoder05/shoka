@@ -41,17 +41,22 @@ import Sidebar from './components/Sidebar.vue'
 
     <!-- 主布局区域 -->
     <div class="app-main-layout">
-      <!-- 侧边栏 -->
-      <Sidebar class="app-sidebar" />
+      <!-- 侧边栏父盒子 -->
+      <div class="app-sidebar-wrapper">
+        <!-- 侧边栏 -->
+        <Sidebar class="app-sidebar" />
+      </div>
+      <!-- 主内容父盒子 -->
+      <div class="app-content-wrapper">
+        <!-- 路由主内容区域 -->
+        <main class="app-main-content">
+          <router-view />
+        </main>
 
-      <!-- 路由主内容区域 -->
-      <main class="app-main-content">
-        <router-view />
-      </main>
+        <!-- 页脚 -->
+        <Footer />
+      </div>
     </div>
-
-    <!-- 页脚 -->
-    <Footer />
   </div>
 </template>
 
@@ -187,27 +192,45 @@ import Sidebar from './components/Sidebar.vue'
 /* 主布局样式 */
 .app-main-layout {
   display: flex;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   padding: 0 20px;
   gap: 32px;
   flex: 1;
+  min-height: calc(100vh - 66vh - 56px);
+}
+
+.app-sidebar-wrapper {
+  flex: 0 0 400px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
 }
 
 .app-sidebar {
-  flex: 0 0 280px;
-  margin-right: 24px;
+  width: 280px;
   margin-top: -16px;
   min-width: 220px;
 }
 
-.app-main-content {
+.app-content-wrapper {
   flex: 1 1 0;
   min-width: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  min-height: calc(100vh - 66vh - 56px);
+  margin-left: 20px;
+}
+
+.app-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 40px 0;
+  min-height: calc(100vh - 66vh - 56px - 80px);
 }
 
 /* 平板端适配 */
@@ -217,11 +240,18 @@ import Sidebar from './components/Sidebar.vue'
     gap: 24px;
   }
 
+  .app-sidebar-wrapper {
+    flex: 0 0 320px;
+  }
+
   .app-sidebar {
-    flex: 0 0 240px;
-    margin-right: 16px;
+    width: 240px;
     margin-top: -12px;
     min-width: 200px;
+  }
+
+  .app-content-wrapper {
+    margin-left: 16px;
   }
 
   .app-main-content {
@@ -258,20 +288,31 @@ import Sidebar from './components/Sidebar.vue'
     flex-direction: column;
     padding: 0 12px;
     gap: 16px;
+    min-height: calc(100vh - 50vh - 48px);
+  }
+
+  .app-sidebar-wrapper {
+    flex: none;
+    width: 100%;
+    justify-content: center;
   }
 
   .app-sidebar {
-    flex: none;
     width: 100%;
-    margin-right: 0;
     margin-top: 0;
     margin-bottom: 20px;
     min-width: auto;
   }
 
+  .app-content-wrapper {
+    width: 100%;
+    min-height: calc(100vh - 50vh - 48px - 200px);
+  }
+
   .app-main-content {
     width: 100%;
     padding: 24px 0;
+    min-height: calc(100vh - 50vh - 48px - 200px - 80px);
   }
 
   .floating-header {
@@ -298,10 +339,20 @@ import Sidebar from './components/Sidebar.vue'
 
   .app-main-layout {
     padding: 0 8px;
+    min-height: calc(100vh - 40vh - 44px);
+  }
+
+  .app-sidebar-wrapper {
+    justify-content: center;
+  }
+
+  .app-content-wrapper {
+    min-height: calc(100vh - 40vh - 44px - 200px);
   }
 
   .app-main-content {
     padding: 20px 0;
+    min-height: calc(100vh - 40vh - 44px - 200px - 80px);
   }
 
   .floating-header {
