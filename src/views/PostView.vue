@@ -31,12 +31,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticlesStore } from '@/stores/articles'
+import { useBannerStore } from '@/stores/banner'
 
 const route = useRoute()
 const articlesStore = useArticlesStore()
+const bannerStore = useBannerStore()
 const article = ref(null)
 const loading = ref(true)
 const error = ref(null)
@@ -61,6 +63,9 @@ const loadArticle = async (slug) => {
     console.log('Article loaded successfully:', article.value)
     console.log('Article HTML content:', article.value.html)
     console.log('Article content length:', article.value.content.length)
+    
+    // 设置文章 banner 信息
+    bannerStore.setArticleBanner(article.value)
   } catch (err) {
     error.value = err.message
     console.error('Failed to load article:', err)
@@ -84,6 +89,11 @@ watch(
     loadArticle(newSlug)
   },
 )
+
+onUnmounted(() => {
+  // 组件卸载时恢复默认 banner
+  bannerStore.setDefaultBanner()
+})
 </script>
 
 <style>
