@@ -2,58 +2,104 @@
   <div class="post-main-layout">
     <Sidebar class="sidebar" />
     <div class="main-content">
-      <div class="post-card-outer">
-        <div class="post-content" v-html="htmlContent"></div>
+      <div v-if="loading" class="loading">
+        <div class="loading-spinner"></div>
+        <p>加载中...</p>
+      </div>
+      <div v-else-if="error" class="error">
+        <h2>文章加载失败</h2>
+        <p>{{ error }}</p>
+      </div>
+      <div v-else-if="article" class="post-card-outer">
+        <div class="post-header">
+          <h1 class="post-title">{{ article.title }}</h1>
+          <div class="post-meta">
+            <span class="post-date">{{ formatDate(article.date) }}</span>
+            <span v-if="article.author" class="post-author">作者: {{ article.author }}</span>
+            <div v-if="article.tags && article.tags.length" class="post-tags">
+              <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="post-content" v-html="article.html"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import Sidebar from '../components/Sidebar.vue'
-import MarkdownIt from 'markdown-it'
-import hljs from 'highlight.js'
-import 'highlight.js/styles/github.css'
+import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useArticlesStore } from '@/stores/articles'
+import Sidebar from '@/components/Sidebar.vue'
 
-const markdown = `---\nlayout: post\ntitle: \"Vue+Django 开发前后端分离项目\"\ndate:   2025-05-15\ntags: [Web]\ncomments: true\ncategories:\n- [Web]\nauthor: CircleCoder\n---\n\n### 前言\n\n笔者自学了 \`Vue\` 前端工程化开发和 \`Django\` 后端开发，但是网上关于如何将二者结合成前后端分离项目的教程较少。幸运的是，笔者的导员学姐曾给笔者推荐过一篇博客，记载了二者结合的过程。但是由于年代久远，框架版本过低，一些语法和细节不再适用。于是笔者重新记录一下此过程\n\n### 项目效果\n\n因为只是为了掌握前后端分离的开发过程，重在项目结构和配置上，所以沿用了原博客的项目，非常简单，是一个只可以增添的图书管理系统\n\n![image-20250517144255331](https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202505171443852.png)\n\n### 项目结构\n\n在 \`pycharm\` 中新建 \`Django\` 项目，命名为 \`ATS_Web\`\n\n新建 \`app\`，命名为 \`myapp\`\n\n![image-20250517144511800](https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202505171445857.png)\n\n模板目录 \`template\` 是我们用 \`Vue\` 脚手架创建的前端项目。这里笔者使用的自定义创建，自动生成了路由目录\n\n\`dist\` 目录是笔者 \`build\` 后生成的，另外删除了无用\`public\` 目录\n\n![image-20250517145038451](https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202505171450534.png)\n\n...（内容省略，实际请用完整md内容）`
+const route = useRoute()
+const articlesStore = useArticlesStore()
+const article = ref(null)
+const loading = ref(true)
+const error = ref(null)
 
-const htmlContent = ref('')
+const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+const loadArticle = async (slug) => {
+  console.log('PostView loadArticle called with slug:', slug)
+  loading.value = true
+  error.value = null
+
+  try {
+    article.value = await articlesStore.getArticleBySlug(slug)
+    console.log('Article loaded successfully:', article.value)
+  } catch (err) {
+    error.value = err.message
+    console.error('Failed to load article:', err)
+  } finally {
+    loading.value = false
+  }
+}
 
 onMounted(() => {
-  const md = new MarkdownIt({
-    html: true,
-    linkify: true,
-    typographer: true,
-    highlight: (str, lang) => {
-      if (lang && hljs.getLanguage(lang)) {
-        try {
-          return `<pre class=\"hljs\"><code>${hljs.highlight(str, { language: lang }).value}</code></pre>`
-        } catch (__) {}
-      }
-      return `<pre class=\"hljs\"><code>${md.utils.escapeHtml(str)}</code></pre>`
-    },
-  })
-  htmlContent.value = md.render(markdown)
+  console.log('🚨 PostView mounted!')
+  console.log('Route params:', route.params)
+  console.log('Route fullPath:', route.fullPath)
+  console.log('Route path:', route.path)
+  console.log('Slug from route:', route.params.slug)
+  loadArticle(route.params.slug)
 })
-</script>
 
+watch(
+  () => route.params.slug,
+  (newSlug) => {
+    loadArticle(newSlug)
+  },
+)
+</script>
 <style scoped>
 .post-main-layout {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   padding: 32px 0 64px 0;
   box-sizing: border-box;
 }
+
 .sidebar {
   flex: 0 0 280px;
-  margin-right: 12px;
+  margin-right: 24px;
+  margin-top: -16px;
   min-width: 220px;
 }
+
 .main-content {
   flex: 1 1 0;
   min-width: 0;
@@ -61,6 +107,149 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
 }
+
+/* 平板端适配 */
+@media (max-width: 1024px) {
+  .post-main-layout {
+    padding: 24px 16px 48px 16px;
+  }
+
+  .sidebar {
+    flex: 0 0 240px;
+    margin-right: 16px;
+    margin-top: -12px;
+    min-width: 200px;
+  }
+
+  .post-card-outer {
+    padding: 2rem;
+  }
+
+  .post-title {
+    font-size: 2.2em;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .post-main-layout {
+    flex-direction: column;
+    padding: 16px 12px 32px 12px;
+  }
+
+  .sidebar {
+    flex: none;
+    width: 100%;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 20px;
+    min-width: auto;
+  }
+
+  .main-content {
+    width: 100%;
+  }
+
+  .post-card-outer {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .post-title {
+    font-size: 1.8em;
+    line-height: 1.3;
+  }
+
+  .post-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .post-content {
+    font-size: 1em;
+    line-height: 1.8;
+  }
+
+  .post-content h1 {
+    font-size: 1.8em;
+  }
+
+  .post-content h2 {
+    font-size: 1.5em;
+  }
+
+  .post-content h3 {
+    font-size: 1.3em;
+  }
+
+  .post-content h4 {
+    font-size: 1.1em;
+  }
+}
+
+/* 小屏手机适配 */
+@media (max-width: 480px) {
+  .post-main-layout {
+    padding: 12px 8px 24px 8px;
+  }
+
+  .post-card-outer {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .post-title {
+    font-size: 1.6em;
+  }
+
+  .post-content {
+    font-size: 0.95em;
+  }
+
+  .post-content pre {
+    padding: 1rem;
+    font-size: 0.85em;
+  }
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #666;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #e9546b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  text-align: center;
+  color: #e9546b;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .post-card-outer {
   width: 100%;
   max-width: 960px;
@@ -69,10 +258,57 @@ onMounted(() => {
   box-shadow:
     0 8px 48px 0 rgba(237, 110, 160, 0.18),
     0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+  padding: 2.5rem;
   margin: 0 auto;
   overflow: visible;
 }
+
+.post-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f3c1d1;
+}
+
+.post-title {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #e9546b;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  color: #666;
+  font-size: 0.95em;
+}
+
+.post-date {
+  font-weight: 500;
+}
+
+.post-author {
+  font-style: italic;
+}
+
+.post-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: #f3c1d1;
+  color: #e9546b;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
 .post-content {
   font-size: 1.1em;
   line-height: 2;
@@ -80,6 +316,7 @@ onMounted(() => {
   word-break: break-word;
   background: #fff;
 }
+
 .post-content h1,
 .post-content h2,
 .post-content h3,
@@ -91,71 +328,128 @@ onMounted(() => {
   border-bottom: 1.5px solid #f3c1d1;
   padding-bottom: 0.2em;
 }
+
 .post-content h1 {
   font-size: 2.2em;
 }
+
 .post-content h2 {
   font-size: 1.7em;
 }
+
 .post-content h3 {
-  font-size: 1.3em;
+  font-size: 1.4em;
 }
+
 .post-content h4 {
-  font-size: 1.1em;
+  font-size: 1.2em;
 }
+
 .post-content p {
   margin: 1.2em 0;
+  text-align: justify;
 }
+
 .post-content ul,
 .post-content ol {
-  margin: 1.2em 0 1.2em 2em;
+  margin: 1.2em 0;
+  padding-left: 2em;
 }
+
+.post-content li {
+  margin: 0.5em 0;
+  line-height: 1.8;
+}
+
 .post-content blockquote {
-  border-left: 4px solid #ed6ea0;
-  background: #f9f9fb;
-  color: #888;
   margin: 1.5em 0;
   padding: 1em 1.5em;
-  border-radius: 6px;
+  background: #f8f9fa;
+  border-left: 4px solid #e9546b;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: #555;
 }
-.post-content pre {
-  background: #282c34;
-  color: #fff;
-  border-radius: 8px;
-  padding: 1em;
-  overflow-x: auto;
-  margin: 1.5em 0;
-}
+
 .post-content code {
-  background: #f6f8fa;
-  border-radius: 4px;
-  padding: 2px 4px;
+  background: #f1f3f4;
   color: #e9546b;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
 }
-.post-content img {
-  display: block;
-  margin: 2em auto;
+
+.post-content pre {
+  margin: 1.5em 0;
+  padding: 1.5em;
+  background: #2d3748;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(237, 110, 160, 0.1);
+  overflow-x: auto;
+}
+
+.post-content pre code {
+  background: none;
+  color: #e2e8f0;
+  padding: 0;
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+.post-content img {
   max-width: 100%;
   height: auto;
-  box-sizing: border-box;
+  border-radius: 8px;
+  margin: 1.5em auto;
+  display: block;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
 .post-content table {
-  border-collapse: collapse;
-  margin: 2em 0;
   width: 100%;
-  background: #fafafd;
-  border-radius: 6px;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  background: #fff;
+  border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
 .post-content th,
 .post-content td {
-  border: 1px solid #eee;
-  padding: 0.7em 1em;
+  padding: 0.75em 1em;
   text-align: left;
+  border-bottom: 1px solid #e2e8f0;
 }
-.post-content tr:nth-child(even) {
-  background: #f7f7fa;
+
+.post-content th {
+  background: #f3c1d1;
+  color: #e9546b;
+  font-weight: 600;
+}
+
+.post-content tr:hover {
+  background: #f8f9fa;
+}
+
+.post-content a {
+  color: #e9546b;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.post-content a:hover {
+  border-bottom-color: #e9546b;
+}
+
+.post-content strong {
+  color: #e9546b;
+  font-weight: 600;
+}
+
+.post-content em {
+  color: #666;
+  font-style: italic;
 }
 </style>

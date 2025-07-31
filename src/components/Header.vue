@@ -79,4 +79,75 @@
 .nav i {
   font-size: 16px;
 }
+
+/* 平板端适配 */
+@media (max-width: 1024px) {
+  .header {
+    padding: 0 24px;
+  }
+
+  .nav {
+    gap: 24px;
+    margin-left: 80px;
+  }
+
+  .nav a {
+    padding: 6px 10px;
+    font-size: 0.95em;
+  }
+
+  .nav i {
+    font-size: 15px;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .header {
+    padding: 0 16px;
+    height: 48px;
+  }
+
+  .nav {
+    gap: 16px;
+    margin-left: 0;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .nav a {
+    padding: 4px 8px;
+    font-size: 0.9em;
+    gap: 4px;
+  }
+
+  .nav i {
+    font-size: 14px;
+  }
+
+  .nav a span {
+    display: none;
+  }
+}
+
+/* 小屏手机适配 */
+@media (max-width: 480px) {
+  .header {
+    padding: 0 12px;
+    height: 44px;
+  }
+
+  .nav {
+    gap: 12px;
+  }
+
+  .nav a {
+    padding: 3px 6px;
+    font-size: 0.85em;
+  }
+
+  .nav i {
+    font-size: 13px;
+  }
+}
 </style>

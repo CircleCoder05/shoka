@@ -33,123 +33,149 @@
     <div class="home-main-layout">
       <Sidebar />
       <main class="main-content">
-        <h2 class="divider">精选分类</h2>
-        <div class="cards">
-          <CategoryCard v-for="cat in categories" :key="cat.name" :category="cat" />
+        <div v-if="articlesStore.loading" class="loading">
+          <div class="loading-spinner"></div>
+          <p>加载中...</p>
         </div>
-        <h2 class="divider">文章列表</h2>
-        <div class="articles">
-          <PostCard v-for="post in posts" :key="post.id" :post="post" />
+        <div v-else>
+          <h2 class="divider">精选分类</h2>
+          <div class="cards">
+            <CategoryCard v-for="cat in featuredCategories" :key="cat.name" :category="cat" />
+          </div>
+          <h2 class="divider">文章列表</h2>
+          <div class="articles">
+            <PostCard v-for="post in paginatedArticles" :key="post.slug" :post="post" />
+          </div>
+          <Pagination
+            :currentPage="currentPage"
+            :totalPages="totalPages"
+            @update:currentPage="currentPage = $event"
+          />
         </div>
-        <Pagination
-          :currentPage="currentPage"
-          :totalPages="totalPages"
-          @update:currentPage="currentPage = $event"
-        />
       </main>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useArticlesStore } from '@/stores/articles'
 import Sidebar from '../components/Sidebar.vue'
 import CategoryCard from '../components/CategoryCard.vue'
 import PostCard from '../components/PostCard.vue'
 import Pagination from '../components/Pagination.vue'
 
-// mock 精选分类
-const categories = ref([
+const articlesStore = useArticlesStore()
+
+// 精选分类数据
+const featuredCategories = ref([
+  {
+    name: 'Web',
+    title: 'Web 开发',
+    cover: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
+    posts: [],
+    count: 0,
+  },
+  {
+    name: 'OS',
+    title: '操作系统',
+    cover: 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=400&h=300&fit=crop',
+    posts: [],
+    count: 0,
+  },
   {
     name: 'ML',
     title: '机器学习',
-    cover: '/ML/cover.jpg',
-    posts: [
-      { title: '深度学习入门', slug: 'dl-intro' },
-      { title: '机器学习基础', slug: 'ml-basic' },
-    ],
-  },
-  {
-    name: 'CO',
-    title: '计算机组成原理',
-    cover: '/CO/cover.jpg',
-    posts: [
-      { title: '存储系统', slug: 'storage-system' },
-      { title: '流水线', slug: 'pipeline' },
-    ],
-  },
-])
-
-// mock 文章列表
-const posts = ref([
-  {
-    id: 1,
-    title: 'Vue+Django 开发前后端分离项目',
-    url: '/post/vue-django',
-    cover: 'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158821.jpg',
-    date: '2025-05-15',
-    wordCount: '6k',
-    readTime: '11',
-    excerpt:
-      '# 前言 笔者自学了 Vue 前端工程化开发和 Django 后端开发，但是网上关于如何将二者结合成前后端分离项目的教程较少。幸运的是，笔者的导员学姐曾给笔者推荐过一篇博客，记载了二者结合的过程。但是由于年代久远，框架版本过低，一些语法和细节不再适用。于是笔者重新记录一下此过程...',
-    category: {
-      name: 'Web',
-      url: '/categories/Web',
-    },
-  },
-  {
-    id: 2,
-    title: 'OS-Chapter6-文件系统',
-    url: '/post/os-chapter6',
-    cover: 'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311942090.jpg',
-    date: '2025-05-14',
-    wordCount: '3.7k',
-    readTime: '7',
-    excerpt:
-      '# 文件 # 概念 文件是一种抽象机制，它提供了一种把信息保存在磁盘等存储设备上，并且便于以后访问的方法。抽象性体现在用户不必关心具体的实现细节。 可以视为一个单独的连续的逻辑地址空间，其大小即为文件的大小，与进程的地址空间无关...',
-    category: {
-      name: '操作系统',
-      url: '/categories/OS',
-    },
-  },
-  {
-    id: 3,
-    title: 'OS-题目-操作系统基础',
-    url: '/post/os-quiz2',
-    cover: 'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943580.jpg',
-    date: '2025-05-14',
-    wordCount: '1.4k',
-    readTime: '3',
-    excerpt:
-      '# 选填题 虚拟存储器只能基于 非连续分配技术 采用二级页表的分页系统中，CPU 页表基址寄存器中的内容是 当前进程一级页表的起始物理地址 动态分区分配算法中，最容易产生内存碎片的是 最佳适应算法，最不容易产生内存碎片的是 最坏适应算法...',
-    category: {
-      name: '操作系统',
-      url: '/categories/OS',
-    },
-  },
-  {
-    id: 4,
-    title: 'OS-题目-I/O设备',
-    url: '/post/os-quiz5',
-    cover: 'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158368.jpg',
-    date: '2025-05-14',
-    wordCount: '1.7k',
-    readTime: '3',
-    excerpt:
-      '# 选填题 不会导致磁臂黏着的磁盘调度算法是 先来先服务（FCFS） 在系统内存中设置磁盘缓冲区的主要目的是 **** 程序员利用系统调用打开 I/O 设备时，通常使用的设备标识是 逻辑设备名 SPOOLing 技术中，输入井和输出井是 硬盘的一部分...',
-    category: {
-      name: '操作系统',
-      url: '/categories/OS',
-    },
+    cover: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop',
+    posts: [],
+    count: 0,
   },
 ])
 
 const currentPage = ref(1)
-const pageSize = 3
-const totalPages = computed(() => Math.ceil(posts.value.length / pageSize))
+const pageSize = 6
+
+// 计算属性
+const totalPages = computed(() => {
+  return Math.ceil(articlesStore.articles.length / pageSize)
+})
+
+const paginatedArticles = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  const end = start + pageSize
+  const articles = articlesStore.articles.slice(start, end).map((article) => {
+    console.log('Processing article:', article.slug, 'title:', article.title)
+    return {
+      id: article.slug,
+      title: article.title,
+      url: `/post/${article.slug}`,
+      cover:
+        article.cover ||
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+      date: article.date,
+      wordCount: article.wordCount || '2k',
+      readTime: article.readTime || '5',
+      excerpt: article.excerpt || article.content?.substring(0, 200) + '...',
+      category: {
+        name: article.categories?.[0] || '未分类',
+        url: `/categories/${article.categories?.[0] || 'uncategorized'}`,
+      },
+    }
+  })
+  console.log(
+    'Generated paginated articles:',
+    articles.map((a) => ({ slug: a.id, url: a.url })),
+  )
+  return articles
+})
+
+// 更新精选分类数据
+const updateFeaturedCategories = () => {
+  featuredCategories.value.forEach((category) => {
+    const categoryArticles = articlesStore.getArticlesByCategory(category.name)
+    category.count = categoryArticles.length
+    category.posts = categoryArticles.slice(0, 6).map((article) => ({
+      title: article.title,
+      slug: article.slug,
+    }))
+  })
+}
+
+onMounted(async () => {
+  await articlesStore.loadArticles()
+  updateFeaturedCategories()
+})
 </script>
 
 <style scoped>
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #666;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #e9546b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .home-banner {
   width: 100vw;
   min-width: 100vw;
@@ -438,6 +464,125 @@ const totalPages = computed(() => Math.ceil(posts.value.length / pageSize))
 
 .segments > .item:nth-child(2n):hover .cover img {
   transform: scale(1.05) rotate(-1deg);
+}
+
+/* 平板端适配 */
+@media (max-width: 1024px) {
+  .home-main-layout {
+    padding: 0 16px;
+    gap: 24px;
+  }
+
+  .main-content {
+    padding: 32px 0;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .banner-title h1 {
+    font-size: 2.4rem;
+  }
+
+  .banner-title p {
+    font-size: 1.1rem;
+  }
+
+  .cards {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 8px;
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  .articles {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .home-banner {
+    height: 50vh;
+    min-height: 280px;
+  }
+
+  .banner-title h1 {
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+
+  .banner-title p {
+    font-size: 1rem;
+  }
+
+  .home-main-layout {
+    flex-direction: column;
+    padding: 0 12px;
+    gap: 16px;
+  }
+
+  .main-content {
+    padding: 24px 0;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .articles {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .divider {
+    font-size: 1.3rem;
+  }
+}
+
+/* 小屏手机适配 */
+@media (max-width: 480px) {
+  .home-banner {
+    height: 40vh;
+    min-height: 240px;
+  }
+
+  .banner-title h1 {
+    font-size: 1.8rem;
+  }
+
+  .banner-title p {
+    font-size: 0.9rem;
+  }
+
+  .home-main-layout {
+    padding: 0 8px;
+  }
+
+  .main-content {
+    padding: 20px 0;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .cards {
+    margin-left: 4px;
+    margin-right: 4px;
+  }
+
+  .articles {
+    margin-left: 4px;
+    margin-right: 4px;
+  }
+
+  .divider {
+    font-size: 1.2rem;
+  }
 }
 
 @media (max-width: 767px) {

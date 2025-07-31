@@ -4,12 +4,12 @@ import Categories from '../views/Categories.vue'
 import Category from '../views/Category.vue'
 import Tags from '../views/Tags.vue'
 import Tag from '../views/Tag.vue'
-import Post from '../views/Post.vue'
+
 import Friends from '../views/Friends.vue'
 import Statistics from '../views/Statistics.vue'
 import Home from '../views/HomeView.vue'
 import About from '../views/AboutView.vue'
-import PostView from '../views/PostView.vue'
+import PostView from '@/views/PostView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,9 +50,14 @@ const router = createRouter({
       component: Tag,
     },
     {
-      path: '/post/:slug',
+      path: '/post-demo',
+      name: 'post-demo',
+      component: PostView,
+    },
+    {
+      path: '/post/:slug(.*)',
       name: 'post',
-      component: Post,
+      component: PostView,
     },
     {
       path: '/friends',
@@ -64,12 +69,13 @@ const router = createRouter({
       name: 'statistics',
       component: Statistics,
     },
-    {
-      path: '/post-demo',
-      name: 'post-demo',
-      component: PostView,
-    },
   ],
+})
+
+// 添加路由守卫来调试
+router.beforeEach((to, from, next) => {
+  console.log('🚨 路由跳转:', { from: from.path, to: to.path, params: to.params })
+  next()
 })
 
 export default router
