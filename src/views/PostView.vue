@@ -190,15 +190,15 @@ watch(
 
 /* 文章内容 */
 .post-content {
-  font-size: 1.1em;
-  line-height: 1.8;
+  font-size: 1em;
+  line-height: 1.6;
   color: #333;
   word-break: break-word;
   background: #fff;
   overflow: hidden;
   font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif';
   font-weight: 400;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
 }
 
 /* 标题样式 */
@@ -217,29 +217,29 @@ watch(
 }
 
 .post-content h1 {
-  font-size: 2.2em;
+  font-size: 2.5em;
 }
 .post-content h2 {
-  font-size: 1.7em;
+  font-size: 2em;
 }
 .post-content h3 {
-  font-size: 1.4em;
+  font-size: 1.6em;
 }
 .post-content h4 {
-  font-size: 1.2em;
+  font-size: 1.4em;
 }
 
 /* 段落和列表 */
 .post-content p,
 .post-content ul,
 .post-content ol {
-  margin: 1.2em 0;
+  margin: 1em 0;
   font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif';
 }
 
 .post-content p {
   text-align: justify;
-  line-height: 1.8;
+  line-height: 1.6;
 }
 
 .post-content ul,
@@ -248,15 +248,15 @@ watch(
 }
 
 .post-content li {
-  margin: 0.5em 0;
-  line-height: 1.8;
+  margin: 0.4em 0;
+  line-height: 1.6;
   font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif';
 }
 
 /* 引用块 */
 .post-content blockquote {
-  margin: 1.5em 0;
-  padding: 1em 1.5em;
+  margin: 0.4em 0;
+  padding: 0.4em 0.4em;
   background: #f8f9fa;
   border-left: 4px solid #e9546b;
   border-radius: 0 8px 8px 0;
@@ -286,8 +286,8 @@ watch(
 .post-content pre code {
   background: none;
   color: #333;
-  font-size: 0.95em;
-  line-height: 1.6;
+  font-size: 0.9em;
+  line-height: 1.5;
   display: block;
 }
 
@@ -297,7 +297,7 @@ watch(
   width: auto;
   height: auto;
   border-radius: 8px;
-  margin: 1.5em auto;
+  margin: 1.2em auto;
   display: block;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   object-fit: contain;
