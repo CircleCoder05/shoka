@@ -19,7 +19,7 @@
           </div>
         </div>
       </div>
-      <div class="post-content" v-html="article.html"></div>
+      <div class="post-content" v-html="article.html" v-code-block></div>
     </div>
   </div>
 </template>
