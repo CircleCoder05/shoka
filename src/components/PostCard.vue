@@ -79,13 +79,17 @@ defineProps({
   border-radius: 0.625rem 0 0 0.625rem;
   overflow: hidden;
   flex-shrink: 0;
-  display: flex;
+  position: relative;
 }
 
 .cover img {
-  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: center;
   transition: all 0.2s ease-in-out 0s;
 }
 
@@ -180,11 +184,11 @@ defineProps({
 .info-footer a.btn {
   color: #fff;
   background-image: linear-gradient(to right, #ed6ea0 0, #ec8c69 100%);
-  border-radius: 1rem 0 1rem 0;
+  border-radius: 0.5rem 0 0.5rem 0;
 }
 
 .post-card:nth-child(2n) .info-footer a.btn {
-  border-radius: 0 1rem 0 1rem;
+  border-radius: 0 0.5rem 0 0.5rem;
   background-image: linear-gradient(to right, #ec8c69 0, #ed6ea0 100%);
 }
 
@@ -203,6 +207,7 @@ defineProps({
   margin-left: 1.5rem;
   clip-path: polygon(0 0%, 100% 0%, 100% 100%, 8% 100%);
   border-radius: 0 0.625rem 0.625rem 0;
+  position: relative;
 }
 
 .post-card:nth-child(2n) .info {
@@ -214,7 +219,7 @@ defineProps({
 }
 
 .post-card:nth-child(2n) .meta {
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 .post-card:nth-child(2n) .info-footer {
@@ -223,13 +228,15 @@ defineProps({
 }
 
 @media (max-width: 767px) {
-  .post-card {
+  .post-card,
+  .post-card:nth-child(2n) {
     flex-direction: column;
     height: fit-content;
     max-height: fit-content;
   }
 
-  .cover {
+  .cover,
+  .post-card:nth-child(2n) .cover {
     width: 100%;
     height: 14rem;
     margin: auto;
@@ -237,27 +244,14 @@ defineProps({
     border-radius: 0.625rem 0.625rem 0 0;
   }
 
-  .info {
+  .info,
+  .post-card:nth-child(2n) .info {
     width: 100%;
     height: 14rem;
     padding: 0;
   }
 
-  .info-content {
-    padding: 1rem 1rem 0 1rem;
-  }
-
-  .post-card:nth-child(2n) .cover {
-    width: 100%;
-    margin: auto;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 92%);
-    border-radius: 0.625rem 0.625rem 0 0;
-  }
-
-  .post-card:nth-child(2n) .info {
-    padding: 0;
-  }
-
+  .info-content,
   .post-card:nth-child(2n) .info-content {
     padding: 1rem 1rem 0 1rem;
   }

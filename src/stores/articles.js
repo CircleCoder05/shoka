@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import MarkdownIt from 'markdown-it'
-import hljs from 'highlight.js'
-import 'highlight.js/styles/github.css'
 
 export const useArticlesStore = defineStore('articles', () => {
   // 状态
@@ -18,14 +16,9 @@ export const useArticlesStore = defineStore('articles', () => {
     linkify: true,
     typographer: true,
     highlight: (str, lang) => {
-      if (lang && hljs.getLanguage(lang)) {
-        try {
-          return `<pre class="hljs"><code>${hljs.highlight(str, { language: lang }).value}</code></pre>`
-        } catch {
-          // 忽略高亮错误
-        }
-      }
-      return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`
+      // 返回一个特殊的标记，稍后会被替换为自定义组件
+      const escapedCode = md.utils.escapeHtml(str)
+      return `<div class="custom-code-block" data-lang="${lang || ''}" data-code="${escapedCode}"></div>`
     },
   })
 
