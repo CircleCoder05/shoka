@@ -36,13 +36,14 @@ async function fetchNeteaseInfo(songId) {
       return {
         title: data[0].title,
         artist: data[0].author,
+        cover: data[0].pic,
         lyrics,
       }
     }
   } catch {
     // 忽略错误
   }
-  return { title: '未知歌曲', artist: '未知歌手', lyrics: [] }
+  return { title: '未知歌曲', artist: '未知歌手', cover: '', lyrics: [] }
 }
 
 function getAudioUrl(url) {
@@ -77,6 +78,7 @@ export default {
         }
         let title = '未知歌曲'
         let artist = '未知歌手'
+        let cover = ''
         let lyrics = []
         let audioUrl = getAudioUrl(url)
         // 如果是网易云，获取歌名、歌手、歌词
@@ -85,10 +87,11 @@ export default {
           const info = await fetchNeteaseInfo(match[1])
           title = info.title
           artist = info.artist
+          cover = info.cover
           lyrics = info.lyrics
         }
         // 创建播放器
-        const musicApp = createApp(MusicPlayer, { url: audioUrl, title, artist, lyrics })
+        const musicApp = createApp(MusicPlayer, { url: audioUrl, title, artist, cover, lyrics })
         const container = document.createElement('div')
         container.className = 'music-player-container'
         musicApp.mount(container)
