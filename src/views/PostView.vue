@@ -77,7 +77,7 @@ watch(
   },
 )
 </script>
-<style scoped>
+<style>
 .post-content-wrapper {
   width: 80%;
   max-width: 960px;
@@ -289,12 +289,14 @@ watch(
 .post-content h2,
 .post-content h3,
 .post-content h4 {
-  font-weight: bold;
+  font-weight: 900;
   margin: 2.2em 0 1em 0;
   line-height: 1.3;
-  color: #e9546b;
-  border-bottom: 1.5px solid #f3c1d1;
+  color: #3b82f6;
+  border-bottom: 1.5px solid #dbeafe;
   padding-bottom: 0.2em;
+  font-family: 'SimHei', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', 'Arial', 'sans-serif';
+  letter-spacing: 0.5px;
 }
 
 .post-content h1 {
@@ -316,17 +318,21 @@ watch(
 .post-content p {
   margin: 1.2em 0;
   text-align: justify;
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif';
+  line-height: 1.8;
 }
 
 .post-content ul,
 .post-content ol {
   margin: 1.2em 0;
   padding-left: 2em;
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif';
 }
 
 .post-content li {
   margin: 0.5em 0;
   line-height: 1.8;
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif';
 }
 
 .post-content blockquote {
@@ -342,26 +348,28 @@ watch(
 .post-content code {
   background: #f1f3f4;
   color: #e9546b;
-  padding: 0.2em 0.4em;
+  /* padding: 0.2em 0.4em; */
   border-radius: 4px;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.9em;
 }
 
 .post-content pre {
-  margin: 1.5em 0;
-  padding: 1.5em;
-  background: #2d3748;
-  border-radius: 8px;
+  margin: 0 0 1.5em 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
   overflow-x: auto;
+  border: none;
+  box-shadow: none;
 }
 
 .post-content pre code {
   background: none;
-  color: #e2e8f0;
-  padding: 0;
+  color: #333;
   font-size: 0.95em;
   line-height: 1.6;
+  display: block;
 }
 
 .post-content img {
@@ -371,7 +379,7 @@ watch(
   border-radius: 8px;
   margin: 1.5em auto;
   display: block;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   object-fit: contain;
   overflow: hidden;
 }
@@ -383,44 +391,163 @@ watch(
 
 .optimized-image:hover {
   transform: scale(1.02);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 /* 确保图片容器也不会超出 */
 .post-content {
   font-size: 1.1em;
-  line-height: 2;
-  color: #222;
+  line-height: 1.8;
+  color: #333;
   word-break: break-word;
   background: #fff;
   overflow: hidden;
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif';
+  font-weight: 400;
+  letter-spacing: 0.3px;
 }
 
-.post-content table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1.5em 0;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+/* 表格样式 - 使用更高优先级 */
+.post-content table,
+.post-content .table,
+.post-card-outer .post-content table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 1.5em 0 !important;
+  background: #fff !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow:
+    0 4px 16px rgba(237, 84, 107, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  font-size: 0.95em !important;
+  border: 2px solid #f3c1d1 !important;
 }
 
 .post-content th,
-.post-content td {
-  padding: 0.75em 1em;
-  text-align: left;
-  border-bottom: 1px solid #e2e8f0;
+.post-content td,
+.post-content .table th,
+.post-content .table td,
+.post-card-outer .post-content th,
+.post-card-outer .post-content td {
+  padding: 1em 1.2em !important;
+  text-align: left !important;
+  border: none !important;
+  vertical-align: top !important;
+  position: relative !important;
 }
 
-.post-content th {
-  background: #f3c1d1;
-  color: #e9546b;
-  font-weight: 600;
+/* 表格头部样式 */
+.post-content th,
+.post-content .table th {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-family:
+    'SimHei', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', 'Arial', 'sans-serif' !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+  letter-spacing: 0.5px !important;
+  border-bottom: 3px solid #2563eb !important;
 }
 
-.post-content tr:hover {
-  background: #f8f9fa;
+/* 表格行样式 - 深浅交替 */
+.post-content tr:nth-child(odd),
+.post-content .table tr:nth-child(odd) {
+  background: #ffffff !important;
+}
+
+.post-content tr:nth-child(even),
+.post-content .table tr:nth-child(even) {
+  background: #f8f9fa !important;
+}
+
+/* 表格行悬停效果 */
+.post-content tr:hover,
+.post-content .table tr:hover {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* 表格单元格样式 */
+.post-content td,
+.post-content .table td {
+  word-break: break-word !important;
+  max-width: 300px !important;
+  border-bottom: 1px solid #dbeafe !important;
+  border-right: 1px solid #eff6ff !important;
+  transition: all 0.2s ease !important;
+}
+
+/* 最后一列不显示右边框 */
+.post-content td:last-child,
+.post-content .table td:last-child {
+  border-right: none !important;
+}
+
+/* 最后一行不显示下边框 */
+.post-content tr:last-child td,
+.post-content .table tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* 表格分割线效果 */
+.post-content th:not(:last-child)::after,
+.post-content td:not(:last-child)::after,
+.post-content .table th:not(:last-child)::after,
+.post-content .table td:not(:last-child)::after {
+  content: '' !important;
+  position: absolute !important;
+  right: 0 !important;
+  top: 20% !important;
+  height: 60% !important;
+  width: 1px !important;
+  background: linear-gradient(to bottom, transparent, #dbeafe, transparent) !important;
+}
+
+/* 表格头部特殊分割线 */
+.post-content th:not(:last-child)::after,
+.post-content .table th:not(:last-child)::after {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  ) !important;
+}
+
+/* 表格响应式处理 */
+@media (max-width: 768px) {
+  .post-content table {
+    font-size: 0.9em;
+    border-radius: 8px;
+  }
+
+  .post-content th,
+  .post-content td {
+    padding: 0.75em 0.8em;
+  }
+
+  .post-content td {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .post-content table {
+    font-size: 0.85em;
+    border-radius: 6px;
+  }
+
+  .post-content th,
+  .post-content td {
+    padding: 0.6em 0.6em;
+  }
+
+  .post-content td {
+    max-width: 150px;
+  }
 }
 
 .post-content a {

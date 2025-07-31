@@ -15,6 +15,7 @@ export const useArticlesStore = defineStore('articles', () => {
     html: true,
     linkify: true,
     typographer: true,
+    breaks: true,
     highlight: (str, lang) => {
       // 返回一个特殊的标记，稍后会被替换为自定义组件
       const escapedCode = md.utils.escapeHtml(str)
