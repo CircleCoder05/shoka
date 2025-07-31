@@ -160,102 +160,6 @@ body {
   margin-bottom: 40px;
 }
 
-.category-card {
-  flex: 1 1 320px;
-  min-width: 320px;
-  max-width: 400px;
-  background: linear-gradient(135deg, #fff 60%, #ffe6fa 100%);
-  border-radius: 16px;
-  box-shadow: var(--color-shadow);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition:
-    box-shadow 0.2s,
-    transform 0.2s;
-  position: relative;
-}
-.category-card:hover {
-  box-shadow: 0 8px 32px rgba(237, 110, 160, 0.18);
-  transform: translateY(-4px) scale(1.02);
-}
-.category-card .cover {
-  height: 120px;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-.category-card .title {
-  color: #fff;
-  background: rgba(237, 110, 160, 0.7);
-  padding: 10px 20px;
-  border-radius: 0 0 12px 12px;
-  font-size: 22px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  box-shadow: 0 2px 8px rgba(237, 110, 160, 0.12);
-}
-.category-card .info {
-  flex: 1;
-  padding: 18px 20px 16px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.category-card .ribbon {
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: var(--color-pink);
-}
-.category-card .inner {
-  font-size: 16px;
-}
-.category-card .posts {
-  margin: 0 0 8px 0;
-  padding: 0;
-  list-style: none;
-}
-.category-card .posts li {
-  margin-bottom: 4px;
-  color: var(--color-blue);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.category-card .posts li a {
-  color: var(--color-blue);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.category-card .posts li a:hover {
-  color: var(--color-pink);
-}
-.category-card .meta.footer {
-  margin-top: 8px;
-  color: var(--color-grey);
-  font-size: 14px;
-}
-.category-card .btn {
-  display: inline-block;
-  margin-top: 8px;
-  color: #fff;
-  background: linear-gradient(to right, var(--color-pink), var(--color-orange));
-  border-radius: 16px 0 16px 0;
-  padding: 4px 18px;
-  font-size: 15px;
-  text-decoration: none;
-  box-shadow: 0 2px 8px rgba(237, 110, 160, 0.08);
-  transition:
-    background 0.2s,
-    color 0.2s;
-}
-.category-card .btn:hover {
-  background: linear-gradient(to right, var(--color-orange), var(--color-pink));
-  color: #fff;
-}
-
 /* 文章列表区块 */
 .segments.posts {
   margin-bottom: 40px;
@@ -316,11 +220,6 @@ body {
   .cards {
     gap: 24px;
   }
-
-  .category-card {
-    flex: 1 1 280px;
-    min-width: 280px;
-  }
 }
 
 /* 移动端适配 */
@@ -347,25 +246,6 @@ body {
   .cards {
     flex-direction: column;
     gap: 16px;
-  }
-
-  .category-card {
-    flex: 1 1 100%;
-    min-width: auto;
-    max-width: none;
-  }
-
-  .category-card .cover {
-    height: 100px;
-  }
-
-  .category-card .title {
-    font-size: 18px;
-    padding: 8px 16px;
-  }
-
-  .category-card .info {
-    padding: 16px 16px 12px 16px;
   }
 
   .divider {
