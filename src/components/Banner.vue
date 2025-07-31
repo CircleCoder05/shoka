@@ -1,7 +1,14 @@
 <template>
   <div class="app-banner">
     <div class="banner-images">
-      <img :src="bannerImage" :alt="bannerAlt" />
+      <img
+        v-for="(image, index) in bannerImages"
+        :key="index"
+        :src="image"
+        :alt="bannerAlt"
+        class="banner-image"
+        @load="onImageLoad(index)"
+      />
     </div>
 
     <!-- 默认网站标题 -->
@@ -16,24 +23,24 @@
         <h1 class="article-title">{{ articleTitle }}</h1>
         <div class="article-meta">
           <div class="meta-item">
-            <i class="ic i-user"></i>
-            <span>{{ articleAuthor }}</span>
+            <span class="meta-label">作者:</span>
+            <span class="meta-value">{{ articleAuthor }}</span>
           </div>
           <div class="meta-item">
-            <i class="ic i-calendar"></i>
-            <time :datetime="articleDate">{{ formatDate(articleDate) }}</time>
+            <span class="meta-label">发布时间:</span>
+            <span class="meta-value">{{ formatDate(articleDate) }}</span>
           </div>
           <div class="meta-item">
-            <i class="ic i-pen"></i>
-            <span>{{ articleWordCount }} 字</span>
+            <span class="meta-label">字数:</span>
+            <span class="meta-value">{{ articleWordCount }}</span>
           </div>
           <div class="meta-item">
-            <i class="ic i-clock"></i>
-            <span>{{ articleReadTime }} 分钟</span>
+            <span class="meta-label">阅读时间:</span>
+            <span class="meta-value">{{ articleReadTime }}分钟</span>
           </div>
           <div class="meta-item">
-            <i class="ic i-eye"></i>
-            <span>{{ articleViews }} 阅读</span>
+            <span class="meta-label">浏览量:</span>
+            <span class="meta-value">{{ articleViews }}</span>
           </div>
         </div>
         <div class="article-categories" v-if="articleCategories && articleCategories.length">
@@ -64,10 +71,15 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 
+// 定义组件名称
+defineOptions({
+  name: 'BannerComponent',
+})
+
+// Props
 const props = defineProps({
-  // 默认网站信息
   siteTitle: {
     type: String,
     default: 'CircleCoder',
@@ -120,16 +132,89 @@ const props = defineProps({
   },
 })
 
+// 轮播图片相关
+const bannerImages = ref([])
+const loadedImages = ref(new Set())
+
+// 随机图片列表
+const randomImageUrls = ref([])
+
+// 加载图片列表
+const loadImageUrls = async () => {
+  try {
+    const response = await fetch('/img/images.yml')
+    const yamlText = await response.text()
+    // 简单的YAML解析，提取URL
+    const urls = yamlText
+      .split('\n')
+      .filter((line) => line.trim().startsWith('- '))
+      .map((line) => line.trim().substring(2))
+    randomImageUrls.value = urls
+  } catch (error) {
+    console.error('Failed to load images.yml:', error)
+    // 使用默认图片作为后备
+    randomImageUrls.value = [
+      'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943773.jpg',
+    ]
+  }
+}
+
+// 初始化轮播图片
+const initBannerImages = () => {
+  if (randomImageUrls.value.length === 0) return
+
+  // 随机选择6张图片进行轮播（按照hexo的实现）
+  const shuffled = [...randomImageUrls.value].sort(() => 0.5 - Math.random())
+  bannerImages.value = shuffled.slice(0, 6)
+}
+
+// 图片加载完成
+const onImageLoad = (index) => {
+  loadedImages.value.add(index)
+}
+
+// 开始轮播 - 现在由CSS动画控制
+const startCarousel = () => {
+  // CSS动画自动控制轮播
+}
+
+// 停止轮播
+const stopCarousel = () => {
+  // CSS动画自动控制轮播
+}
+
 // 格式化日期
-function formatDate(dateString) {
-  if (!dateString) return ''
-  const date = new Date(dateString)
+const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   })
 }
+
+// 监听文章页面变化
+watch(
+  () => props.isArticlePage,
+  () => {
+    // 所有页面都使用轮播，只是显示的内容不同
+    initBannerImages()
+    startCarousel()
+  },
+)
+
+onMounted(async () => {
+  await loadImageUrls()
+
+  // 所有页面都使用轮播
+  initBannerImages()
+  startCarousel()
+})
+
+onUnmounted(() => {
+  stopCarousel()
+})
 </script>
 
 <style scoped>
@@ -152,18 +237,79 @@ function formatDate(dateString) {
   margin-top: 56px;
 }
 
-.banner-images img {
-  width: 100vw;
-  height: 100%;
-  object-fit: cover;
+.banner-images {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
-  filter: brightness(0.85) blur(0.5px);
 }
 
-/* 默认网站标题样式 */
+.banner-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1);
+  filter: brightness(0.85) blur(0.5px);
+  animation: bannerAnimation 36s linear infinite;
+}
+
+/* 为每张图片添加不同的动画延迟 */
+.banner-image:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.banner-image:nth-child(2) {
+  animation-delay: 6s;
+}
+
+.banner-image:nth-child(3) {
+  animation-delay: 12s;
+}
+
+.banner-image:nth-child(4) {
+  animation-delay: 18s;
+}
+
+.banner-image:nth-child(5) {
+  animation-delay: 24s;
+}
+
+.banner-image:nth-child(6) {
+  animation-delay: 30s;
+}
+
+@keyframes bannerAnimation {
+  0% {
+    opacity: 0;
+    animation-timing-function: ease-in;
+  }
+  2% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 1;
+    transform: scale(1.05);
+    animation-timing-function: ease-out;
+  }
+  17% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  25% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .banner-title {
   position: relative;
   z-index: 2;
@@ -211,12 +357,11 @@ function formatDate(dateString) {
 }
 
 .article-title {
-  font-size: 2.4rem;
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: 900;
   letter-spacing: 1px;
   margin: 0 0 24px 0;
-  line-height: 1.3;
-  word-wrap: break-word;
+  line-height: 1.2;
 }
 
 .article-meta {
@@ -230,38 +375,37 @@ function formatDate(dateString) {
 .meta-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 0.95rem;
-  opacity: 0.9;
 }
 
-.meta-item i {
-  font-size: 0.9rem;
+.meta-label {
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+.meta-value {
+  font-weight: 600;
 }
 
 .article-categories {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .category-tag {
   background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
+  color: #fff;
   padding: 6px 16px;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.2s ease;
 }
 
-.category-tag:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-}
-
-/* 波浪动画 */
 .waves {
   position: absolute;
   bottom: 0;
@@ -315,7 +459,7 @@ function formatDate(dateString) {
   }
 }
 
-/* 平板端适配 */
+/* 响应式设计 */
 @media (max-width: 1024px) {
   .banner-title h1 {
     font-size: 2.4rem;
@@ -326,7 +470,7 @@ function formatDate(dateString) {
   }
 
   .article-title {
-    font-size: 2.1rem;
+    font-size: 2.2rem;
   }
 
   .article-meta {
@@ -334,7 +478,6 @@ function formatDate(dateString) {
   }
 }
 
-/* 移动端适配 */
 @media (max-width: 768px) {
   .app-banner {
     height: 50vh;
@@ -353,13 +496,12 @@ function formatDate(dateString) {
 
   .article-title {
     font-size: 1.8rem;
-    margin-bottom: 20px;
   }
 
   .article-meta {
     flex-direction: column;
+    align-items: center;
     gap: 12px;
-    margin-bottom: 16px;
   }
 
   .meta-item {
@@ -367,7 +509,6 @@ function formatDate(dateString) {
   }
 }
 
-/* 小屏手机适配 */
 @media (max-width: 480px) {
   .app-banner {
     height: 40vh;
@@ -385,12 +526,10 @@ function formatDate(dateString) {
 
   .article-title {
     font-size: 1.6rem;
-    margin-bottom: 16px;
   }
 
   .article-meta {
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 8px;
   }
 
   .meta-item {
@@ -398,8 +537,8 @@ function formatDate(dateString) {
   }
 
   .category-tag {
-    padding: 4px 12px;
     font-size: 0.8rem;
+    padding: 4px 12px;
   }
 }
 </style>
