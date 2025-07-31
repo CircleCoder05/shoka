@@ -5,6 +5,9 @@
       <!-- 左侧：专辑封面 -->
       <div class="album-section">
         <div class="cover">
+          <!-- 唱针 -->
+          <div class="needle" :class="{ playing: isPlaying }"></div>
+          <!-- 磁盘 -->
           <div class="disc">
             <img :src="albumCover" :alt="songTitle" @error="handleImageError" class="album-image" />
           </div>
@@ -24,7 +27,7 @@
           <div class="inner">
             <p
               v-for="(line, index) in windowLyrics"
-              :key="index"
+              :key="line.time + '-' + line.text"
               class="lyric-line"
               :class="{ current: windowCurrentIndex === index }"
             >
@@ -47,28 +50,15 @@
           </svg>
         </button>
 
-        <button class="control-btn volume-btn" @click="toggleMute">
-          <svg v-if="!isMuted" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
-            />
-          </svg>
-          <svg v-else viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"
-            />
-          </svg>
-        </button>
-      </div>
-
-      <!-- 进度条 -->
-      <div class="progress-container">
-        <div class="progress-bar" @click="seekTo">
-          <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
-        </div>
-        <div class="time-display">
-          <span class="current-time">{{ formatTime(currentTime) }}</span>
-          <span class="total-time">{{ formatTime(duration) }}</span>
+        <!-- 进度条 -->
+        <div class="progress-container">
+          <div class="progress-bar" @click="seekTo">
+            <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
+          </div>
+          <div class="time-display">
+            <span class="current-time">{{ formatTime(currentTime) }}</span>
+            <span class="total-time">{{ formatTime(duration) }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -82,12 +72,12 @@ const props = defineProps({
   url: { type: String, required: true },
   title: { type: String, default: '未知歌曲' },
   artist: { type: String, default: '未知歌手' },
+  cover: { type: String, default: '' },
   lyrics: { type: Array, default: () => [] },
 })
 
 // 响应式数据
 const isPlaying = ref(false)
-const isMuted = ref(false)
 const currentTime = ref(0)
 const duration = ref(0)
 const progressPercent = ref(0)
@@ -112,9 +102,12 @@ const windowCurrentIndex = computed(() => currentLyricIndex.value - startLine.va
 // 歌曲信息（优先用 props）
 const songTitle = computed(() => props.title)
 const artistName = computed(() => props.artist)
-const albumCover = ref(
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjRjVGNUY1Ii8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjQwIiBmaWxsPSIjRkZGNkZCIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjE1IiBmaWxsPSIjRkZGRkZGIi8+Cjwvc3ZnPgo=',
-)
+const albumCover = computed(() => {
+  if (props.cover && props.cover.trim()) {
+    return props.cover
+  }
+  return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjRjVGNUY1Ii8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjQwIiBmaWxsPSIjRkZGNkZCIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjE1IiBmaWxsPSIjRkZGRkZGIi8+Cjwvc3ZnPgo='
+})
 const lyrics = computed(() =>
   Array.isArray(props.lyrics) && props.lyrics.length && typeof props.lyrics[0] === 'object'
     ? props.lyrics
@@ -141,13 +134,6 @@ const togglePlay = () => {
     audio.play()
   }
   isPlaying.value = !isPlaying.value
-}
-
-// 静音/取消静音
-const toggleMute = () => {
-  if (!audio) return
-  audio.muted = !audio.muted
-  isMuted.value = audio.muted
 }
 
 // 这些函数暂时不需要，但保留以备将来扩展
@@ -178,8 +164,8 @@ const seekTo = (event) => {
 
 // 处理图片加载错误
 const handleImageError = () => {
-  albumCover.value =
-    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjRjVGNUY1Ii8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjQwIiBmaWxsPSIjRkZGNkZCIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjE1IiBmaWxsPSIjRkZGRkZGIi8+Cjwvc3ZnPgo='
+  // 图片加载失败时，albumCover 会自动回退到默认图片
+  console.log('封面图片加载失败，使用默认图片')
 }
 
 // 初始化音频
@@ -277,18 +263,21 @@ onUnmounted(() => {
   cursor: pointer;
 }
 
-.cover::before {
-  content: '';
+.needle {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   background: url('/src/assets/images/play_needle.png') no-repeat center/contain;
   width: 3.4375rem;
   height: 5.1875rem;
   top: -1.5625rem;
   left: -1.5625rem;
   transform: rotateZ(-60deg);
-  animation: rotate-needle-pause 0.5s 1 normal linear forwards;
   transform-origin: 0.625rem 0.625rem;
+  transition: transform 0.5s ease;
+}
+
+.needle.playing {
+  transform: rotateZ(-30deg);
 }
 
 .disc {
@@ -297,6 +286,7 @@ onUnmounted(() => {
   padding: 1.5rem;
   max-height: 144px;
   position: relative;
+  z-index: 1;
 }
 
 .disc::after {
@@ -370,7 +360,7 @@ onUnmounted(() => {
 
 .inner {
   width: 100%;
-  transition: transform 0.3s cubic-bezier(0.4, 2, 0.6, 1);
+  transition: transform 0.4s cubic-bezier(0.4, 2, 0.6, 1);
   text-align: center;
 }
 
@@ -395,9 +385,9 @@ onUnmounted(() => {
   font-size: 1.1rem;
 }
 
-/* 下盒子：控制按钮和进度条 */
+/* 下盒子 */
 .lower-section {
-  padding: 0.75rem 1.25rem 1.25rem;
+  padding: 0.75rem 1.25rem 1rem;
   border-top: 1px solid #eee;
   background: #f8f9fa;
   border-radius: 0 0 12px 12px;
@@ -405,15 +395,14 @@ onUnmounted(() => {
 
 .control-bar {
   display: flex;
-  justify-content: flex-start;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
 }
 
 .control-btn {
   background: #fff !important;
   border: 1px solid #ddd !important;
+  color: #666 !important;
   cursor: pointer !important;
   padding: 0.5rem !important;
   border-radius: 50% !important;
@@ -458,7 +447,7 @@ onUnmounted(() => {
 
 /* 进度条 */
 .progress-container {
-  margin-top: 0.5rem;
+  flex: 1;
 }
 
 .progress-bar {
@@ -486,12 +475,12 @@ onUnmounted(() => {
 }
 
 /* 播放状态动画 */
-.playing .cover::before {
-  animation: rotate-needle-resume 0.5s 1 normal linear forwards;
-}
-
 .playing .disc {
   animation-play-state: running;
+}
+
+.playing .needle {
+  transform: rotateZ(-30deg);
 }
 
 @keyframes rotate {
@@ -500,24 +489,6 @@ onUnmounted(() => {
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes rotate-needle-pause {
-  from {
-    transform: rotateZ(-60deg);
-  }
-  to {
-    transform: rotateZ(-30deg);
-  }
-}
-
-@keyframes rotate-needle-resume {
-  from {
-    transform: rotateZ(-30deg);
-  }
-  to {
-    transform: rotateZ(-60deg);
   }
 }
 
