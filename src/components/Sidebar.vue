@@ -21,102 +21,107 @@
 
       <div class="panels">
         <div class="inner">
-          <div
-            class="overview panel"
-            :class="{ active: activePanel === 'overview' }"
-            data-title="站点概览"
-          >
-            <!-- 作者信息 -->
-            <div class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
-              <img class="image" itemprop="image" alt="CircleCoder" :src="author.avatar" />
-              <p class="name" itemprop="name">{{ author.name }}</p>
-              <div class="description" itemprop="description">{{ author.description }}</div>
+          <transition name="panel-slide" mode="out-in">
+            <div
+              v-if="activePanel === 'overview'"
+              class="overview panel"
+              key="overview"
+              data-title="站点概览"
+            >
+              <!-- 作者信息 -->
+              <div class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                <img class="image" itemprop="image" alt="CircleCoder" :src="author.avatar" />
+                <p class="name" itemprop="name">{{ author.name }}</p>
+                <div class="description" itemprop="description">{{ author.description }}</div>
+              </div>
+
+              <!-- 统计数据 -->
+              <nav class="state">
+                <div class="item posts">
+                  <a href="/archives/">
+                    <span class="count">{{ stats.posts }}</span>
+                    <span class="name">文章</span>
+                  </a>
+                </div>
+                <div class="item categories">
+                  <a href="/categories/">
+                    <span class="count">{{ stats.categories }}</span>
+                    <span class="name">分类</span>
+                  </a>
+                </div>
+                <div class="item tags">
+                  <a href="/tags/">
+                    <span class="count">{{ stats.tags }}</span>
+                    <span class="name">标签</span>
+                  </a>
+                </div>
+              </nav>
+
+              <!-- 社交链接 -->
+              <div class="social">
+                <span class="exturl item github" :data-url="social.github" title="GitHub">
+                  <i class="ic i-github"></i>
+                </span>
+                <span class="exturl item music" :data-url="social.music" title="Music">
+                  <i class="ic i-cloud-music"></i>
+                </span>
+                <a href="mailto:3196932484@qq.com" title="3196932484@qq.com" class="item email">
+                  <i class="ic i-envelope"></i>
+                </a>
+              </div>
+
+              <!-- 导航菜单 -->
+              <ul class="menu">
+                <li class="item">
+                  <router-link to="/" rel="section"> <i class="ic i-home"></i>首页 </router-link>
+                </li>
+                <li class="item">
+                  <router-link to="/about" rel="section">
+                    <i class="ic i-user"></i>关于
+                  </router-link>
+                </li>
+                <li class="item dropdown">
+                  <a href="javascript:void(0);"> <i class="ic i-feather"></i>文章 </a>
+                  <ul class="submenu">
+                    <li class="item">
+                      <router-link to="/archives" rel="section">
+                        <i class="ic i-list-alt"></i>归档
+                      </router-link>
+                    </li>
+                    <li class="item">
+                      <router-link to="/categories" rel="section">
+                        <i class="ic i-th"></i>分类
+                      </router-link>
+                    </li>
+                    <li class="item">
+                      <router-link to="/tags" rel="section">
+                        <i class="ic i-tags"></i>标签
+                      </router-link>
+                    </li>
+                  </ul>
+                </li>
+                <li class="item">
+                  <router-link to="/statistics" rel="section">
+                    <i class="ic i-clock"></i>统计
+                  </router-link>
+                </li>
+                <li class="item">
+                  <router-link to="/friends" rel="section">
+                    <i class="ic i-heart"></i>友链
+                  </router-link>
+                </li>
+              </ul>
             </div>
 
-            <!-- 统计数据 -->
-            <nav class="state">
-              <div class="item posts">
-                <a href="/archives/">
-                  <span class="count">{{ stats.posts }}</span>
-                  <span class="name">文章</span>
-                </a>
-              </div>
-              <div class="item categories">
-                <a href="/categories/">
-                  <span class="count">{{ stats.categories }}</span>
-                  <span class="name">分类</span>
-                </a>
-              </div>
-              <div class="item tags">
-                <a href="/tags/">
-                  <span class="count">{{ stats.tags }}</span>
-                  <span class="name">标签</span>
-                </a>
-              </div>
-            </nav>
-
-            <!-- 社交链接 -->
-            <div class="social">
-              <span class="exturl item github" :data-url="social.github" title="GitHub">
-                <i class="ic i-github"></i>
-              </span>
-              <span class="exturl item music" :data-url="social.music" title="Music">
-                <i class="ic i-cloud-music"></i>
-              </span>
-              <a href="mailto:3196932484@qq.com" title="3196932484@qq.com" class="item email">
-                <i class="ic i-envelope"></i>
-              </a>
+            <div
+              v-else-if="activePanel === 'contents'"
+              class="contents panel"
+              key="contents"
+              data-title="目录"
+            >
+              <TableOfContents :content="articleContent" />
             </div>
-
-            <!-- 导航菜单 -->
-            <ul class="menu">
-              <li class="item">
-                <router-link to="/" rel="section"> <i class="ic i-home"></i>首页 </router-link>
-              </li>
-              <li class="item">
-                <router-link to="/about" rel="section"> <i class="ic i-user"></i>关于 </router-link>
-              </li>
-              <li class="item dropdown">
-                <a href="javascript:void(0);"> <i class="ic i-feather"></i>文章 </a>
-                <ul class="submenu">
-                  <li class="item">
-                    <router-link to="/archives" rel="section">
-                      <i class="ic i-list-alt"></i>归档
-                    </router-link>
-                  </li>
-                  <li class="item">
-                    <router-link to="/categories" rel="section">
-                      <i class="ic i-th"></i>分类
-                    </router-link>
-                  </li>
-                  <li class="item">
-                    <router-link to="/tags" rel="section">
-                      <i class="ic i-tags"></i>标签
-                    </router-link>
-                  </li>
-                </ul>
-              </li>
-              <li class="item">
-                <router-link to="/statistics" rel="section">
-                  <i class="ic i-clock"></i>统计
-                </router-link>
-              </li>
-              <li class="item">
-                <router-link to="/friends" rel="section">
-                  <i class="ic i-heart"></i>友链
-                </router-link>
-              </li>
-            </ul>
-          </div>
-
-          <!-- 目录面板 -->
-          <div
-            class="contents panel"
-            :class="{ active: activePanel === 'contents' }"
-            data-title="目录"
-          >
-            <TableOfContents :content="articleContent" />
-          </div>
+          </transition>
         </div>
       </div>
     </div>
@@ -205,18 +210,24 @@ const switchPanel = (panel) => {
   display: none;
 }
 
-.panels .panel {
-  display: none;
-  padding: 0.875rem 0.9375rem 2rem;
-  opacity: 0;
-  transform: translateX(20px);
-  transition: all 0.3s ease;
+/* 面板切换动画 */
+.panel-slide-enter-active,
+.panel-slide-leave-active {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.panels .panel.active {
-  display: block;
-  opacity: 1;
-  transform: translateX(0);
+.panel-slide-enter-from {
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+}
+
+.panel-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-30px) scale(0.95);
+}
+
+.panels .panel {
+  padding: 0.875rem 0.9375rem 2rem;
 }
 
 /* 切换按钮样式 */
@@ -239,10 +250,11 @@ const switchPanel = (panel) => {
   text-align: center;
   text-decoration: none;
   background-color: rgba(0, 0, 0, 0.08);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   margin: 0 0.3125rem;
   position: relative;
   overflow: hidden;
+  transform: translateY(0);
 }
 
 .tab .item::after {
@@ -252,8 +264,8 @@ const switchPanel = (panel) => {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .tab .item:hover::after {
@@ -274,10 +286,12 @@ const switchPanel = (panel) => {
   color: #fff;
   background-image: linear-gradient(to right, var(--color-pink) 0, var(--color-orange) 100%);
   box-shadow: 0 0 0.75rem var(--color-pink-a3);
+  transform: translateY(-2px);
 }
 
 .tab .item.active:hover {
   box-shadow: 0 0 0.75rem var(--color-pink);
+  transform: translateY(-3px);
 }
 
 .tab .item::before {
