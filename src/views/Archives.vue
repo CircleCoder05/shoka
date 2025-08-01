@@ -88,95 +88,101 @@
 
           <!-- 所有文章列表 -->
           <div class="articles-container">
-            <div
-              v-for="(article, index) in statisticsStore.archives"
-              :key="article.slug"
-              class="article-timeline-item"
-            >
-              <!-- 时间轴节点 -->
-              <div class="timeline-node">
-                <div class="node-dot"></div>
-                <div class="node-line"></div>
-              </div>
-
-              <!-- 年份标记（如果是新的一年） -->
-              <div v-if="shouldShowYear(article, index)" class="year-marker-inline">
-                <div class="year-dot-inline"></div>
-                <h3 class="year-title-inline">{{ new Date(article.date).getFullYear() }}</h3>
-              </div>
-
-              <!-- 月份标记（如果是新的月份） -->
-              <div v-if="shouldShowMonth(article, index)" class="month-marker-inline">
-                <div class="month-dot-inline"></div>
-                <span class="month-title-inline">{{
-                  getMonthName(new Date(article.date).getMonth() + 1)
-                }}</span>
-              </div>
-
-              <!-- 文章卡片 -->
-              <div class="article-card">
-                <!-- 封面图片 -->
-                <div class="article-cover">
-                  <img
-                    :src="getCoverImage(article)"
-                    :alt="article.title"
-                    @error="handleImageError"
-                  />
+            <template v-for="(article, index) in statisticsStore.archives" :key="article.slug">
+              <!-- 年份标记（独立item） -->
+              <div v-if="shouldShowYear(article, index)" class="article-timeline-item year-item">
+                <div class="timeline-node">
+                  <div class="node-dot"></div>
+                  <div class="node-line"></div>
                 </div>
+                <div class="year-marker">
+                  <h2 class="year-text">{{ new Date(article.date).getFullYear() }}</h2>
+                </div>
+              </div>
 
-                <!-- 文章信息 -->
-                <div class="article-info">
-                  <h3 class="article-title">
-                    <router-link :to="`/post/${article.slug}`">
-                      {{ article.title }}
-                    </router-link>
-                  </h3>
+              <!-- 月份标记（独立item） -->
+              <div v-if="shouldShowMonth(article, index)" class="article-timeline-item month-item">
+                <div class="timeline-node">
+                  <div class="node-dot"></div>
+                  <div class="node-line"></div>
+                </div>
+                <div class="month-marker">
+                  <span class="month-text">{{
+                    getMonthName(new Date(article.date).getMonth() + 1)
+                  }}</span>
+                </div>
+              </div>
 
-                  <div class="article-meta">
-                    <span class="author">
-                      <i class="ic i-user"></i>
-                      {{ article.author || 'CircleCoder' }}
-                    </span>
-                    <span class="date">
-                      <i class="ic i-calendar"></i>
-                      {{ formatDate(article.date) }}
-                    </span>
-                    <span v-if="getCategoryName(article.categories?.[0])" class="category">
-                      <i class="ic i-flag"></i>
-                      {{ getCategoryName(article.categories[0]) }}
-                    </span>
+              <!-- 文章卡片（独立item） -->
+              <div class="article-timeline-item article-item">
+                <div class="timeline-node">
+                  <div class="node-dot"></div>
+                  <div class="node-line"></div>
+                </div>
+                <div class="article-card">
+                  <!-- 封面图片 -->
+                  <div class="article-cover">
+                    <img
+                      :src="getCoverImage(article)"
+                      :alt="article.title"
+                      @error="handleImageError"
+                    />
                   </div>
 
-                  <div class="article-excerpt">
-                    {{ getExcerpt(article) }}
-                  </div>
+                  <!-- 文章信息 -->
+                  <div class="article-info">
+                    <h3 class="article-title">
+                      <router-link :to="`/post/${article.slug}`">
+                        {{ article.title }}
+                      </router-link>
+                    </h3>
 
-                  <div class="article-footer">
-                    <div class="article-stats">
-                      <span class="word-count">
-                        <i class="ic i-pen"></i>
-                        {{ getWordCount(article) }}字
+                    <div class="article-meta">
+                      <span class="author">
+                        <i class="ic i-user"></i>
+                        {{ article.author || 'CircleCoder' }}
                       </span>
-                      <span class="read-time">
-                        <i class="ic i-clock"></i>
-                        {{ getReadTime(article) }}
+                      <span class="date">
+                        <i class="ic i-calendar"></i>
+                        {{ formatDate(article.date) }}
+                      </span>
+                      <span v-if="getCategoryName(article.categories?.[0])" class="category">
+                        <i class="ic i-flag"></i>
+                        {{ getCategoryName(article.categories[0]) }}
                       </span>
                     </div>
 
-                    <div class="article-tags">
-                      <span v-for="tag in getTagsArray(article.tags)" :key="tag" class="tag">
-                        {{ tag }}
-                      </span>
+                    <div class="article-excerpt">
+                      {{ getExcerpt(article) }}
                     </div>
 
-                    <router-link :to="`/post/${article.slug}`" class="read-more-btn">
-                      阅读全文
-                      <i class="ic i-arrow-right"></i>
-                    </router-link>
+                    <div class="article-footer">
+                      <div class="article-stats">
+                        <span class="word-count">
+                          <i class="ic i-pen"></i>
+                          {{ getWordCount(article) }}字
+                        </span>
+                        <span class="read-time">
+                          <i class="ic i-clock"></i>
+                          {{ getReadTime(article) }}
+                        </span>
+                      </div>
+
+                      <div class="article-tags">
+                        <span v-for="tag in getTagsArray(article.tags)" :key="tag" class="tag">
+                          {{ tag }}
+                        </span>
+                      </div>
+
+                      <router-link :to="`/post/${article.slug}`" class="read-more-btn">
+                        阅读全文
+                        <i class="ic i-arrow-right"></i>
+                      </router-link>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </template>
           </div>
         </div>
       </div>
@@ -438,9 +444,17 @@ const shouldShowYear = (article, index) => {
 // 判断是否应该显示月份标记
 const shouldShowMonth = (article, index) => {
   if (index === 0) return true // 第一个文章一定是月份标记
-  const currentMonth = new Date(article.date).getMonth() + 1
-  const previousMonth = new Date(statisticsStore.archives[index - 1].date).getMonth() + 1
-  return currentMonth !== previousMonth
+  const currentDate = new Date(article.date)
+  const previousDate = new Date(statisticsStore.archives[index - 1].date)
+  const currentYear = currentDate.getFullYear()
+  const previousYear = previousDate.getFullYear()
+  const currentMonth = currentDate.getMonth() + 1
+  const previousMonth = previousDate.getMonth() + 1
+
+  // 如果是新的一年，或者同一年但月份不同
+  return (
+    currentYear !== previousYear || (currentYear === previousYear && currentMonth !== previousMonth)
+  )
 }
 
 onMounted(async () => {
@@ -803,71 +817,45 @@ onMounted(async () => {
 
 /* 年份标记 */
 .year-marker {
-  position: relative;
+  width: 100%;
+  max-width: 100%;
+  padding: 1rem 0;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  margin: 3rem 0 2rem 0;
-  z-index: 10;
-  padding-left: 140px;
+  padding-left: 1rem;
 }
 
-.year-dot {
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
-  border: 4px solid #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 20px rgba(237, 110, 160, 0.4);
-  position: relative;
-  z-index: 15;
-  animation: yearDotPulse 4s ease-in-out infinite;
-}
-
-@keyframes yearDotPulse {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 20px rgba(237, 110, 160, 0.4);
-  }
-  50% {
-    transform: scale(1.1);
-    box-shadow: 0 0 30px rgba(237, 110, 160, 0.6);
-  }
-}
-
-.year-dot::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  background: #fff;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.year-title {
+.year-text {
   font-size: 2.5rem;
   font-weight: 700;
   color: #333;
-  margin-left: 1rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0;
   background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  position: relative;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   animation: titleGlow 3s ease-in-out infinite alternate;
 }
 
-@keyframes titleGlow {
-  0% {
-    filter: drop-shadow(0 0 5px rgba(237, 110, 160, 0.3));
-  }
-  100% {
-    filter: drop-shadow(0 0 15px rgba(237, 110, 160, 0.6));
-  }
+/* 月份标记 */
+.month-marker {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.8rem 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+}
+
+.month-text {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #ed6ea0;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* 文章时间轴项目 */
@@ -1375,28 +1363,28 @@ onMounted(async () => {
 /* 年份标记（内联） */
 .year-marker-inline {
   position: absolute;
-  left: 80px;
-  top: -30px;
+  left: 20px;
+  top: 20px;
   display: flex;
   align-items: center;
   z-index: 15;
 }
 
 .year-dot-inline {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
-  border: 3px solid #fff;
+  border: 4px solid #fff;
   border-radius: 50%;
-  box-shadow: 0 0 15px rgba(237, 110, 160, 0.5);
+  box-shadow: 0 0 20px rgba(237, 110, 160, 0.6);
   animation: yearDotPulse 4s ease-in-out infinite;
 }
 
 .year-title-inline {
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: #333;
-  margin-left: 0.8rem;
+  margin-left: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
   -webkit-background-clip: text;
@@ -1408,28 +1396,166 @@ onMounted(async () => {
 /* 月份标记（内联） */
 .month-marker-inline {
   position: absolute;
-  left: 80px;
-  top: -15px;
+  left: 20px;
+  top: 35px;
   display: flex;
   align-items: center;
   z-index: 10;
 }
 
 .month-dot-inline {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   background: #fff;
-  border: 2px solid #ed6ea0;
+  border: 3px solid #ed6ea0;
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(237, 110, 160, 0.4);
+  box-shadow: 0 0 15px rgba(237, 110, 160, 0.5);
   animation: nodePulse 3s ease-in-out infinite;
 }
 
 .month-title-inline {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ed6ea0;
+  margin-left: 0.8rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 年份标记卡片 */
+.year-card {
+  position: absolute;
+  left: 80px;
+  top: 50px;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 120px;
+  height: 120px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  border: 2px solid #ed6ea0;
+  transition: all 0.3s ease;
+}
+
+.year-card:hover {
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+.year-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.year-dot-card {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  border: 4px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(237, 110, 160, 0.4);
+  animation: yearDotPulse 4s ease-in-out infinite;
+}
+
+.year-title-card {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+/* 月份标记卡片 */
+.month-card {
+  position: absolute;
+  left: 80px;
+  top: 50px;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 100px;
+  height: 80px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.8rem;
+  box-sizing: border-box;
+  border: 2px solid #ed6ea0;
+  transition: all 0.3s ease;
+}
+
+.month-card:hover {
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+}
+
+.month-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.month-dot-card {
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border: 2px solid #ed6ea0;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(237, 110, 160, 0.4);
+  animation: nodePulse 3s ease-in-out infinite;
+}
+
+.month-title-card {
   font-size: 1.2rem;
   font-weight: 600;
   color: #ed6ea0;
-  margin-left: 0.6rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 年份item样式 */
+.year-item {
+  min-height: 80px;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.year-item .timeline-node {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 月份item样式 */
+.month-item {
+  min-height: 60px;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+}
+
+.month-item .timeline-node {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 文章item样式 */
+.article-item {
+  margin-bottom: 2rem;
 }
 </style>
