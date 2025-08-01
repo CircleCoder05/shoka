@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 
 const props = defineProps({
   content: {
@@ -143,6 +143,7 @@ const generateToc = (content) => {
 const getTocItemClass = (item) => {
   return {
     'toc-item': true,
+    [`toc-level-${item.level}`]: true,
     active: activeId.value === item.id,
     current: activeId.value === item.id,
   }
@@ -195,6 +196,15 @@ const updateActiveItem = () => {
   activeId.value = currentId
 }
 
+// 监听滚动事件
+onMounted(() => {
+  window.addEventListener('scroll', updateActiveItem)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', updateActiveItem)
+})
+
 // 创建 Intersection Observer
 const createIntersectionObserver = () => {
   if (!window.IntersectionObserver) return
@@ -203,9 +213,12 @@ const createIntersectionObserver = () => {
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          activeId.value = entry.target.id
-          // 自动展开包含当前活动项的父级
-          expandParentItems(entry.target.id)
+          const newActiveId = entry.target.id
+          if (activeId.value !== newActiveId) {
+            activeId.value = newActiveId
+            // 自动展开包含当前活动项的父级
+            expandParentItems(newActiveId)
+          }
         }
       })
     },
@@ -244,11 +257,22 @@ const expandParentItems = (itemId) => {
   }
 }
 
+// 初始化时展开所有顶级项目
+const initializeExpandedItems = () => {
+  tocItems.value.forEach((item) => {
+    if (item.children && item.children.length) {
+      expandedItems.value.add(item.id)
+    }
+  })
+}
+
 // 监听内容变化
 watch(
   () => props.content,
   (newContent) => {
     tocItems.value = generateToc(newContent)
+    // 初始化展开状态
+    initializeExpandedItems()
   },
   { immediate: true },
 )
@@ -281,6 +305,32 @@ onMounted(() => {
 .toc-item {
   margin: 0.25rem 0;
   transition: all 0.3s ease;
+  text-align: left;
+}
+
+/* 多级标题样式 */
+.toc-level-1 {
+  padding-left: 0;
+}
+
+.toc-level-2 {
+  padding-left: 1rem;
+}
+
+.toc-level-3 {
+  padding-left: 2rem;
+}
+
+.toc-level-4 {
+  padding-left: 3rem;
+}
+
+.toc-level-5 {
+  padding-left: 4rem;
+}
+
+.toc-level-6 {
+  padding-left: 5rem;
 }
 
 .toc-item-wrapper {
@@ -300,6 +350,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .toc-toggle:hover {
@@ -316,12 +367,43 @@ onMounted(() => {
   color: #666;
   text-decoration: none;
   border-radius: 6px;
-  font-size: 0.9em;
   line-height: 1.4;
   transition: all 0.3s ease;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
+}
+
+/* 不同级别标题的字体大小 */
+.toc-level-1 .toc-link {
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.toc-level-2 .toc-link {
+  font-size: 0.95em;
+  font-weight: 500;
+}
+
+.toc-level-3 .toc-link {
+  font-size: 0.9em;
+  font-weight: 400;
+}
+
+.toc-level-4 .toc-link {
+  font-size: 0.85em;
+  font-weight: 400;
+}
+
+.toc-level-5 .toc-link {
+  font-size: 0.8em;
+  font-weight: 400;
+}
+
+.toc-level-6 .toc-link {
+  font-size: 0.75em;
+  font-weight: 400;
 }
 
 .toc-link:hover {
@@ -340,7 +422,7 @@ onMounted(() => {
   list-style: none;
   padding: 0;
   margin: 0;
-  margin-left: 1rem;
+  margin-left: 0;
   max-height: 0;
   overflow: hidden;
   transition:
