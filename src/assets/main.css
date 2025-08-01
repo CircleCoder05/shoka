@@ -58,9 +58,10 @@ body {
   color: #222;
   text-decoration: none;
   font-weight: 500;
-  padding: 8px 0;
+  padding: 8px 0 12px 0;
   position: relative;
   transition: color 0.2s;
+  display: inline-block;
 }
 
 .nav a.router-link-active,
@@ -76,8 +77,10 @@ body {
   width: 70%;
   background: linear-gradient(to right, var(--color-pink), var(--color-orange));
   border-radius: 2px;
-  margin: 0 auto;
-  margin-top: 2px;
+  position: absolute;
+  bottom: -2px;
+  left: 15%;
+  transform: translateX(0);
 }
 
 .main-layout {
