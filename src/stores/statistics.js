@@ -19,7 +19,26 @@ export const useStatisticsStore = defineStore('statistics', () => {
       }
       grouped[year].push(article)
     })
-    return grouped
+
+    // 按年份降序排序，最新的年份在前面
+    const sortedYears = Object.keys(grouped).sort((a, b) => parseInt(b) - parseInt(a))
+
+    // 使用Map确保顺序
+    const resultMap = new Map()
+    sortedYears.forEach((year) => {
+      resultMap.set(year, grouped[year])
+    })
+
+    console.log('Store archivesByYear - sorted years:', sortedYears)
+    console.log('Store archivesByYear - result map keys:', Array.from(resultMap.keys()))
+
+    // 转换回普通对象
+    const result = {}
+    resultMap.forEach((value, key) => {
+      result[key] = value
+    })
+
+    return result
   })
 
   const categoriesWithCount = computed(() => {
@@ -86,8 +105,12 @@ export const useStatisticsStore = defineStore('statistics', () => {
 
       const articlesIndex = await response.json()
 
-      // 按日期排序
-      const sortedArticles = articlesIndex.sort((a, b) => new Date(b.date) - new Date(a.date))
+      // 按日期排序（最新的在前面）
+      const sortedArticles = articlesIndex.sort((a, b) => {
+        const dateA = new Date(a.date)
+        const dateB = new Date(b.date)
+        return dateB - dateA // 降序排列
+      })
 
       archives.value = sortedArticles
 
