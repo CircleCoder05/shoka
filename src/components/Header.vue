@@ -1,5 +1,11 @@
 <template>
-  <header class="header">
+  <header
+    class="header"
+    :class="{
+      'header-visible': isVisible,
+      'header-in-banner': isInBanner,
+    }"
+  >
     <!-- 移动端：显示CircleCoder标题和汉堡菜单 -->
     <div class="mobile-header">
       <div class="mobile-title">CircleCoder</div>
@@ -24,13 +30,49 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useMobileSidebarStore } from '@/stores/mobileSidebar'
 
 const mobileSidebarStore = useMobileSidebarStore()
-
 const toggleMobileSidebar = () => {
   mobileSidebarStore.toggleMobileSidebar()
 }
+
+// 响应式导航栏状态
+const isInBanner = ref(true)
+const isVisible = ref(true)
+const lastScrollY = ref(0)
+
+function updateHeader() {
+  const scrollY = window.scrollY
+  const bannerHeight = 320 // banner高度
+
+  // 判断是否在banner区域
+  isInBanner.value = scrollY < bannerHeight
+
+  // 只有在滑出banner区域后才开始响应滚动方向
+  if (scrollY >= bannerHeight) {
+    if (scrollY > lastScrollY.value + 10) {
+      // 向下滚动，隐藏
+      isVisible.value = false
+    } else if (scrollY < lastScrollY.value - 10) {
+      // 向上滚动，显示
+      isVisible.value = true
+    }
+  } else {
+    // 在banner区域时，导航栏始终可见
+    isVisible.value = true
+  }
+
+  lastScrollY.value = scrollY
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', updateHeader, { passive: true })
+})
+onUnmounted(() => {
+  window.removeEventListener('scroll', updateHeader)
+})
 </script>
 
 <style scoped>
@@ -49,6 +91,26 @@ const toggleMobileSidebar = () => {
   top: 0;
   left: 0;
   right: 0;
+
+  /* 动画过渡 */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 导航栏隐藏状态 */
+.header:not(.header-visible) {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 在banner区域时的样式 */
+.header-in-banner {
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom: none;
+  box-shadow: none;
 }
 
 /* 移动端Header样式 */
@@ -63,7 +125,9 @@ const toggleMobileSidebar = () => {
   color: #ffffff;
   font-size: 1.2rem;
   font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .mobile-menu-btn {
@@ -88,11 +152,15 @@ const toggleMobileSidebar = () => {
   background: #ffffff;
   border-radius: 2px;
   transition: all 0.3s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .mobile-menu-btn:hover .hamburger-line {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .nav {
@@ -118,19 +186,25 @@ const toggleMobileSidebar = () => {
   /* 防止下划线超出 */
   position: relative;
   overflow: hidden;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .nav a:hover {
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .nav a.router-link-active {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.2);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .nav a.router-link-active::after {
@@ -176,7 +250,6 @@ const toggleMobileSidebar = () => {
   .header {
     padding: 0 16px;
     height: 48px;
-    background: linear-gradient(135deg, rgba(56, 161, 219, 0.7) 0%, rgba(237, 110, 160, 0.65) 100%);
   }
 
   /* 隐藏PC端导航，显示移动端Header */
