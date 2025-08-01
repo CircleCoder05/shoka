@@ -2,15 +2,11 @@
   <div class="toc-container">
     <!-- 自动折叠开关 -->
     <div class="toc-controls">
-      <button
-        class="auto-collapse-toggle"
-        :class="{ active: autoCollapseEnabled }"
-        @click="toggleAutoCollapse"
-        title="自动折叠"
-      >
-        <span class="toggle-icon">{{ autoCollapseEnabled ? '🔒' : '🔓' }}</span>
-        <span class="toggle-text">{{ autoCollapseEnabled ? '自动' : '手动' }}</span>
-      </button>
+      <div class="toggle-switch" @click="toggleAutoCollapse" title="自动折叠">
+        <div class="toggle-slider" :class="{ active: autoCollapseEnabled }">
+          <span class="toggle-text">{{ autoCollapseEnabled ? '自动折叠' : '手动' }}</span>
+        </div>
+      </div>
     </div>
 
     <div class="toc-content" v-if="tocItems.length > 0">
@@ -109,7 +105,7 @@ const tocItems = ref([])
 const activeId = ref('')
 const expandedItems = ref(new Set())
 const manuallyExpandedItems = ref(new Set()) // 记录手动展开的项目
-const autoCollapseEnabled = ref(false) // 自动折叠开关
+const autoCollapseEnabled = ref(true) // 自动折叠开关 - 默认开启
 
 // 生成目录项
 const generateToc = (content) => {
@@ -390,12 +386,25 @@ const initializeExpandedItems = () => {
   expandedItems.value.clear()
   manuallyExpandedItems.value.clear()
 
-  // 默认展开所有顶级项目
-  tocItems.value.forEach((item) => {
-    if (item.children && item.children.length) {
-      expandedItems.value.add(item.id)
+  if (autoCollapseEnabled.value) {
+    // 自动模式下，只展开顶级项目
+    tocItems.value.forEach((item) => {
+      if (item.children && item.children.length) {
+        expandedItems.value.add(item.id)
+      }
+    })
+  } else {
+    // 手动模式下，展开所有项目
+    const expandAll = (items) => {
+      items.forEach((item) => {
+        if (item.children && item.children.length) {
+          expandedItems.value.add(item.id)
+          expandAll(item.children)
+        }
+      })
     }
-  })
+    expandAll(tocItems.value)
+  }
 
   console.log('TOC Initialized:', {
     items: tocItems.value.length,
@@ -446,36 +455,54 @@ onMounted(() => {
   text-align: center;
 }
 
-.auto-collapse-toggle {
+/* 滑钮样式 */
+.toggle-switch {
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-slider {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #fff;
-  color: #666;
-  cursor: pointer;
+  justify-content: center;
+  width: 120px;
+  height: 32px;
+  background: #f0f0f0;
+  border: 2px solid #ddd;
+  border-radius: 16px;
   transition: all 0.3s ease;
-  font-size: 0.9em;
+  font-size: 0.85em;
+  font-weight: 500;
+  color: #666;
 }
 
-.auto-collapse-toggle:hover {
-  border-color: #e9546b;
-  color: #e9546b;
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.auto-collapse-toggle.active {
+.toggle-slider.active {
   background: #e9546b;
-  color: #fff;
   border-color: #e9546b;
+  color: #fff;
 }
 
-.toggle-icon {
-  font-size: 1.1em;
+.toggle-slider.active::before {
+  transform: translateX(88px);
 }
 
 .toggle-text {
+  z-index: 1;
   font-weight: 500;
 }
 
@@ -490,34 +517,34 @@ onMounted(() => {
 }
 
 .toc-item {
-  margin: 0.25rem 0;
+  margin: 0.2rem 0;
   transition: all 0.3s ease;
   text-align: left;
 }
 
-/* 多级标题样式 */
+/* 多级标题样式 - 减小缩进 */
 .toc-level-1 {
   padding-left: 0;
 }
 
 .toc-level-2 {
-  padding-left: 1rem;
+  padding-left: 0.6rem;
 }
 
 .toc-level-3 {
-  padding-left: 2rem;
+  padding-left: 1.2rem;
 }
 
 .toc-level-4 {
-  padding-left: 3rem;
+  padding-left: 1.8rem;
 }
 
 .toc-level-5 {
-  padding-left: 4rem;
+  padding-left: 2.4rem;
 }
 
 .toc-level-6 {
-  padding-left: 5rem;
+  padding-left: 3rem;
 }
 
 .toc-item-wrapper {
@@ -551,47 +578,165 @@ onMounted(() => {
 
 .toc-link {
   flex: 1;
-  padding: 0.5rem 0.75rem;
-  color: #666;
+  padding: 0.4rem 0.6rem;
+  color: #666666;
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: 4px;
   line-height: 1.4;
   transition: all 0.3s ease;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
+  font-weight: 600 !important; /* 中等粗细 */
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important; /* 中英文混合字体 */
 }
 
-/* 不同级别标题的字体大小 */
+/* 更强的选择器确保字体生效 */
+.toc-container .toc-link,
+.toc-container .toc-item .toc-link,
+.toc-container .toc-level-1 .toc-link,
+.toc-container .toc-level-2 .toc-link,
+.toc-container .toc-level-3 .toc-link,
+.toc-container .toc-level-4 .toc-link,
+.toc-container .toc-level-5 .toc-link,
+.toc-container .toc-level-6 .toc-link {
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
+  font-weight: 600 !important;
+  color: #666666 !important;
+}
+
+/* 不同级别标题的字体大小 - 现代字体 */
 .toc-level-1 .toc-link {
   font-size: 1em;
-  font-weight: 600;
+  font-weight: 700 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
 }
 
 .toc-level-2 .toc-link {
   font-size: 0.95em;
-  font-weight: 500;
+  font-weight: 600 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
 }
 
 .toc-level-3 .toc-link {
   font-size: 0.9em;
-  font-weight: 400;
+  font-weight: 600 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
 }
 
 .toc-level-4 .toc-link {
   font-size: 0.85em;
-  font-weight: 400;
+  font-weight: 600 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
 }
 
 .toc-level-5 .toc-link {
   font-size: 0.8em;
-  font-weight: 400;
+  font-weight: 600 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
 }
 
 .toc-level-6 .toc-link {
   font-size: 0.75em;
-  font-weight: 400;
+  font-weight: 600 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
 }
 
 .toc-link:hover {
@@ -603,7 +748,7 @@ onMounted(() => {
 .toc-item.current .toc-link {
   color: #e9546b;
   background-color: #f3c1d1;
-  font-weight: 500;
+  font-weight: 700 !important; /* 保持黑体 */
 }
 
 /* 手动展开的项目样式 */
@@ -613,7 +758,7 @@ onMounted(() => {
 
 .toc-item.manually-expanded .toc-link {
   color: #e9546b;
-  font-weight: 500;
+  font-weight: 700 !important; /* 保持黑体 */
 }
 
 .toc-children {

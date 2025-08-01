@@ -132,7 +132,7 @@ watch(
 onUnmounted(() => {
   // 组件卸载时恢复默认 banner
   bannerStore.setDefaultBanner()
-  // 重置侧边栏状态
+  // 重置侧边栏状态，但保持目录模式
   sidebarStore.reset()
 })
 </script>

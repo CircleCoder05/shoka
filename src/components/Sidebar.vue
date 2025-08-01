@@ -4,18 +4,18 @@
       <!-- 切换按钮 - 只在文章页面显示 -->
       <div v-if="isArticlePage" class="tab">
         <div
-          class="item overview"
-          :class="{ active: activePanel === 'overview' }"
-          @click="switchPanel('overview')"
-        >
-          <span>概览</span>
-        </div>
-        <div
           class="item contents"
           :class="{ active: activePanel === 'contents' }"
           @click="switchPanel('contents')"
         >
           <span>目录</span>
+        </div>
+        <div
+          class="item overview"
+          :class="{ active: activePanel === 'overview' }"
+          @click="switchPanel('overview')"
+        >
+          <span>概览</span>
         </div>
       </div>
 
@@ -168,7 +168,7 @@ const switchPanel = (panel) => {
 #sidebar {
   position: sticky;
   top: 40px;
-  width: 15rem;
+  width: 18rem;
   max-height: calc(100vh - 56px);
   transition: all 0.2s ease-in-out 0s;
   z-index: 5;
@@ -177,7 +177,7 @@ const switchPanel = (panel) => {
 
 #sidebar > .inner {
   position: relative;
-  width: 15rem;
+  width: 18rem;
   color: var(--grey-6);
   text-align: center;
   display: flex;
@@ -208,10 +208,15 @@ const switchPanel = (panel) => {
 .panels .panel {
   display: none;
   padding: 0.875rem 0.9375rem 2rem;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.3s ease;
 }
 
 .panels .panel.active {
   display: block;
+  opacity: 1;
+  transform: translateX(0);
 }
 
 /* 切换按钮样式 */
@@ -234,8 +239,25 @@ const switchPanel = (panel) => {
   text-align: center;
   text-decoration: none;
   background-color: rgba(0, 0, 0, 0.08);
-  transition: all 0.2s ease-out;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 0 0.3125rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.tab .item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.tab .item:hover::after {
+  left: 100%;
 }
 
 .tab .item span {
@@ -259,16 +281,17 @@ const switchPanel = (panel) => {
 }
 
 .tab .item::before {
-  font-family: 'ic';
+  font-family: inherit;
   margin-right: 0.3125rem;
+  font-size: 1.1em;
 }
 
 .tab .item.overview::before {
-  content: '\e900'; /* 概览图标 */
+  content: '🏠'; /* 首页图标 - 使用 emoji */
 }
 
 .tab .item.contents::before {
-  content: '\e901'; /* 目录图标 */
+  content: '📋'; /* 目录图标 - 使用 emoji */
 }
 
 .tab .item.active::before {
