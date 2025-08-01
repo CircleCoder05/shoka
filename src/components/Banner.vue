@@ -242,7 +242,7 @@ onUnmounted(() => {
   justify-content: center;
   background: #fff;
   z-index: 1;
-  margin-top: 56px;
+  margin-top: 0; /* 移除margin-top，让banner直接顶到导航栏下面 */
 }
 
 .banner-images {
@@ -490,7 +490,7 @@ onUnmounted(() => {
   .app-banner {
     height: 50vh;
     min-height: 280px;
-    margin-top: 48px;
+    margin-top: 0; /* 移除margin-top */
   }
 
   .banner-title h1 {
@@ -521,7 +521,7 @@ onUnmounted(() => {
   .app-banner {
     height: 40vh;
     min-height: 240px;
-    margin-top: 44px;
+    margin-top: 0; /* 移除margin-top */
   }
 
   .banner-title h1 {
