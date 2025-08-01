@@ -1,20 +1,33 @@
 <template>
   <div class="toc-container">
+    <!-- 自动折叠开关 -->
+    <div class="toc-controls">
+      <button
+        class="auto-collapse-toggle"
+        :class="{ active: autoCollapseEnabled }"
+        @click="toggleAutoCollapse"
+        title="自动折叠"
+      >
+        <span class="toggle-icon">{{ autoCollapseEnabled ? '🔒' : '🔓' }}</span>
+        <span class="toggle-text">{{ autoCollapseEnabled ? '自动' : '手动' }}</span>
+      </button>
+    </div>
+
     <div class="toc-content" v-if="tocItems.length > 0">
       <ul class="toc-list">
         <li v-for="item in tocItems" :key="item.id" :class="getTocItemClass(item)">
           <div class="toc-item-wrapper">
+            <a :href="`#${item.id}`" class="toc-link" @click="scrollToAnchor(item.id, $event)">
+              {{ item.text }}
+            </a>
             <span
-              v-if="item.children && item.children.length"
+              v-if="!autoCollapseEnabled && item.children && item.children.length"
               class="toc-toggle"
               :class="{ expanded: expandedItems.has(item.id) }"
               @click="toggleItem(item.id)"
             >
               ▶
             </span>
-            <a :href="`#${item.id}`" class="toc-link" @click="scrollToAnchor(item.id, $event)">
-              {{ item.text }}
-            </a>
           </div>
           <ul
             v-if="item.children && item.children.length"
@@ -23,14 +36,6 @@
           >
             <li v-for="child in item.children" :key="child.id" :class="getTocItemClass(child)">
               <div class="toc-item-wrapper">
-                <span
-                  v-if="child.children && child.children.length"
-                  class="toc-toggle"
-                  :class="{ expanded: expandedItems.has(child.id) }"
-                  @click="toggleItem(child.id)"
-                >
-                  ▶
-                </span>
                 <a
                   :href="`#${child.id}`"
                   class="toc-link"
@@ -38,6 +43,14 @@
                 >
                   {{ child.text }}
                 </a>
+                <span
+                  v-if="!autoCollapseEnabled && child.children && child.children.length"
+                  class="toc-toggle"
+                  :class="{ expanded: expandedItems.has(child.id) }"
+                  @click="toggleItem(child.id)"
+                >
+                  ▶
+                </span>
               </div>
               <ul
                 v-if="child.children && child.children.length"
@@ -50,14 +63,6 @@
                   :class="getTocItemClass(grandChild)"
                 >
                   <div class="toc-item-wrapper">
-                    <span
-                      v-if="grandChild.children && grandChild.children.length"
-                      class="toc-toggle"
-                      :class="{ expanded: expandedItems.has(grandChild.id) }"
-                      @click="toggleItem(grandChild.id)"
-                    >
-                      ▶
-                    </span>
                     <a
                       :href="`#${grandChild.id}`"
                       class="toc-link"
@@ -65,6 +70,16 @@
                     >
                       {{ grandChild.text }}
                     </a>
+                    <span
+                      v-if="
+                        !autoCollapseEnabled && grandChild.children && grandChild.children.length
+                      "
+                      class="toc-toggle"
+                      :class="{ expanded: expandedItems.has(grandChild.id) }"
+                      @click="toggleItem(grandChild.id)"
+                    >
+                      ▶
+                    </span>
                   </div>
                 </li>
               </ul>
@@ -93,6 +108,8 @@ const props = defineProps({
 const tocItems = ref([])
 const activeId = ref('')
 const expandedItems = ref(new Set())
+const manuallyExpandedItems = ref(new Set()) // 记录手动展开的项目
+const autoCollapseEnabled = ref(false) // 自动折叠开关
 
 // 生成目录项
 const generateToc = (content) => {
@@ -146,6 +163,7 @@ const getTocItemClass = (item) => {
     [`toc-level-${item.level}`]: true,
     active: activeId.value === item.id,
     current: activeId.value === item.id,
+    'manually-expanded': manuallyExpandedItems.value.has(item.id),
   }
 }
 
@@ -153,8 +171,31 @@ const getTocItemClass = (item) => {
 const toggleItem = (itemId) => {
   if (expandedItems.value.has(itemId)) {
     expandedItems.value.delete(itemId)
+    manuallyExpandedItems.value.delete(itemId) // 移除手动展开记录
   } else {
     expandedItems.value.add(itemId)
+    manuallyExpandedItems.value.add(itemId) // 记录为手动展开
+  }
+
+  console.log('TOC Manual toggle:', itemId, 'expanded:', expandedItems.value.has(itemId))
+}
+
+// 切换自动折叠模式
+const toggleAutoCollapse = () => {
+  autoCollapseEnabled.value = !autoCollapseEnabled.value
+
+  console.log('TOC Mode switched to:', autoCollapseEnabled.value ? 'Auto' : 'Manual')
+
+  if (autoCollapseEnabled.value) {
+    // 开启自动折叠时，清空手动展开记录
+    manuallyExpandedItems.value.clear()
+    // 执行一次自动折叠
+    if (activeId.value) {
+      smartExpandCollapse(activeId.value)
+    }
+  } else {
+    // 关闭自动折叠时，保持当前展开状态
+    console.log('Manual mode enabled')
   }
 }
 
@@ -193,7 +234,14 @@ const updateActiveItem = () => {
     }
   })
 
-  activeId.value = currentId
+  if (currentId && activeId.value !== currentId) {
+    console.log('TOC Scroll Active changed:', activeId.value, '->', currentId)
+    activeId.value = currentId
+    // 在自动模式下，滚动时也触发智能折叠
+    if (autoCollapseEnabled.value) {
+      smartExpandCollapse(currentId)
+    }
+  }
 }
 
 // 监听滚动事件
@@ -211,31 +259,48 @@ const createIntersectionObserver = () => {
 
   const observer = new IntersectionObserver(
     (entries) => {
+      let newActiveId = null
+
+      // 找到最合适的活动项
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const newActiveId = entry.target.id
-          if (activeId.value !== newActiveId) {
-            activeId.value = newActiveId
-            // 自动展开包含当前活动项的父级
-            expandParentItems(newActiveId)
+          const rect = entry.boundingClientRect
+          const headerHeight = 56
+
+          // 选择在视口顶部附近的标题
+          if (rect.top <= headerHeight + 100) {
+            newActiveId = entry.target.id
           }
         }
       })
+
+      // 更新活动项
+      if (newActiveId && activeId.value !== newActiveId) {
+        console.log('TOC Observer Active changed:', activeId.value, '->', newActiveId)
+        activeId.value = newActiveId
+        // 智能展开和折叠
+        smartExpandCollapse(newActiveId)
+      }
     },
     {
       rootMargin: '-56px 0px -50% 0px',
-      threshold: 0,
+      threshold: [0, 0.1, 0.5, 1],
     },
   )
 
   const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6')
+  console.log('TOC Found headings:', headings.length)
   headings.forEach((heading) => {
     observer.observe(heading)
   })
 }
 
-// 展开包含指定项的父级
-const expandParentItems = (itemId) => {
+// 智能展开和折叠
+const smartExpandCollapse = (activeItemId) => {
+  // 只在自动折叠模式下执行
+  if (!autoCollapseEnabled.value) return
+
+  // 找到所有需要展开的父级
   const findParentIds = (items, targetId, parentIds = []) => {
     for (const item of items) {
       if (item.id === targetId) {
@@ -249,20 +314,46 @@ const expandParentItems = (itemId) => {
     return null
   }
 
-  const parentIds = findParentIds(tocItems.value, itemId)
+  const parentIds = findParentIds(tocItems.value, activeItemId)
+
+  // 创建新的展开状态集合
+  const newExpandedItems = new Set()
+
+  // 添加包含当前活动项的父级
   if (parentIds) {
     parentIds.forEach((id) => {
-      expandedItems.value.add(id)
+      newExpandedItems.add(id)
     })
   }
+
+  // 更新展开状态
+  expandedItems.value = newExpandedItems
+
+  // 调试信息
+  console.log('TOC Auto-collapse:', {
+    activeItemId,
+    parentIds,
+    newExpanded: Array.from(newExpandedItems),
+  })
 }
 
 // 初始化时展开所有顶级项目
 const initializeExpandedItems = () => {
+  // 清空之前的状态
+  expandedItems.value.clear()
+  manuallyExpandedItems.value.clear()
+
+  // 默认展开所有顶级项目
   tocItems.value.forEach((item) => {
     if (item.children && item.children.length) {
       expandedItems.value.add(item.id)
     }
+  })
+
+  console.log('TOC Initialized:', {
+    items: tocItems.value.length,
+    expanded: Array.from(expandedItems.value),
+    autoCollapse: autoCollapseEnabled.value,
   })
 }
 
@@ -290,6 +381,47 @@ onMounted(() => {
   width: 100%;
   max-height: calc(100vh - 200px);
   overflow-y: auto;
+}
+
+/* 控制按钮样式 */
+.toc-controls {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.auto-collapse-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9em;
+}
+
+.auto-collapse-toggle:hover {
+  border-color: #e9546b;
+  color: #e9546b;
+}
+
+.auto-collapse-toggle.active {
+  background: #e9546b;
+  color: #fff;
+  border-color: #e9546b;
+}
+
+.toggle-icon {
+  font-size: 1.1em;
+}
+
+.toggle-text {
+  font-weight: 500;
 }
 
 .toc-content {
@@ -351,6 +483,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-left: auto; /* 推到右边 */
 }
 
 .toc-toggle:hover {
@@ -415,6 +548,16 @@ onMounted(() => {
 .toc-item.current .toc-link {
   color: #e9546b;
   background-color: #f3c1d1;
+  font-weight: 500;
+}
+
+/* 手动展开的项目样式 */
+.toc-item.manually-expanded .toc-toggle {
+  color: #e9546b;
+}
+
+.toc-item.manually-expanded .toc-link {
+  color: #e9546b;
   font-weight: 500;
 }
 
