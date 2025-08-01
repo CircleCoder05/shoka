@@ -53,7 +53,7 @@ const bannerStore = useBannerStore()
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 56px 20px 0 20px;
+  padding: 0 20px;
   gap: 32px;
   flex: 1;
   min-height: calc(100vh - 66vh);
@@ -88,8 +88,8 @@ const bannerStore = useBannerStore()
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 40px 0;
-  min-height: calc(100vh - 66vh - 56px - 80px);
+  padding: 0;
+  min-height: calc(100vh - 66vh - 80px);
 }
 
 /* 平板端适配 */
@@ -114,7 +114,7 @@ const bannerStore = useBannerStore()
   }
 
   .app-main-content {
-    padding: 32px 0;
+    padding: 0;
   }
 }
 
@@ -122,7 +122,7 @@ const bannerStore = useBannerStore()
 @media (max-width: 768px) {
   .app-main-layout {
     flex-direction: column;
-    padding: 56px 12px 0 12px;
+    padding: 0 12px;
     gap: 16px;
     min-height: calc(100vh - 50vh);
   }
