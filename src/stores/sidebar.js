@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 export const useSidebarStore = defineStore('sidebar', () => {
   // 侧边栏状态
-  const activePanel = ref('contents') // 默认显示目录
+  const activePanel = ref('overview') // 默认显示概览
   const articleContent = ref('')
 
   // 切换面板

@@ -76,13 +76,17 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   console.log('🚨 路由跳转:', { from: from.path, to: to.path, params: to.params })
 
-  // 如果不是文章详情页，设置默认banner
+  // 如果不是文章详情页，设置默认banner和侧边栏
   if (to.name !== 'post') {
-    // 动态导入banner store
-    import('../stores/banner.js').then(({ useBannerStore }) => {
-      const bannerStore = useBannerStore()
-      bannerStore.setDefaultBanner()
-    })
+    // 动态导入stores
+    Promise.all([import('../stores/banner.js'), import('../stores/sidebar.js')]).then(
+      ([{ useBannerStore }, { useSidebarStore }]) => {
+        const bannerStore = useBannerStore()
+        const sidebarStore = useSidebarStore()
+        bannerStore.setDefaultBanner()
+        sidebarStore.reset()
+      },
+    )
   }
 
   next()

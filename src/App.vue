@@ -45,17 +45,7 @@ const bannerStore = useBannerStore()
   flex-direction: column;
 }
 
-/* 导航栏样式 */
-.floating-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 100;
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 2px 8px rgba(237, 110, 160, 0.04);
-  backdrop-filter: blur(8px);
-}
+/* 导航栏样式 - 已移至Header组件内部 */
 
 /* 主布局样式 */
 .app-main-layout {
@@ -63,10 +53,10 @@ const bannerStore = useBannerStore()
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 0 20px;
+  padding: 56px 20px 0 20px;
   gap: 32px;
   flex: 1;
-  min-height: calc(100vh - 66vh - 56px);
+  min-height: calc(100vh - 66vh);
   box-sizing: border-box;
 }
 
@@ -132,9 +122,9 @@ const bannerStore = useBannerStore()
 @media (max-width: 768px) {
   .app-main-layout {
     flex-direction: column;
-    padding: 0 12px;
+    padding: 56px 12px 0 12px;
     gap: 16px;
-    min-height: calc(100vh - 50vh - 48px);
+    min-height: calc(100vh - 50vh);
   }
 
   .app-sidebar-wrapper {
