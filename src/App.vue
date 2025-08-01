@@ -80,7 +80,7 @@ const bannerStore = useBannerStore()
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 66vh - 56px);
-  margin-left: 20px;
+  margin-left: 0;
 }
 
 .app-main-content {
@@ -90,6 +90,7 @@ const bannerStore = useBannerStore()
   align-items: flex-start;
   padding: 0;
   min-height: calc(100vh - 66vh - 80px);
+  width: 100%;
 }
 
 /* 平板端适配 */
@@ -110,7 +111,7 @@ const bannerStore = useBannerStore()
   }
 
   .app-content-wrapper {
-    margin-left: 16px;
+    margin-left: 0;
   }
 
   .app-main-content {

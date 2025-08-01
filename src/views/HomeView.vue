@@ -116,16 +116,17 @@ onMounted(async () => {
 
 <style scoped>
 .home-content {
-  width: 80%;
-  max-width: 1660px;
+  width: 100%;
+  max-width: 1050px !important;
   background: #fff;
   border-radius: 0;
   box-shadow:
     0 8px 48px 0 rgba(237, 110, 160, 0.18),
     0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 2.5rem;
+  padding: 2rem;
   margin: 0;
   overflow: visible;
+  box-sizing: border-box;
 }
 
 .loading {
@@ -197,22 +198,18 @@ onMounted(async () => {
   background-position: left 1rem top 50%;
 }
 
+/* 精选分类卡片区域 - 响应式网格布局 */
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 2fr));
-  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
   margin: 2rem 0;
-  justify-items: center;
-  justify-content: center;
-  /* 精选分类卡片区域左右间距 */
-  margin-left: 16px;
-  margin-right: 16px;
+  width: 100%;
 }
 
+/* 文章列表区域 */
 .articles {
-  /* 文章卡片区域左右间距 */
-  margin-left: 16px;
-  margin-right: 16px;
+  width: 100%;
 }
 
 .segments {
@@ -319,74 +316,113 @@ onMounted(async () => {
   transform: scale(1.05) rotate(-1deg);
 }
 
-/* 平板端适配 */
-@media (max-width: 1024px) {
+/* 大屏幕适配 (1200px+) */
+@media (min-width: 1200px) {
   .home-content {
-    width: 85%;
-    padding: 2rem;
+    max-width: 1200px;
+    padding: 2.5rem;
   }
 
   .cards {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 8px;
-    margin-left: 12px;
-    margin-right: 12px;
-  }
-
-  .articles {
-    margin-left: 12px;
-    margin-right: 12px;
+    gap: 2rem;
   }
 }
 
-/* 移动端适配 */
-@media (max-width: 768px) {
+/* 中等屏幕适配 (768px - 1199px) */
+@media (max-width: 1199px) and (min-width: 768px) {
   .home-content {
-    width: 90%;
+    max-width: 100%;
     padding: 1.5rem;
-    border-radius: 0;
+  }
+
+  .cards {
+    gap: 1.25rem;
+  }
+}
+
+/* 平板端适配 (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .home-content {
+    max-width: 100%;
+    padding: 1.25rem;
+  }
+
+  .cards {
+    gap: 1rem;
+  }
+
+  .divider {
+    font-size: 1.4rem;
+  }
+}
+
+/* 移动端适配 (480px - 767px) */
+@media (max-width: 767px) and (min-width: 481px) {
+  .home-content {
+    max-width: 100%;
+    padding: 1rem;
   }
 
   .cards {
     grid-template-columns: 1fr;
-    gap: 12px;
-    margin-left: 8px;
-    margin-right: 8px;
-  }
-
-  .articles {
-    margin-left: 8px;
-    margin-right: 8px;
+    gap: 1rem;
   }
 
   .divider {
     font-size: 1.3rem;
   }
+
+  .divider::before {
+    background-position: right 0.5rem top 50%;
+  }
+
+  .divider::after {
+    background-position: left 0.5rem top 50%;
+  }
 }
 
-/* 小屏手机适配 */
+/* 小屏手机适配 (480px以下) */
 @media (max-width: 480px) {
   .home-content {
-    width: 95%;
-    padding: 1rem;
-    border-radius: 0;
+    max-width: 100%;
+    padding: 0.75rem;
   }
 
   .cards {
-    margin-left: 4px;
-    margin-right: 4px;
-  }
-
-  .articles {
-    margin-left: 4px;
-    margin-right: 4px;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 
   .divider {
     font-size: 1.2rem;
   }
+
+  .divider::before {
+    background-position: right 0.25rem top 50%;
+  }
+
+  .divider::after {
+    background-position: left 0.25rem top 50%;
+  }
 }
 
+/* 超小屏适配 (360px以下) */
+@media (max-width: 360px) {
+  .home-content {
+    max-width: 100%;
+    padding: 0.5rem;
+  }
+
+  .cards {
+    gap: 0.5rem;
+  }
+
+  .divider {
+    font-size: 1.1rem;
+  }
+}
+
+/* 移动端文章卡片适配 */
 @media (max-width: 767px) {
   .segments > .item {
     flex-direction: column;
