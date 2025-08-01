@@ -38,51 +38,6 @@ body {
   flex-direction: column;
 }
 
-.header {
-  background: var(--color-card);
-  border-bottom: 1px solid var(--color-divider);
-  padding: 0 32px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(237, 110, 160, 0.04);
-}
-
-.nav {
-  display: flex;
-  gap: 20px;
-}
-
-.nav a {
-  color: #222;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 8px 0 12px 0;
-  position: relative;
-  transition: color 0.2s;
-  display: inline-block;
-}
-
-.nav a.router-link-active,
-.nav a:hover {
-  color: var(--primary-color);
-}
-
-.nav a.router-link-active::after,
-.nav a:hover::after {
-  content: '';
-  display: block;
-  height: 3px;
-  width: 70%;
-  background: linear-gradient(to right, var(--color-pink), var(--color-orange));
-  border-radius: 2px;
-  position: absolute;
-  bottom: -2px;
-  left: 15%;
-  transform: translateX(0);
-}
-
 .main-layout {
   display: flex;
   flex: 1;

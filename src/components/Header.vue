@@ -18,16 +18,20 @@
 
 <style scoped>
 .header {
-  background: rgba(255, 255, 255, 0.7);
-  border-bottom: 1px solid #eee;
+  background: linear-gradient(135deg, rgba(56, 161, 219, 0.6) 0%, rgba(237, 110, 160, 0.55) 100%);
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0 32px;
   height: 56px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(237, 110, 160, 0.04);
-  backdrop-filter: blur(8px);
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(56, 161, 219, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .nav {
@@ -39,12 +43,12 @@
 }
 
 .nav a {
-  color: #222;
+  color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   padding: 8px 12px;
   border-radius: 6px;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -53,16 +57,19 @@
   /* 防止下划线超出 */
   position: relative;
   overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .nav a:hover {
-  background: rgba(237, 110, 160, 0.1);
-  color: #ed6ea0;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .nav a.router-link-active {
-  color: #ed6ea0;
-  background: rgba(237, 110, 160, 0.1);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .nav a.router-link-active::after {
@@ -72,8 +79,9 @@
   left: 12px;
   right: 12px;
   height: 2px;
-  background: #ed6ea0;
+  background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0.8));
   border-radius: 1px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .nav i {
@@ -84,6 +92,7 @@
 @media (max-width: 1024px) {
   .header {
     padding: 0 24px;
+    background: linear-gradient(135deg, rgba(56, 161, 219, 0.65) 0%, rgba(237, 110, 160, 0.6) 100%);
   }
 
   .nav {
@@ -106,6 +115,7 @@
   .header {
     padding: 0 16px;
     height: 48px;
+    background: linear-gradient(135deg, rgba(56, 161, 219, 0.7) 0%, rgba(237, 110, 160, 0.65) 100%);
   }
 
   .nav {
