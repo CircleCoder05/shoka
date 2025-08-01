@@ -1,43 +1,180 @@
 <template>
   <div class="archives-page">
-    <div class="page-header">
-      <h1 class="page-title">文章归档</h1>
-      <p class="page-subtitle">按时间顺序整理的所有文章</p>
-    </div>
+    <div class="archives-container">
+      <!-- 页面标题 -->
+      <div class="page-header">
+        <h1 class="page-title">
+          <i class="ic i-calendar"></i>
+          文章归档
+        </h1>
+        <p class="page-subtitle">时光荏苒，记录每一个精彩瞬间</p>
+      </div>
 
-    <div v-if="loading" class="loading">
-      <div class="loading-spinner"></div>
-      <p>加载中...</p>
-    </div>
+      <!-- 日历筛选器 -->
+      <div class="calendar-filter">
+        <div class="filter-header">
+          <h3 class="filter-title">
+            <i class="ic i-filter"></i>
+            时间筛选
+          </h3>
+          <button v-if="isFiltered" @click="clearFilter" class="clear-filter-btn">
+            <i class="ic i-refresh"></i>
+            清除筛选
+          </button>
+        </div>
 
-    <div v-else-if="error" class="error">
-      <h2>加载失败</h2>
-      <p>{{ error }}</p>
-    </div>
-
-    <div v-else class="archives-content">
-      <div v-for="(articles, year) in archivesByYear" :key="year" class="year-group">
-        <h2 class="year-title">{{ year }}</h2>
-        <div class="articles-list">
-          <div v-for="article in articles" :key="article.slug" class="article-item">
-            <div class="article-date">
-              {{ formatDate(article.date) }}
+        <div class="calendar-container">
+          <!-- 年份选择 -->
+          <div class="year-selector">
+            <label class="selector-label">
+              <i class="ic i-calendar"></i>
+              年份：
+            </label>
+            <div class="year-buttons">
+              <button
+                v-for="year in availableYears"
+                :key="year"
+                :class="{ active: selectedYear === year }"
+                @click="selectYear(year)"
+                class="year-btn"
+              >
+                {{ year }}年
+              </button>
             </div>
-            <div class="article-info">
-              <h3 class="article-title">
-                <router-link :to="`/post/${article.slug}`">
-                  {{ article.title }}
-                </router-link>
-              </h3>
-              <div class="article-meta">
-                <span v-if="article.categories && article.categories.length" class="category">
-                  <i class="ic i-flag"></i>
-                  {{ getCategoryName(article.categories[0]) }}
-                </span>
-                <span v-if="getTagsString(article.tags)" class="tags">
-                  <i class="ic i-tags"></i>
-                  {{ getTagsString(article.tags) }}
-                </span>
+          </div>
+
+          <!-- 月份选择 -->
+          <div v-if="selectedYear" class="month-selector">
+            <label class="selector-label">
+              <i class="ic i-clock"></i>
+              月份：
+            </label>
+            <div class="month-grid">
+              <button
+                v-for="month in 12"
+                :key="month"
+                :class="{
+                  active: selectedMonth === month,
+                  'has-articles': hasArticlesInMonth(selectedYear, month),
+                }"
+                @click="selectMonth(month)"
+                class="month-btn"
+              >
+                {{ getMonthName(month) }}
+              </button>
+            </div>
+          </div>
+
+          <!-- 筛选状态 -->
+          <div v-if="isFiltered" class="filter-status">
+            <span class="status-text">
+              <i class="ic i-info"></i>
+              当前筛选：
+              <span v-if="selectedYear && selectedMonth">
+                {{ selectedYear }}年{{ selectedMonth }}月 ({{ selectedYear }}年{{
+                  selectedMonth
+                }}月)
+              </span>
+              <span v-else-if="selectedYear"> ({{ selectedYear }}年) </span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 时间轴 -->
+      <div class="timeline-wrapper">
+        <div class="timeline">
+          <div class="timeline-line"></div>
+
+          <!-- 所有文章列表 -->
+          <div class="articles-container">
+            <div
+              v-for="(article, index) in statisticsStore.archives"
+              :key="article.slug"
+              class="article-timeline-item"
+            >
+              <!-- 时间轴节点 -->
+              <div class="timeline-node">
+                <div class="node-dot"></div>
+                <div class="node-line"></div>
+              </div>
+
+              <!-- 年份标记（如果是新的一年） -->
+              <div v-if="shouldShowYear(article, index)" class="year-marker-inline">
+                <div class="year-dot-inline"></div>
+                <h3 class="year-title-inline">{{ new Date(article.date).getFullYear() }}</h3>
+              </div>
+
+              <!-- 月份标记（如果是新的月份） -->
+              <div v-if="shouldShowMonth(article, index)" class="month-marker-inline">
+                <div class="month-dot-inline"></div>
+                <span class="month-title-inline">{{
+                  getMonthName(new Date(article.date).getMonth() + 1)
+                }}</span>
+              </div>
+
+              <!-- 文章卡片 -->
+              <div class="article-card">
+                <!-- 封面图片 -->
+                <div class="article-cover">
+                  <img
+                    :src="getCoverImage(article)"
+                    :alt="article.title"
+                    @error="handleImageError"
+                  />
+                </div>
+
+                <!-- 文章信息 -->
+                <div class="article-info">
+                  <h3 class="article-title">
+                    <router-link :to="`/post/${article.slug}`">
+                      {{ article.title }}
+                    </router-link>
+                  </h3>
+
+                  <div class="article-meta">
+                    <span class="author">
+                      <i class="ic i-user"></i>
+                      {{ article.author || 'CircleCoder' }}
+                    </span>
+                    <span class="date">
+                      <i class="ic i-calendar"></i>
+                      {{ formatDate(article.date) }}
+                    </span>
+                    <span v-if="getCategoryName(article.categories?.[0])" class="category">
+                      <i class="ic i-flag"></i>
+                      {{ getCategoryName(article.categories[0]) }}
+                    </span>
+                  </div>
+
+                  <div class="article-excerpt">
+                    {{ getExcerpt(article) }}
+                  </div>
+
+                  <div class="article-footer">
+                    <div class="article-stats">
+                      <span class="word-count">
+                        <i class="ic i-pen"></i>
+                        {{ getWordCount(article) }}字
+                      </span>
+                      <span class="read-time">
+                        <i class="ic i-clock"></i>
+                        {{ getReadTime(article) }}
+                      </span>
+                    </div>
+
+                    <div class="article-tags">
+                      <span v-for="tag in getTagsArray(article.tags)" :key="tag" class="tag">
+                        {{ tag }}
+                      </span>
+                    </div>
+
+                    <router-link :to="`/post/${article.slug}`" class="read-more-btn">
+                      阅读全文
+                      <i class="ic i-arrow-right"></i>
+                    </router-link>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -48,14 +185,118 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useStatisticsStore } from '@/stores/statistics'
 
 const statisticsStore = useStatisticsStore()
 
 const loading = computed(() => statisticsStore.loading)
 const error = computed(() => statisticsStore.error)
-const archivesByYear = computed(() => statisticsStore.archivesByYear)
+const archivesByYear = computed(() => {
+  const result = statisticsStore.archivesByYear
+  console.log('Archives by year from store:', result)
+  console.log('Available years from store:', Object.keys(result))
+  return result
+})
+
+// 可用的年份列表
+const availableYears = computed(() => {
+  const years = Object.keys(archivesByYear.value)
+  const sortedYears = years.sort((a, b) => parseInt(b) - parseInt(a))
+  console.log('Available years computed:', sortedYears)
+  return sortedYears
+})
+
+// 筛选状态
+const selectedYear = ref(null)
+const selectedMonth = ref(null)
+
+// 图片列表
+const imageList = ref([
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292157001.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158771.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158368.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158099.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158821.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158043.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311942570.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311942090.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311942804.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943183.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943052.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943222.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943439.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943580.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943773.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311944494.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311944837.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311944966.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311944606.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311945788.jpg',
+  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311945208.jpg',
+])
+
+// 筛选后的文章
+const filteredArticles = computed(() => {
+  if (!selectedYear.value) {
+    return statisticsStore.archives
+  }
+
+  let filtered = statisticsStore.archives.filter((article) => {
+    const articleDate = new Date(article.date)
+    const articleYear = articleDate.getFullYear()
+    const articleMonth = articleDate.getMonth() + 1
+
+    if (articleYear !== selectedYear.value) {
+      return false
+    }
+
+    if (selectedMonth.value) {
+      return articleMonth === selectedMonth.value
+    }
+
+    return true
+  })
+
+  return filtered
+})
+
+// 显示的文章（按年份分组）
+const displayArchives = computed(() => {
+  if (!selectedYear.value) {
+    // 如果没有筛选，使用排序后的archivesByYear
+    const sortedYears = Object.keys(archivesByYear.value).sort((a, b) => parseInt(b) - parseInt(a))
+    const result = {}
+    sortedYears.forEach((year) => {
+      result[year] = archivesByYear.value[year]
+    })
+    return result
+  }
+
+  // 如果有筛选，对筛选结果进行排序
+  const grouped = {}
+  filteredArticles.value.forEach((article) => {
+    const year = new Date(article.date).getFullYear()
+    if (!grouped[year]) {
+      grouped[year] = []
+    }
+    grouped[year].push(article)
+  })
+
+  // 对筛选结果按年份排序
+  const sortedYears = Object.keys(grouped).sort((a, b) => parseInt(b) - parseInt(a))
+  const result = {}
+  sortedYears.forEach((year) => {
+    result[year] = grouped[year]
+  })
+
+  return result
+})
+
+// 是否已筛选
+const isFiltered = computed(() => {
+  return selectedYear.value !== null
+})
 
 const formatDate = (dateStr) => {
   if (!dateStr) return ''
@@ -67,25 +308,139 @@ const formatDate = (dateStr) => {
 }
 
 const getCategoryName = (category) => {
-  if (!category) return '未分类'
+  if (!category) return ''
   if (Array.isArray(category)) {
-    return category[0] || '未分类'
+    return category[0] || ''
   }
   if (typeof category === 'string') {
     return category
   }
-  return '未分类'
+  return ''
 }
 
-const getTagsString = (tags) => {
-  if (!tags) return ''
+const getTagsArray = (tags) => {
+  if (!tags) return []
   if (Array.isArray(tags)) {
-    return tags.filter((tag) => typeof tag === 'string' && tag).join(', ')
+    return tags.filter((tag) => typeof tag === 'string' && tag)
   }
-  if (typeof tags === 'string') {
-    return tags
+  return []
+}
+
+const getCoverImage = (article) => {
+  // 如果有封面图片，使用它
+  if (article.cover) {
+    return article.cover
   }
-  return ''
+
+  // 使用随机图片
+  const index = Math.abs(article.slug.hashCode()) % imageList.value.length
+  return imageList.value[index]
+}
+
+// 为字符串添加hashCode方法
+String.prototype.hashCode = function () {
+  let hash = 0
+  if (this.length === 0) return hash
+  for (let i = 0; i < this.length; i++) {
+    const char = this.charCodeAt(i)
+    hash = (hash << 5) - hash + char
+    hash = hash & hash // Convert to 32bit integer
+  }
+  return hash
+}
+
+const handleImageError = (event) => {
+  // 图片加载失败时使用默认图片
+  const index = Math.floor(Math.random() * imageList.value.length)
+  event.target.src = imageList.value[index]
+}
+
+const getExcerpt = (article) => {
+  if (article.excerpt) {
+    return article.excerpt.length > 80 ? article.excerpt.substring(0, 80) + '...' : article.excerpt
+  }
+  return '这篇文章还没有摘要...'
+}
+
+const getReadTime = (article) => {
+  if (article.readTime) return article.readTime
+  const wordCount = getWordCount(article)
+  const minutes = Math.ceil(wordCount / 300) // 假设每分钟读300字
+  return `${minutes} 分钟`
+}
+
+const getWordCount = (article) => {
+  if (article.wordCount) return article.wordCount
+  // 估算字数
+  const titleLength = article.title?.length || 0
+  const excerptLength = article.excerpt?.length || 0
+  return `${titleLength + excerptLength} 字`
+}
+
+// 日历相关方法
+const selectYear = (year) => {
+  if (selectedYear.value === year) {
+    selectedYear.value = null
+    selectedMonth.value = null
+  } else {
+    selectedYear.value = year
+    selectedMonth.value = null
+  }
+}
+
+const selectMonth = (month) => {
+  if (selectedMonth.value === month) {
+    selectedMonth.value = null
+  } else {
+    selectedMonth.value = month
+  }
+}
+
+const clearFilter = () => {
+  selectedYear.value = null
+  selectedMonth.value = null
+}
+
+const getMonthName = (month) => {
+  const monthNames = [
+    '1月',
+    '2月',
+    '3月',
+    '4月',
+    '5月',
+    '6月',
+    '7月',
+    '8月',
+    '9月',
+    '10月',
+    '11月',
+    '12月',
+  ]
+  return monthNames[month - 1]
+}
+
+const hasArticlesInMonth = (year, month) => {
+  if (!year) return false
+  return statisticsStore.archives.some((article) => {
+    const articleDate = new Date(article.date)
+    return articleDate.getFullYear() === year && articleDate.getMonth() + 1 === month
+  })
+}
+
+// 判断是否应该显示年份标记
+const shouldShowYear = (article, index) => {
+  if (index === 0) return true // 第一个文章一定是年份标记
+  const currentYear = new Date(article.date).getFullYear()
+  const previousYear = new Date(statisticsStore.archives[index - 1].date).getFullYear()
+  return currentYear !== previousYear
+}
+
+// 判断是否应该显示月份标记
+const shouldShowMonth = (article, index) => {
+  if (index === 0) return true // 第一个文章一定是月份标记
+  const currentMonth = new Date(article.date).getMonth() + 1
+  const previousMonth = new Date(statisticsStore.archives[index - 1].date).getMonth() + 1
+  return currentMonth !== previousMonth
 }
 
 onMounted(async () => {
@@ -97,27 +452,240 @@ onMounted(async () => {
 
 <style scoped>
 .archives-page {
-  max-width: 1050px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 }
 
+.archives-container {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.archives-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ed6ea0 0%, #ec8c69 100%);
+}
+
 .page-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
 }
 
 .page-title {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 700;
-  color: #333;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .page-subtitle {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #666;
   margin: 0;
+  font-style: italic;
+}
+
+/* 日历筛选器 */
+.calendar-filter {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.calendar-filter::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ed6ea0 0%, #ec8c69 100%);
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.filter-title {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #333;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-title i {
+  font-size: 1.1rem;
+  color: #ed6ea0;
+}
+
+.clear-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  border: none;
+  border-radius: 20px;
+  color: #666;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-filter-btn:hover {
+  background: #ed6ea0;
+  color: #fff;
+}
+
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.year-selector,
+.month-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.selector-label {
+  font-weight: 600;
+  color: #333;
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.selector-label i {
+  font-size: 0.9rem;
+  color: #ed6ea0;
+}
+
+.year-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.year-btn {
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  color: #666;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.year-btn:hover {
+  background: #ed6ea0;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.year-btn.active {
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  color: #fff;
+  border-color: #ed6ea0;
+  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3);
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  max-width: 600px;
+}
+
+.month-btn {
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  color: #666;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.month-btn:hover {
+  background: #ed6ea0;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.month-btn.active {
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  color: #fff;
+  border-color: #ed6ea0;
+  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3);
+}
+
+.month-btn.has-articles::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  background: #ed6ea0;
+  border-radius: 50%;
+}
+
+.month-btn.has-articles.active::after {
+  background: #fff;
+}
+
+.filter-status {
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(237, 110, 160, 0.1) 0%, rgba(236, 140, 105, 0.1) 100%);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.status-text {
+  color: #ed6ea0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-text i {
+  font-size: 0.9rem;
+  color: #ed6ea0;
 }
 
 .loading,
@@ -157,60 +725,307 @@ onMounted(async () => {
   }
 }
 
-.year-group {
-  margin-bottom: 3rem;
+/* 时间轴容器 */
+.timeline-wrapper {
+  position: relative;
+  padding: 2rem 0;
+}
+
+/* 时间轴样式优化 */
+.timeline {
+  position: relative;
+  padding: 2rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 80px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, transparent 0%, #ed6ea0 20%, #ed6ea0 80%, transparent 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 20px rgba(237, 110, 160, 0.3);
+  animation: timelineGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes timelineGlow {
+  0% {
+    box-shadow: 0 0 20px rgba(237, 110, 160, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(237, 110, 160, 0.6);
+  }
+}
+
+.timeline-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: #ed6ea0;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px rgba(237, 110, 160, 0.5);
+  animation: particlePulse 2s ease-in-out infinite;
+}
+
+.timeline-line::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: #ed6ea0;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px rgba(237, 110, 160, 0.5);
+  animation: particlePulse 2s ease-in-out infinite 1s;
+}
+
+@keyframes particlePulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.5);
+    opacity: 0.7;
+  }
+}
+
+/* 年份标记 */
+.year-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 3rem 0 2rem 0;
+  z-index: 10;
+  padding-left: 140px;
+}
+
+.year-dot {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  border: 4px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(237, 110, 160, 0.4);
+  position: relative;
+  z-index: 15;
+  animation: yearDotPulse 4s ease-in-out infinite;
+}
+
+@keyframes yearDotPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(237, 110, 160, 0.4);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(237, 110, 160, 0.6);
+  }
+}
+
+.year-dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .year-title {
-  font-size: 2rem;
-  font-weight: 600;
+  font-size: 2.5rem;
+  font-weight: 700;
   color: #333;
-  margin: 0 0 1.5rem 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #ed6ea0;
+  margin-left: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  animation: titleGlow 3s ease-in-out infinite alternate;
 }
 
-.articles-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+@keyframes titleGlow {
+  0% {
+    filter: drop-shadow(0 0 5px rgba(237, 110, 160, 0.3));
+  }
+  100% {
+    filter: drop-shadow(0 0 15px rgba(237, 110, 160, 0.6));
+  }
 }
 
-.article-item {
+/* 文章时间轴项目 */
+.article-timeline-item {
+  position: relative;
+  margin-bottom: 3rem;
   display: flex;
   align-items: flex-start;
-  gap: 1.5rem;
-  padding: 1rem;
-  border-radius: 8px;
+  width: 100%;
+  padding-left: 140px;
+  padding-right: 2rem;
+  box-sizing: border-box;
+}
+
+.timeline-node {
+  position: absolute;
+  left: 80px;
+  top: 50px;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 20px;
+  height: 20px;
+}
+
+.node-dot {
+  width: 16px;
+  height: 16px;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  border: 3px solid #ed6ea0;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(237, 110, 160, 0.4);
+  position: relative;
+  animation: nodePulse 3s ease-in-out infinite;
 }
 
-.article-item:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
+@keyframes nodePulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(237, 110, 160, 0.4);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 25px rgba(237, 110, 160, 0.7);
+  }
 }
 
-.article-date {
-  font-size: 0.9rem;
-  color: #666;
-  font-weight: 500;
-  min-width: 80px;
-  text-align: center;
-  padding: 0.5rem;
-  background: #f8f9fa;
-  border-radius: 6px;
+.node-dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: #ed6ea0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
 }
 
+.node-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 120px;
+  background: linear-gradient(180deg, #ed6ea0 0%, transparent 100%);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px rgba(237, 110, 160, 0.3);
+  animation: nodeLineGlow 2s ease-in-out infinite;
+}
+
+@keyframes nodeLineGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(237, 110, 160, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(237, 110, 160, 0.6);
+  }
+}
+
+/* 文章内容区域 */
+.article-content {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+  flex: 1;
+  max-width: calc(100% - 1rem);
+}
+
+/* 文章卡片 */
+.article-card {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+  box-sizing: border-box;
+}
+
+.article-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ed6ea0 0%, #ec8c69 100%);
+}
+
+.article-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+/* 封面图片 */
+.article-cover {
+  width: 240px;
+  height: 180px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.article-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.article-card:hover .article-cover img {
+  transform: scale(1.05);
+}
+
+/* 文章信息 */
 .article-info {
   flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .article-title {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .article-title a {
@@ -226,20 +1041,104 @@ onMounted(async () => {
 .article-meta {
   display: flex;
   gap: 1rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #666;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
 }
 
-.category,
-.tags {
+.article-meta span {
   display: flex;
   align-items: center;
   gap: 0.3rem;
 }
 
-.category i,
-.tags i {
+.article-meta i {
+  font-size: 0.75rem;
+  color: #ed6ea0;
+}
+
+.article-excerpt {
+  color: #666;
+  line-height: 1.5;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.article-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.article-stats {
+  display: flex;
+  gap: 0.8rem;
+  font-size: 0.75rem;
+  color: #999;
+  flex-wrap: wrap;
+}
+
+.article-stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.article-stats i {
+  font-size: 0.7rem;
+  color: #ed6ea0;
+}
+
+.article-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  padding: 0.15rem 0.5rem;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  transition: transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.tag:hover {
+  transform: translateY(-2px);
+}
+
+.read-more-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 18px;
   font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(237, 110, 160, 0.3);
+}
+
+.read-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(237, 110, 160, 0.4);
 }
 
 /* 响应式设计 */
@@ -248,27 +1147,289 @@ onMounted(async () => {
     padding: 1rem;
   }
 
+  .archives-container {
+    padding: 1.5rem;
+  }
+
   .page-title {
     font-size: 2rem;
   }
 
-  .year-title {
-    font-size: 1.5rem;
+  .calendar-filter {
+    padding: 1.5rem;
   }
 
-  .article-item {
+  .filter-header {
     flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .year-selector,
+  .month-selector {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 0.5rem;
   }
 
-  .article-date {
-    min-width: auto;
-    align-self: flex-start;
+  .month-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .timeline-line {
+    left: 20px;
+    transform: none;
+  }
+
+  .year-marker {
+    margin-left: 40px;
+    justify-content: flex-start;
+  }
+
+  .year-title {
+    font-size: 1.8rem;
+    margin: 0 1rem;
+  }
+
+  .article-timeline-item {
+    margin-left: 40px;
+    flex-direction: column !important;
+    gap: 1rem;
+  }
+
+  .timeline-node {
+    left: -20px;
+    transform: none;
+  }
+
+  .article-cover {
+    width: 100%;
+    height: 200px;
+  }
+
+  .article-info-card {
+    max-width: none;
+    padding: 1.5rem;
+  }
+
+  .article-title {
+    font-size: 1.3rem;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .archives-container {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+  }
+
+  .calendar-filter {
+    margin-bottom: 2rem;
+  }
+
+  .year-selector,
+  .month-selector {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .year-buttons,
+  .month-grid {
+    justify-content: center;
+  }
+
+  .year-buttons button,
+  .month-grid button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .month-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+
+  /* 移动端时间轴样式 */
+  .timeline {
+    margin-left: 0;
+    max-width: none;
+  }
+
+  .timeline-line {
+    left: 40px;
+  }
+
+  .timeline-line::before,
+  .timeline-line::after {
+    left: 40px;
+    transform: translateX(-50%);
+  }
+
+  .year-marker {
+    padding-left: 80px;
+    margin: 2rem 0 1rem 0;
+  }
+
+  .year-title {
+    font-size: 1.8rem;
+    margin-left: 0.5rem;
+  }
+
+  .article-timeline-item {
+    padding-left: 80px;
+    margin-bottom: 2rem;
+  }
+
+  .timeline-node {
+    left: 40px;
+    top: 30px;
+  }
+
+  /* 移动端卡片样式 */
+  .article-card {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .article-cover {
+    width: 100%;
+    height: 200px;
+  }
+
+  .article-info {
+    padding: 1rem;
+  }
+
+  .article-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
   }
 
   .article-meta {
-    flex-direction: column;
-    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+    gap: 0.8rem;
   }
+
+  .article-excerpt {
+    margin-bottom: 0.8rem;
+  }
+
+  .article-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  .article-stats {
+    justify-content: flex-start;
+  }
+
+  .article-tags {
+    justify-content: flex-start;
+  }
+
+  .read-more-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* 平板适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .archives-container {
+    padding: 2rem;
+  }
+
+  .timeline {
+    max-width: 900px;
+  }
+
+  .article-cover {
+    width: 240px;
+    height: 180px;
+  }
+
+  .article-info {
+    padding: 1.2rem;
+  }
+
+  .article-title {
+    font-size: 1.3rem;
+  }
+
+  .year-title {
+    font-size: 2rem;
+  }
+}
+
+/* 年份标记（内联） */
+.year-marker-inline {
+  position: absolute;
+  left: 80px;
+  top: -30px;
+  display: flex;
+  align-items: center;
+  z-index: 15;
+}
+
+.year-dot-inline {
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(237, 110, 160, 0.5);
+  animation: yearDotPulse 4s ease-in-out infinite;
+}
+
+.year-title-inline {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+  margin-left: 0.8rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+/* 月份标记（内联） */
+.month-marker-inline {
+  position: absolute;
+  left: 80px;
+  top: -15px;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.month-dot-inline {
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border: 2px solid #ed6ea0;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(237, 110, 160, 0.4);
+  animation: nodePulse 3s ease-in-out infinite;
+}
+
+.month-title-inline {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ed6ea0;
+  margin-left: 0.6rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 </style>
