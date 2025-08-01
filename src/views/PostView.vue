@@ -26,6 +26,13 @@
         v-image-optimize
         v-media-block
       ></div>
+
+      <!-- 文章底部：版权信息和上一篇/下一篇导航 -->
+      <PostFooter
+        :current-slug="route.params.slug"
+        :author="article.author || 'CircleCoder'"
+        site-name="碼農書架"
+      />
     </div>
   </div>
 </template>
@@ -35,6 +42,7 @@ import { ref, onMounted, watch, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticlesStore } from '@/stores/articles'
 import { useBannerStore } from '@/stores/banner'
+import PostFooter from '@/components/PostFooter.vue'
 
 const route = useRoute()
 const articlesStore = useArticlesStore()
@@ -59,11 +67,17 @@ const loadArticle = async (slug) => {
   error.value = null
 
   try {
+    // 确保文章列表已加载
+    if (articlesStore.articles.length === 0) {
+      console.log('Articles not loaded, loading articles first...')
+      await articlesStore.loadArticles()
+    }
+
     article.value = await articlesStore.getArticleBySlug(slug)
     console.log('Article loaded successfully:', article.value)
     console.log('Article HTML content:', article.value.html)
     console.log('Article content length:', article.value.content.length)
-    
+
     // 设置文章 banner 信息
     bannerStore.setArticleBanner(article.value)
   } catch (err) {
