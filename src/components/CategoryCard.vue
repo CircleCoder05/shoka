@@ -98,14 +98,15 @@ watch(
 .category-card {
   perspective: 1200px;
   width: 100%;
-  max-width: 440px;
+  max-width: 100%;
   height: 220px;
   background: transparent;
   position: relative;
   box-shadow: none;
   overflow: visible;
-  margin-bottom: 26px;
+  margin-bottom: 0;
 }
+
 .card-inner {
   width: 100%;
   height: 100%;
@@ -113,12 +114,15 @@ watch(
   transition: transform 2s cubic-bezier(0.4, 2, 0.6, 1);
   transform-style: preserve-3d;
 }
+
 .card-inner.active {
   transform: rotateY(-180deg);
 }
+
 .category-card:nth-child(2n) .card-inner.active {
   transform: rotateY(180deg);
 }
+
 .card-front,
 .card-back {
   position: absolute;
@@ -133,6 +137,7 @@ watch(
   justify-content: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
 .card-front {
   background-size: cover;
   background-position: center;
@@ -141,6 +146,7 @@ watch(
   align-items: center;
   justify-content: center;
 }
+
 .card-front .title {
   color: #fff;
   font-size: 1.5rem;
@@ -151,6 +157,7 @@ watch(
   padding: 0 12px;
   background: none;
 }
+
 .card-back {
   background: #fcfcfc;
   display: flex;
@@ -162,9 +169,11 @@ watch(
   padding: 0;
   position: relative;
 }
+
 .category-card:nth-child(2n) .card-back {
   transform: rotateY(180deg);
 }
+
 .ribbon {
   position: absolute;
   top: 0;
@@ -174,12 +183,14 @@ watch(
   border-radius: 0 0 8px 0;
   z-index: 2;
 }
+
 .ribbon a {
   color: #fff;
   text-decoration: none;
   font-weight: bold;
   font-size: 0.9rem;
 }
+
 .inner {
   width: 100%;
   height: 100%;
@@ -188,6 +199,7 @@ watch(
   flex-direction: column;
   justify-content: space-between;
 }
+
 .posts-container {
   flex: 1;
   display: flex;
@@ -197,6 +209,7 @@ watch(
   width: 100%;
   padding-left: 8px;
 }
+
 .posts {
   list-style: none;
   padding: 0;
@@ -207,11 +220,16 @@ watch(
   gap: 6px 12px;
   max-height: 120px;
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
+
 .posts li {
   margin: 0;
   padding: 0;
+  min-width: 0;
 }
+
 .posts a {
   color: #25c9f7;
   text-decoration: none;
@@ -223,10 +241,14 @@ watch(
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+  box-sizing: border-box;
 }
+
 .posts a:hover {
   color: #ed6ea0;
 }
+
 .meta-footer {
   display: flex;
   justify-content: space-between;
@@ -236,6 +258,7 @@ watch(
   margin-bottom: 0;
   min-height: 40px;
 }
+
 .count {
   color: #666;
   font-size: 0.85rem;
@@ -243,9 +266,11 @@ watch(
   display: flex;
   align-items: center;
 }
+
 .count i {
   margin-right: 4px;
 }
+
 .btn {
   background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
   color: #fff;
@@ -261,8 +286,253 @@ watch(
   right: 0;
   margin: 0;
 }
+
 .btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3);
+}
+
+/* 响应式适配 */
+
+/* 大屏幕适配 (1200px+) */
+@media (min-width: 1200px) {
+  .category-card {
+    height: 240px;
+  }
+
+  .card-front .title {
+    font-size: 1.6rem;
+  }
+
+  .posts {
+    gap: 8px 16px;
+  }
+
+  .posts a {
+    font-size: 0.95rem;
+  }
+}
+
+/* 中等屏幕适配 (768px - 1199px) */
+@media (max-width: 1199px) and (min-width: 768px) {
+  .category-card {
+    height: 220px;
+  }
+
+  .card-front .title {
+    font-size: 1.4rem;
+  }
+
+  .posts {
+    gap: 6px 12px;
+  }
+
+  .posts a {
+    font-size: 0.85rem;
+  }
+}
+
+/* 平板端适配 (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .category-card {
+    height: 200px;
+  }
+
+  .card-front .title {
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+  }
+
+  .inner {
+    padding: 35px 10px 0 10px;
+  }
+
+  .posts {
+    gap: 5px 10px;
+    max-height: 100px;
+  }
+
+  .posts a {
+    font-size: 0.8rem;
+  }
+
+  .ribbon {
+    padding: 6px 12px;
+  }
+
+  .ribbon a {
+    font-size: 0.8rem;
+  }
+}
+
+/* 移动端适配 (480px - 767px) */
+@media (max-width: 767px) and (min-width: 481px) {
+  .category-card {
+    height: 180px;
+  }
+
+  .card-front .title {
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    padding: 0 8px;
+  }
+
+  .inner {
+    padding: 30px 8px 0 8px;
+  }
+
+  .posts-container {
+    padding-left: 6px;
+  }
+
+  .posts {
+    grid-template-columns: 1fr;
+    gap: 4px 8px;
+    max-height: 90px;
+  }
+
+  .posts a {
+    font-size: 0.75rem;
+    padding: 1px 3px;
+  }
+
+  .ribbon {
+    padding: 5px 10px;
+  }
+
+  .ribbon a {
+    font-size: 0.75rem;
+  }
+
+  .count {
+    font-size: 0.8rem;
+    padding-left: 12px;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+}
+
+/* 小屏手机适配 (480px以下) */
+@media (max-width: 480px) {
+  .category-card {
+    height: 160px;
+  }
+
+  .card-front .title {
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    padding: 0 6px;
+  }
+
+  .inner {
+    padding: 25px 6px 0 6px;
+  }
+
+  .posts-container {
+    padding-left: 4px;
+  }
+
+  .posts {
+    grid-template-columns: 1fr;
+    gap: 3px 6px;
+    max-height: 80px;
+  }
+
+  .posts a {
+    font-size: 0.7rem;
+    padding: 1px 2px;
+  }
+
+  .ribbon {
+    padding: 4px 8px;
+  }
+
+  .ribbon a {
+    font-size: 0.7rem;
+  }
+
+  .count {
+    font-size: 0.75rem;
+    padding-left: 8px;
+  }
+
+  .btn {
+    padding: 5px 10px;
+    font-size: 0.7rem;
+  }
+
+  .meta-footer {
+    margin-top: 12px;
+    min-height: 35px;
+  }
+}
+
+/* 超小屏适配 (360px以下) */
+@media (max-width: 360px) {
+  .category-card {
+    height: 140px;
+  }
+
+  .card-front .title {
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    padding: 0 4px;
+  }
+
+  .inner {
+    padding: 20px 4px 0 4px;
+  }
+
+  .posts-container {
+    padding-left: 2px;
+  }
+
+  .posts {
+    grid-template-columns: 1fr;
+    gap: 2px 4px;
+    max-height: 70px;
+  }
+
+  .posts a {
+    font-size: 0.65rem;
+    padding: 1px 1px;
+  }
+
+  .ribbon {
+    padding: 3px 6px;
+  }
+
+  .ribbon a {
+    font-size: 0.65rem;
+  }
+
+  .count {
+    font-size: 0.7rem;
+    padding-left: 6px;
+  }
+
+  .btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+  }
+
+  .meta-footer {
+    margin-top: 8px;
+    min-height: 30px;
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  .card-inner {
+    transition: transform 1.5s cubic-bezier(0.4, 2, 0.6, 1);
+  }
+
+  .btn:hover {
+    transform: none;
+  }
 }
 </style>

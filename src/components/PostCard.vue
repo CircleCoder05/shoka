@@ -255,4 +255,254 @@ defineProps({
     padding: 1rem 1rem 0 1rem;
   }
 }
+
+/* 响应式适配 */
+
+/* 大屏幕适配 (1200px+) */
+@media (min-width: 1200px) {
+  .post-card {
+    height: 16rem;
+  }
+  
+  .info h3 {
+    font-size: 1.2em;
+  }
+  
+  .excerpt {
+    font-size: 0.9em;
+    max-height: 5.5rem;
+  }
+  
+  .meta {
+    font-size: 0.85em;
+  }
+}
+
+/* 中等屏幕适配 (768px - 1199px) */
+@media (max-width: 1199px) and (min-width: 768px) {
+  .post-card {
+    height: 14rem;
+  }
+  
+  .info h3 {
+    font-size: 1.1em;
+  }
+  
+  .excerpt {
+    font-size: 0.875em;
+    max-height: 5rem;
+  }
+}
+
+/* 平板端适配 (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .post-card {
+    height: 13rem;
+  }
+  
+  .cover {
+    margin-right: 1.25rem;
+  }
+  
+  .post-card:nth-child(2n) .cover {
+    margin-left: 1.25rem;
+  }
+  
+  .info-content {
+    padding: 0.875rem 1.25rem 0 0;
+  }
+  
+  .post-card:nth-child(2n) .info-content {
+    padding: 0.875rem 0 0 1.25rem;
+  }
+  
+  .info h3 {
+    font-size: 1.05em;
+  }
+  
+  .excerpt {
+    font-size: 0.85em;
+    max-height: 4.5rem;
+  }
+  
+  .meta {
+    font-size: 0.8em;
+  }
+}
+
+/* 移动端适配 (480px - 767px) */
+@media (max-width: 767px) and (min-width: 481px) {
+  .post-card,
+  .post-card:nth-child(2n) {
+    flex-direction: column;
+    height: fit-content;
+    max-height: fit-content;
+  }
+
+  .cover,
+  .post-card:nth-child(2n) .cover {
+    width: 100%;
+    height: 12rem;
+    margin: auto;
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+    border-radius: 0.625rem 0.625rem 0 0;
+  }
+
+  .info,
+  .post-card:nth-child(2n) .info {
+    width: 100%;
+    height: 12rem;
+    padding: 0;
+  }
+
+  .info-content,
+  .post-card:nth-child(2n) .info-content {
+    padding: 0.875rem 0.875rem 0 0.875rem;
+  }
+  
+  .info h3 {
+    font-size: 1em;
+  }
+  
+  .excerpt {
+    font-size: 0.8em;
+    max-height: 4rem;
+  }
+  
+  .meta {
+    font-size: 0.75em;
+  }
+  
+  .info-footer a {
+    font-size: 0.8em;
+    padding: 0.25rem 0.75rem;
+  }
+}
+
+/* 小屏手机适配 (480px以下) */
+@media (max-width: 480px) {
+  .post-card,
+  .post-card:nth-child(2n) {
+    flex-direction: column;
+    height: fit-content;
+    max-height: fit-content;
+    margin-bottom: 1.5rem;
+  }
+
+  .cover,
+  .post-card:nth-child(2n) .cover {
+    width: 100%;
+    height: 10rem;
+    margin: auto;
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+
+  .info,
+  .post-card:nth-child(2n) .info {
+    width: 100%;
+    height: 10rem;
+    padding: 0;
+  }
+
+  .info-content,
+  .post-card:nth-child(2n) .info-content {
+    padding: 0.75rem 0.75rem 0 0.75rem;
+  }
+  
+  .info h3 {
+    font-size: 0.95em;
+    margin: 0.5rem 0;
+  }
+  
+  .excerpt {
+    font-size: 0.75em;
+    max-height: 3.5rem;
+    margin-bottom: 0.375rem;
+  }
+  
+  .meta {
+    font-size: 0.7em;
+  }
+  
+  .meta .item {
+    margin-right: 0.5rem;
+  }
+  
+  .info-footer {
+    gap: 0.375rem;
+  }
+  
+  .info-footer a {
+    font-size: 0.75em;
+    padding: 0.2rem 0.6rem;
+  }
+}
+
+/* 超小屏适配 (360px以下) */
+@media (max-width: 360px) {
+  .post-card,
+  .post-card:nth-child(2n) {
+    margin-bottom: 1rem;
+  }
+
+  .cover,
+  .post-card:nth-child(2n) .cover {
+    height: 8rem;
+    border-radius: 0.375rem 0.375rem 0 0;
+  }
+
+  .info,
+  .post-card:nth-child(2n) .info {
+    height: 8rem;
+  }
+
+  .info-content,
+  .post-card:nth-child(2n) .info-content {
+    padding: 0.5rem 0.5rem 0 0.5rem;
+  }
+  
+  .info h3 {
+    font-size: 0.9em;
+    margin: 0.375rem 0;
+  }
+  
+  .excerpt {
+    font-size: 0.7em;
+    max-height: 3rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .meta {
+    font-size: 0.65em;
+  }
+  
+  .meta .item {
+    margin-right: 0.375rem;
+  }
+  
+  .info-footer {
+    gap: 0.25rem;
+  }
+  
+  .info-footer a {
+    font-size: 0.7em;
+    padding: 0.15rem 0.5rem;
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  .post-card:hover {
+    box-shadow: 0 8px 32px -4px rgba(237, 110, 160, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .post-card:hover .cover img {
+    transform: none;
+  }
+  
+  .info-footer a.btn:hover {
+    transform: none;
+  }
+}
 </style>
