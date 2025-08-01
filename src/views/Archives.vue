@@ -111,48 +111,51 @@
               </div>
 
               <!-- 月份标记（独立item） -->
-              <div
-                v-if="
-                  shouldShowMonth(article, index) &&
-                  !isYearCollapsed(new Date(article.date).getFullYear())
-                "
-                class="article-timeline-item month-item"
-              >
-                <div class="timeline-node">
-                  <div class="node-dot"></div>
-                  <div class="node-line"></div>
-                </div>
-                <div class="month-marker">
-                  <span class="month-text">{{
-                    getMonthName(new Date(article.date).getMonth() + 1)
-                  }}</span>
-                  <button
-                    class="collapse-btn month-collapse-btn"
-                    @click="
-                      toggleMonthCollapse(
-                        new Date(article.date).getFullYear(),
-                        new Date(article.date).getMonth() + 1,
-                      )
-                    "
-                    :class="{
-                      collapsed: isMonthCollapsed(
-                        new Date(article.date).getFullYear(),
-                        new Date(article.date).getMonth() + 1,
-                      ),
-                    }"
-                  >
-                    <i
-                      class="ic i-arrow-down"
+              <transition name="month-fade" mode="out-in">
+                <div
+                  v-if="
+                    shouldShowMonth(article, index) &&
+                    !isYearCollapsed(new Date(article.date).getFullYear())
+                  "
+                  class="article-timeline-item month-item"
+                  key="month-visible"
+                >
+                  <div class="timeline-node">
+                    <div class="node-dot"></div>
+                    <div class="node-line"></div>
+                  </div>
+                  <div class="month-marker">
+                    <span class="month-text">{{
+                      getMonthName(new Date(article.date).getMonth() + 1)
+                    }}</span>
+                    <button
+                      class="collapse-btn month-collapse-btn"
+                      @click="
+                        toggleMonthCollapse(
+                          new Date(article.date).getFullYear(),
+                          new Date(article.date).getMonth() + 1,
+                        )
+                      "
                       :class="{
-                        rotated: !isMonthCollapsed(
+                        collapsed: isMonthCollapsed(
                           new Date(article.date).getFullYear(),
                           new Date(article.date).getMonth() + 1,
                         ),
                       }"
-                    ></i>
-                  </button>
+                    >
+                      <i
+                        class="ic i-arrow-down"
+                        :class="{
+                          rotated: !isMonthCollapsed(
+                            new Date(article.date).getFullYear(),
+                            new Date(article.date).getMonth() + 1,
+                          ),
+                        }"
+                      ></i>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </transition>
 
               <!-- 文章卡片（独立item） -->
               <div
@@ -813,6 +816,12 @@ onMounted(async () => {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* 文章容器动画 */
+.articles-container {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 /* 时间轴容器 */
@@ -1678,6 +1687,9 @@ onMounted(async () => {
 .article-timeline-item {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  transform-origin: top;
+  position: relative;
+  margin-bottom: 2rem;
 }
 
 .article-timeline-item.collapsed,
@@ -1687,8 +1699,185 @@ onMounted(async () => {
   opacity: 0;
   margin: 0;
   padding: 0;
-  transform: scaleY(0);
+  transform: scaleY(0) translateY(-20px);
   transform-origin: top;
+  pointer-events: none;
+}
+
+/* 年份item样式 */
+.year-item {
+  min-height: 80px;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.year-item.collapsed,
+.year-item.year-collapsed {
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.year-item .timeline-node {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 月份item样式 */
+.month-item {
+  min-height: 60px;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.month-item.collapsed,
+.month-item.month-collapsed {
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.month-item .timeline-node {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 文章item样式 */
+.article-item {
+  margin-bottom: 2rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.article-item.collapsed,
+.article-item.year-collapsed,
+.article-item.month-collapsed {
+  margin-bottom: 0;
+}
+
+/* 折叠按钮样式 */
+.collapse-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem;
+  color: #ed6ea0;
+  font-size: 1.2rem;
+}
+
+.collapse-btn:hover {
+  background: rgba(237, 110, 160, 0.1);
+  transform: scale(1.1);
+}
+
+.collapse-btn i {
+  transition: transform 0.3s ease;
+}
+
+.collapse-btn i.rotated {
+  transform: rotate(180deg);
+}
+
+.year-collapse-btn {
+  font-size: 1.5rem;
+}
+
+.month-collapse-btn {
+  font-size: 1.2rem;
+}
+
+/* 时间轴节点折叠动画 */
+.timeline-node {
+  position: absolute;
+  left: 80px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 20px;
+  height: 20px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.article-timeline-item.collapsed .timeline-node,
+.article-timeline-item.year-collapsed .timeline-node,
+.article-timeline-item.month-collapsed .timeline-node {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+
+/* 节点圆点折叠动画 */
+.node-dot {
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border: 3px solid #ed6ea0;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(237, 110, 160, 0.4);
+  position: relative;
+  animation: nodePulse 3s ease-in-out infinite;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.article-timeline-item.collapsed .node-dot,
+.article-timeline-item.year-collapsed .node-dot,
+.article-timeline-item.month-collapsed .node-dot {
+  border-color: rgba(237, 110, 160, 0.3);
+  box-shadow: 0 0 5px rgba(237, 110, 160, 0.2);
+  transform: scale(0.8);
+}
+
+/* 节点连接线折叠动画 */
+.node-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 120px;
+  background: linear-gradient(180deg, #ed6ea0 0%, transparent 100%);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px rgba(237, 110, 160, 0.3);
+  animation: nodeLineGlow 2s ease-in-out infinite;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.article-timeline-item.collapsed .node-line,
+.article-timeline-item.year-collapsed .node-line,
+.article-timeline-item.month-collapsed .node-line {
+  height: 0;
+  opacity: 0;
+  box-shadow: 0 0 2px rgba(237, 110, 160, 0.1);
+}
+
+/* 月份淡入淡出动画 */
+.month-fade-enter-active,
+.month-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.month-fade-enter-from {
+  opacity: 0;
+  transform: translateY(-20px) scaleY(0.8);
+  max-height: 0;
+}
+
+.month-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-20px) scaleY(0.8);
+  max-height: 0;
+}
+
+.month-fade-enter-to,
+.month-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+  max-height: 80px;
 }
 
 /* 年份和月份标记的折叠按钮位置调整 */
