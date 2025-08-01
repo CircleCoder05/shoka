@@ -129,16 +129,19 @@ const bannerStore = useBannerStore()
   }
 
   .app-sidebar-wrapper {
-    flex: none;
-    width: 100%;
-    justify-content: center;
+    /* 移动端使用absolute定位，不占空间 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    z-index: 1000;
   }
 
   .app-sidebar {
-    width: 100%;
-    margin-top: 0;
-    margin-bottom: 20px;
-    min-width: auto;
+    /* 移动端隐藏原来的侧边栏样式 */
+    display: none;
   }
 
   .app-content-wrapper {
