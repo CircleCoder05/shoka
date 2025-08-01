@@ -45,7 +45,7 @@
         </div>
         <div class="article-categories" v-if="articleCategories && articleCategories.length">
           <span v-for="category in articleCategories" :key="category" class="category-tag">
-            {{ category }}
+            {{ getCategoryName(category) }}
           </span>
         </div>
       </div>
@@ -192,6 +192,16 @@ const formatDate = (dateStr) => {
     month: 'long',
     day: 'numeric',
   })
+}
+
+// 获取分类名称（去除数组符号）
+const getCategoryName = (category) => {
+  if (!category) return '未分类'
+  // 如果是数组，取第一个元素
+  if (Array.isArray(category)) {
+    return category[0] || '未分类'
+  }
+  return category
 }
 
 // 监听文章页面变化

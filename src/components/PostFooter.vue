@@ -24,7 +24,7 @@
     <!-- 上一篇/下一篇导航 -->
     <div class="post-navigation">
       <div class="nav-item prev" v-if="prevArticle" :style="prevBackgroundStyle">
-        <router-link :to="`/post/${prevArticle.slug}`" class="nav-link">
+        <router-link :to="`/post/${prevArticle.slug}`" class="nav-link" @click="scrollToTop">
           <div class="nav-content">
             <div class="nav-header">
               <span class="nav-type">上一篇</span>
@@ -39,7 +39,7 @@
       </div>
 
       <div class="nav-item next" v-if="nextArticle" :style="nextBackgroundStyle">
-        <router-link :to="`/post/${nextArticle.slug}`" class="nav-link">
+        <router-link :to="`/post/${nextArticle.slug}`" class="nav-link" @click="scrollToTop">
           <div class="nav-content">
             <div class="nav-header">
               <span class="nav-type">下一篇</span>
@@ -182,6 +182,15 @@ onMounted(() => {
 watch([prevArticle, nextArticle], () => {
   loadBackgroundStyles()
 })
+
+// 滚动到顶部
+const scrollToTop = () => {
+  // 使用平滑滚动到顶部
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+}
 </script>
 
 <style scoped>
