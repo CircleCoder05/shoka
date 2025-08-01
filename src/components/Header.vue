@@ -1,5 +1,16 @@
 <template>
   <header class="header">
+    <!-- 移动端：显示CircleCoder标题和汉堡菜单 -->
+    <div class="mobile-header">
+      <div class="mobile-title">CircleCoder</div>
+      <button class="mobile-menu-btn" @click="toggleMobileSidebar">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+
+    <!-- PC端：显示完整导航 -->
     <nav class="nav">
       <router-link to="/"> <i class="ic i-home"></i>首页 </router-link>
       <router-link to="/archives"> <i class="ic i-archive"></i>归档 </router-link>
@@ -13,7 +24,13 @@
 </template>
 
 <script setup>
-// 组件逻辑
+import { useMobileSidebarStore } from '@/stores/mobileSidebar'
+
+const mobileSidebarStore = useMobileSidebarStore()
+
+const toggleMobileSidebar = () => {
+  mobileSidebarStore.toggleMobileSidebar()
+}
 </script>
 
 <style scoped>
@@ -32,6 +49,50 @@
   top: 0;
   left: 0;
   right: 0;
+}
+
+/* 移动端Header样式 */
+.mobile-header {
+  display: none;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile-title {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobile-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.hamburger-line {
+  width: 24px;
+  height: 3px;
+  background: #ffffff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-menu-btn:hover .hamburger-line {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .nav {
@@ -118,25 +179,22 @@
     background: linear-gradient(135deg, rgba(56, 161, 219, 0.7) 0%, rgba(237, 110, 160, 0.65) 100%);
   }
 
+  /* 隐藏PC端导航，显示移动端Header */
   .nav {
-    gap: 16px;
-    margin-left: 0;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .nav a {
-    padding: 4px 8px;
-    font-size: 0.9em;
-    gap: 4px;
-  }
-
-  .nav i {
-    font-size: 14px;
-  }
-
-  .nav a span {
     display: none;
+  }
+
+  .mobile-header {
+    display: flex;
+  }
+
+  .mobile-title {
+    font-size: 1.1rem;
+  }
+
+  .hamburger-line {
+    width: 22px;
+    height: 2.5px;
   }
 }
 
@@ -147,17 +205,17 @@
     height: 44px;
   }
 
-  .nav {
-    gap: 12px;
+  .mobile-title {
+    font-size: 1rem;
   }
 
-  .nav a {
-    padding: 3px 6px;
-    font-size: 0.85em;
+  .hamburger-line {
+    width: 20px;
+    height: 2px;
   }
 
-  .nav i {
-    font-size: 13px;
+  .mobile-menu-btn {
+    padding: 6px;
   }
 }
 </style>

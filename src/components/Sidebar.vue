@@ -1,6 +1,16 @@
 <template>
-  <div id="sidebar">
+  <!-- 移动端遮罩层 -->
+  <div v-if="isMobileSidebarOpen" class="mobile-sidebar-overlay" @click="closeMobileSidebar"></div>
+
+  <!-- 侧边栏 -->
+  <div id="sidebar" :class="{ 'mobile-open': isMobileSidebarOpen }">
     <div class="inner">
+      <!-- 移动端关闭按钮 -->
+      <button v-if="isMobileSidebarOpen" class="mobile-close-btn" @click="closeMobileSidebar">
+        <span class="close-line"></span>
+        <span class="close-line"></span>
+      </button>
+
       <!-- 切换按钮 - 只在文章页面显示 -->
       <div v-if="isArticlePage" class="tab">
         <div
@@ -73,10 +83,12 @@
               <!-- 导航菜单 -->
               <ul class="menu">
                 <li class="item">
-                  <router-link to="/" rel="section"> <i class="ic i-home"></i>首页 </router-link>
+                  <router-link to="/" rel="section" @click="closeMobileSidebar">
+                    <i class="ic i-home"></i>首页
+                  </router-link>
                 </li>
                 <li class="item">
-                  <router-link to="/about" rel="section">
+                  <router-link to="/about" rel="section" @click="closeMobileSidebar">
                     <i class="ic i-user"></i>关于
                   </router-link>
                 </li>
@@ -84,29 +96,29 @@
                   <a href="javascript:void(0);"> <i class="ic i-feather"></i>文章 </a>
                   <ul class="submenu">
                     <li class="item">
-                      <router-link to="/archives" rel="section">
+                      <router-link to="/archives" rel="section" @click="closeMobileSidebar">
                         <i class="ic i-list-alt"></i>归档
                       </router-link>
                     </li>
                     <li class="item">
-                      <router-link to="/categories" rel="section">
+                      <router-link to="/categories" rel="section" @click="closeMobileSidebar">
                         <i class="ic i-th"></i>分类
                       </router-link>
                     </li>
                     <li class="item">
-                      <router-link to="/tags" rel="section">
+                      <router-link to="/tags" rel="section" @click="closeMobileSidebar">
                         <i class="ic i-tags"></i>标签
                       </router-link>
                     </li>
                   </ul>
                 </li>
                 <li class="item">
-                  <router-link to="/statistics" rel="section">
+                  <router-link to="/statistics" rel="section" @click="closeMobileSidebar">
                     <i class="ic i-clock"></i>统计
                   </router-link>
                 </li>
                 <li class="item">
-                  <router-link to="/friends" rel="section">
+                  <router-link to="/friends" rel="section" @click="closeMobileSidebar">
                     <i class="ic i-heart"></i>友链
                   </router-link>
                 </li>
@@ -132,10 +144,12 @@
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSidebarStore } from '@/stores/sidebar'
+import { useMobileSidebarStore } from '@/stores/mobileSidebar'
 import TableOfContents from './TableOfContents.vue'
 
 const route = useRoute()
 const sidebarStore = useSidebarStore()
+const mobileSidebarStore = useMobileSidebarStore()
 
 const author = ref({
   name: 'CircleCoder',
@@ -162,14 +176,74 @@ const isArticlePage = computed(() => {
 // 从 store 获取状态
 const activePanel = computed(() => sidebarStore.activePanel)
 const articleContent = computed(() => sidebarStore.articleContent)
+const isMobileSidebarOpen = computed(() => mobileSidebarStore.isMobileSidebarOpen)
 
 // 切换面板
 const switchPanel = (panel) => {
   sidebarStore.switchPanel(panel)
 }
+
+// 关闭移动端侧边栏
+const closeMobileSidebar = () => {
+  mobileSidebarStore.closeMobileSidebar()
+}
 </script>
 
 <style scoped>
+/* 移动端遮罩层 */
+.mobile-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+/* 移动端关闭按钮 */
+.mobile-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-close-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.close-line {
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background: #666;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+.close-line:first-child {
+  transform: rotate(45deg);
+}
+
+.close-line:last-child {
+  transform: rotate(-45deg);
+}
+
+.mobile-close-btn:hover .close-line {
+  background: #333;
+}
+
 #sidebar {
   position: sticky;
   top: 40px;
@@ -579,19 +653,36 @@ const switchPanel = (panel) => {
 /* 移动端适配 */
 @media (max-width: 768px) {
   #sidebar {
-    position: relative;
+    position: fixed;
     top: 0;
-    width: 100%;
-    max-height: none;
+    left: -100%;
+    width: 280px;
+    height: 100vh;
+    max-height: 100vh;
     margin-left: 0;
+    background: #fff;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease-in-out;
+    z-index: 1001;
+    overflow-y: auto;
+  }
+
+  #sidebar.mobile-open {
+    left: 0 !important;
+    z-index: 1001 !important;
+    opacity: 1 !important;
+    display: block !important;
   }
 
   #sidebar > .inner {
     width: 100%;
+    height: 100%;
+    padding-top: 60px;
   }
 
   .panels {
     padding: 1.5rem 0 1rem;
+    height: calc(100vh - 60px);
   }
 
   .panels .panel {
@@ -653,10 +744,24 @@ const switchPanel = (panel) => {
     line-height: 2.5;
     font-size: 0.95em;
   }
+
+  #sidebar .tab {
+    position: static !important;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 0.5rem 0;
+    background: none;
+    z-index: auto;
+  }
 }
 
 /* 小屏手机适配 */
 @media (max-width: 480px) {
+  #sidebar {
+    width: 260px;
+  }
+
   .panels {
     padding: 1rem 0 0.5rem;
   }
@@ -726,5 +831,27 @@ const switchPanel = (panel) => {
   --color-pink: #ed6ea0;
   --color-orange: #ec8c69;
   --color-pink-a3: rgba(237, 110, 160, 0.3);
+}
+
+#sidebar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+#sidebar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #b3c0d1 0%, #ed6ea0 100%);
+  border-radius: 6px;
+  min-height: 40px;
+  transition: background 0.3s;
+}
+#sidebar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #ed6ea0 0%, #b3c0d1 100%);
+}
+#sidebar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 6px;
+}
+#sidebar::-webkit-scrollbar-corner {
+  background: transparent;
 }
 </style>
