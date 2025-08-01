@@ -173,68 +173,7 @@
                   <div class="node-dot"></div>
                   <div class="node-line"></div>
                 </div>
-                <div class="article-card">
-                  <!-- 封面图片 -->
-                  <div class="article-cover">
-                    <img
-                      :src="getCoverImage(article)"
-                      :alt="article.title"
-                      @error="handleImageError"
-                    />
-                  </div>
-
-                  <!-- 文章信息 -->
-                  <div class="article-info">
-                    <h3 class="article-title">
-                      <router-link :to="`/post/${article.slug}`">
-                        {{ article.title }}
-                      </router-link>
-                    </h3>
-
-                    <div class="article-meta">
-                      <span class="author">
-                        <i class="ic i-user"></i>
-                        {{ article.author || 'CircleCoder' }}
-                      </span>
-                      <span class="date">
-                        <i class="ic i-calendar"></i>
-                        {{ formatDate(article.date) }}
-                      </span>
-                      <span v-if="getCategoryName(article.categories?.[0])" class="category">
-                        <i class="ic i-flag"></i>
-                        {{ getCategoryName(article.categories[0]) }}
-                      </span>
-                    </div>
-
-                    <div class="article-excerpt">
-                      {{ getExcerpt(article) }}
-                    </div>
-
-                    <div class="article-footer">
-                      <div class="article-stats">
-                        <span class="word-count">
-                          <i class="ic i-pen"></i>
-                          {{ getWordCount(article) }}字
-                        </span>
-                        <span class="read-time">
-                          <i class="ic i-clock"></i>
-                          {{ getReadTime(article) }}
-                        </span>
-                      </div>
-
-                      <div class="article-tags">
-                        <span v-for="tag in getTagsArray(article.tags)" :key="tag" class="tag">
-                          {{ tag }}
-                        </span>
-                      </div>
-
-                      <router-link :to="`/post/${article.slug}`" class="read-more-btn">
-                        阅读全文
-                        <i class="ic i-arrow-right"></i>
-                      </router-link>
-                    </div>
-                  </div>
-                </div>
+                <TimelineArticleCard :article="article" />
               </div>
             </template>
           </div>
@@ -247,6 +186,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useStatisticsStore } from '@/stores/statistics'
+import TimelineArticleCard from '@/components/TimelineArticleCard.vue'
 
 const statisticsStore = useStatisticsStore()
 
@@ -1033,617 +973,66 @@ onMounted(async () => {
   max-width: calc(100% - 1rem);
 }
 
-/* 文章卡片 */
-.article-card {
-  display: flex;
-  width: 100%;
-  max-width: 100%;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  min-height: 200px;
-  box-sizing: border-box;
-}
-
-.article-card::before {
-  content: '';
+/* 时间轴节点折叠动画 */
+.timeline-node {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #ed6ea0 0%, #ec8c69 100%);
-}
-
-.article-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
-}
-
-/* 封面图片 */
-.article-cover {
-  width: 240px;
-  height: 180px;
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.article-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.article-card:hover .article-cover img {
-  transform: scale(1.05);
-}
-
-/* 文章信息 */
-.article-info {
-  flex: 1;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.article-title {
-  margin: 0 0 1rem 0;
-  font-size: 1.3rem;
-  font-weight: 700;
-  line-height: 1.4;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-.article-title a {
-  color: #333;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.article-title a:hover {
-  color: #ed6ea0;
-}
-
-.article-meta {
-  display: flex;
-  gap: 1rem;
-  font-size: 0.8rem;
-  color: #666;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-}
-
-.article-meta span {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.article-meta i {
-  font-size: 0.75rem;
-  color: #ed6ea0;
-}
-
-.article-excerpt {
-  color: #666;
-  line-height: 1.5;
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.article-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-}
-
-.article-stats {
-  display: flex;
-  gap: 0.8rem;
-  font-size: 0.75rem;
-  color: #999;
-  flex-wrap: wrap;
-}
-
-.article-stats span {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.article-stats i {
-  font-size: 0.7rem;
-  color: #ed6ea0;
-}
-
-.article-tags {
-  display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-}
-
-.tag {
-  padding: 0.15rem 0.5rem;
-  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
-  color: #fff;
-  border-radius: 10px;
-  font-size: 0.7rem;
-  font-weight: 500;
-  transition: transform 0.2s ease;
-  white-space: nowrap;
-}
-
-.tag:hover {
-  transform: translateY(-2px);
-}
-
-.read-more-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.4rem 0.8rem;
-  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
-  color: #fff;
-  text-decoration: none;
-  border-radius: 18px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(237, 110, 160, 0.3);
-}
-
-.read-more-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(237, 110, 160, 0.4);
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .archives-page {
-    padding: 1rem;
-  }
-
-  .archives-container {
-    padding: 1.5rem;
-  }
-
-  .page-title {
-    font-size: 2rem;
-  }
-
-  .calendar-filter {
-    padding: 1.5rem;
-  }
-
-  .filter-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-
-  .year-selector,
-  .month-selector {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .month-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .timeline-line {
-    left: 20px;
-    transform: none;
-  }
-
-  .year-marker {
-    margin-left: 40px;
-    justify-content: flex-start;
-  }
-
-  .year-title {
-    font-size: 1.8rem;
-    margin: 0 1rem;
-  }
-
-  .article-timeline-item {
-    margin-left: 40px;
-    flex-direction: column !important;
-    gap: 1rem;
-  }
-
-  .timeline-node {
-    left: -20px;
-    transform: none;
-  }
-
-  .article-cover {
-    width: 100%;
-    height: 200px;
-  }
-
-  .article-info-card {
-    max-width: none;
-    padding: 1.5rem;
-  }
-
-  .article-title {
-    font-size: 1.3rem;
-  }
-
-  .card-footer {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-}
-
-/* 移动端适配 */
-@media (max-width: 768px) {
-  .archives-container {
-    padding: 1rem;
-  }
-
-  .page-title {
-    font-size: 1.8rem;
-  }
-
-  .calendar-filter {
-    margin-bottom: 2rem;
-  }
-
-  .year-selector,
-  .month-selector {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .year-buttons,
-  .month-grid {
-    justify-content: center;
-  }
-
-  .year-buttons button,
-  .month-grid button {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .month-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
-  }
-
-  /* 移动端时间轴样式 */
-  .timeline {
-    margin-left: 0;
-    max-width: none;
-  }
-
-  .timeline-line {
-    left: 40px;
-  }
-
-  .timeline-line::before,
-  .timeline-line::after {
-    left: 40px;
-    transform: translateX(-50%);
-  }
-
-  .year-marker {
-    padding-left: 80px;
-    margin: 2rem 0 1rem 0;
-  }
-
-  .year-title {
-    font-size: 1.8rem;
-    margin-left: 0.5rem;
-  }
-
-  .article-timeline-item {
-    padding-left: 80px;
-    margin-bottom: 2rem;
-  }
-
-  .timeline-node {
-    left: 40px;
-    top: 30px;
-  }
-
-  /* 移动端卡片样式 */
-  .article-card {
-    flex-direction: column;
-    min-height: auto;
-  }
-
-  .article-cover {
-    width: 100%;
-    height: 200px;
-  }
-
-  .article-info {
-    padding: 1rem;
-  }
-
-  .article-title {
-    font-size: 1.2rem;
-    margin-bottom: 0.8rem;
-  }
-
-  .article-meta {
-    margin-bottom: 0.8rem;
-    gap: 0.8rem;
-  }
-
-  .article-excerpt {
-    margin-bottom: 0.8rem;
-  }
-
-  .article-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.8rem;
-  }
-
-  .article-stats {
-    justify-content: flex-start;
-  }
-
-  .article-tags {
-    justify-content: flex-start;
-  }
-
-  .read-more-btn {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-/* 平板适配 */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .archives-container {
-    padding: 2rem;
-  }
-
-  .timeline {
-    max-width: 900px;
-  }
-
-  .article-cover {
-    width: 240px;
-    height: 180px;
-  }
-
-  .article-info {
-    padding: 1.2rem;
-  }
-
-  .article-title {
-    font-size: 1.3rem;
-  }
-
-  .year-title {
-    font-size: 2rem;
-  }
-}
-
-/* 年份标记（内联） */
-.year-marker-inline {
-  position: absolute;
-  left: 20px;
-  top: 20px;
-  display: flex;
-  align-items: center;
-  z-index: 15;
-}
-
-.year-dot-inline {
+  left: 80px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
   width: 20px;
   height: 20px;
-  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
-  border: 4px solid #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 20px rgba(237, 110, 160, 0.6);
-  animation: yearDotPulse 4s ease-in-out infinite;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.year-title-inline {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #333;
-  margin-left: 1rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: titleGlow 3s ease-in-out infinite alternate;
+.article-timeline-item.collapsed .timeline-node,
+.article-timeline-item.year-collapsed .timeline-node,
+.article-timeline-item.month-collapsed .timeline-node {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
 }
 
-/* 月份标记（内联） */
-.month-marker-inline {
-  position: absolute;
-  left: 20px;
-  top: 35px;
-  display: flex;
-  align-items: center;
-  z-index: 10;
-}
-
-.month-dot-inline {
+/* 节点圆点折叠动画 */
+.node-dot {
   width: 16px;
   height: 16px;
   background: #fff;
   border: 3px solid #ed6ea0;
   border-radius: 50%;
-  box-shadow: 0 0 15px rgba(237, 110, 160, 0.5);
+  box-shadow: 0 0 15px rgba(237, 110, 160, 0.4);
+  position: relative;
   animation: nodePulse 3s ease-in-out infinite;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.month-title-inline {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #ed6ea0;
-  margin-left: 0.8rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+.article-timeline-item.collapsed .node-dot,
+.article-timeline-item.year-collapsed .node-dot,
+.article-timeline-item.month-collapsed .node-dot {
+  border-color: rgba(237, 110, 160, 0.3);
+  box-shadow: 0 0 5px rgba(237, 110, 160, 0.2);
+  transform: scale(0.8);
 }
 
-/* 年份标记卡片 */
-.year-card {
+/* 节点连接线折叠动画 */
+.node-line {
   position: absolute;
-  left: 80px;
-  top: 50px;
-  transform: translateX(-50%);
-  z-index: 10;
-  width: 120px;
+  top: 50%;
+  left: 50%;
+  width: 2px;
   height: 120px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 1rem;
-  box-sizing: border-box;
-  border: 2px solid #ed6ea0;
-  transition: all 0.3s ease;
-}
-
-.year-card:hover {
-  transform: translateX(-50%) scale(1.05);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
-}
-
-.year-card-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.year-dot-card {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
-  border: 4px solid #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 20px rgba(237, 110, 160, 0.4);
-  animation: yearDotPulse 4s ease-in-out infinite;
-}
-
-.year-title-card {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #333;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: titleGlow 3s ease-in-out infinite alternate;
-}
-
-/* 月份标记卡片 */
-.month-card {
-  position: absolute;
-  left: 80px;
-  top: 50px;
-  transform: translateX(-50%);
-  z-index: 10;
-  width: 100px;
-  height: 80px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0.8rem;
-  box-sizing: border-box;
-  border: 2px solid #ed6ea0;
-  transition: all 0.3s ease;
-}
-
-.month-card:hover {
-  transform: translateX(-50%) scale(1.05);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
-}
-
-.month-card-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.month-dot-card {
-  width: 24px;
-  height: 24px;
-  background: #fff;
-  border: 2px solid #ed6ea0;
-  border-radius: 50%;
-  box-shadow: 0 0 12px rgba(237, 110, 160, 0.4);
-  animation: nodePulse 3s ease-in-out infinite;
-}
-
-.month-title-card {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #ed6ea0;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-/* 年份item样式 */
-.year-item {
-  min-height: 80px;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-}
-
-.year-item .timeline-node {
-  top: 50%;
+  background: linear-gradient(180deg, #ed6ea0 0%, transparent 100%);
   transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px rgba(237, 110, 160, 0.3);
+  animation: nodeLineGlow 2s ease-in-out infinite;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 月份item样式 */
-.month-item {
-  min-height: 60px;
-  margin-bottom: 0.3rem;
-  display: flex;
-  align-items: center;
-}
-
-.month-item .timeline-node {
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* 文章item样式 */
-.article-item {
-  margin-bottom: 2rem;
+.article-timeline-item.collapsed .node-line,
+.article-timeline-item.year-collapsed .node-line,
+.article-timeline-item.month-collapsed .node-line {
+  height: 0;
+  opacity: 0;
+  box-shadow: 0 0 2px rgba(237, 110, 160, 0.1);
 }
 
 /* 折叠按钮样式 */
@@ -1754,105 +1143,6 @@ onMounted(async () => {
 .article-item.year-collapsed,
 .article-item.month-collapsed {
   margin-bottom: 0;
-}
-
-/* 折叠按钮样式 */
-.collapse-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 1rem;
-  color: #ed6ea0;
-  font-size: 1.2rem;
-}
-
-.collapse-btn:hover {
-  background: rgba(237, 110, 160, 0.1);
-  transform: scale(1.1);
-}
-
-.collapse-btn i {
-  transition: transform 0.3s ease;
-}
-
-.collapse-btn i.rotated {
-  transform: rotate(180deg);
-}
-
-.year-collapse-btn {
-  font-size: 1.5rem;
-}
-
-.month-collapse-btn {
-  font-size: 1.2rem;
-}
-
-/* 时间轴节点折叠动画 */
-.timeline-node {
-  position: absolute;
-  left: 80px;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  width: 20px;
-  height: 20px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.article-timeline-item.collapsed .timeline-node,
-.article-timeline-item.year-collapsed .timeline-node,
-.article-timeline-item.month-collapsed .timeline-node {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.5);
-}
-
-/* 节点圆点折叠动画 */
-.node-dot {
-  width: 16px;
-  height: 16px;
-  background: #fff;
-  border: 3px solid #ed6ea0;
-  border-radius: 50%;
-  box-shadow: 0 0 15px rgba(237, 110, 160, 0.4);
-  position: relative;
-  animation: nodePulse 3s ease-in-out infinite;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.article-timeline-item.collapsed .node-dot,
-.article-timeline-item.year-collapsed .node-dot,
-.article-timeline-item.month-collapsed .node-dot {
-  border-color: rgba(237, 110, 160, 0.3);
-  box-shadow: 0 0 5px rgba(237, 110, 160, 0.2);
-  transform: scale(0.8);
-}
-
-/* 节点连接线折叠动画 */
-.node-line {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 2px;
-  height: 120px;
-  background: linear-gradient(180deg, #ed6ea0 0%, transparent 100%);
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 8px rgba(237, 110, 160, 0.3);
-  animation: nodeLineGlow 2s ease-in-out infinite;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.article-timeline-item.collapsed .node-line,
-.article-timeline-item.year-collapsed .node-line,
-.article-timeline-item.month-collapsed .node-line {
-  height: 0;
-  opacity: 0;
-  box-shadow: 0 0 2px rgba(237, 110, 160, 0.1);
 }
 
 /* 月份淡入淡出动画 */
