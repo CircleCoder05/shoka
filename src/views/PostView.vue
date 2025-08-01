@@ -105,6 +105,8 @@ const loadArticle = async (slug) => {
 
     // 设置侧边栏文章内容
     sidebarStore.setArticleContent(processedHtml)
+    // 确保在文章页面显示目录侧边栏
+    sidebarStore.switchPanel('contents')
   } catch (err) {
     error.value = err.message
     console.error('Failed to load article:', err)
