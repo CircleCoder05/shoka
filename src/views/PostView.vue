@@ -21,7 +21,7 @@
       </div>
       <div
         class="post-content"
-        v-html="article.html"
+        v-html="processedArticleHtml"
         v-code-block
         v-image-optimize
         v-media-block
@@ -43,13 +43,16 @@ import { useRoute } from 'vue-router'
 import { useArticlesStore } from '@/stores/articles'
 import { useBannerStore } from '@/stores/banner'
 import PostFooter from '@/components/PostFooter.vue'
+import { useSidebarStore } from '@/stores/sidebar'
 
 const route = useRoute()
 const articlesStore = useArticlesStore()
 const bannerStore = useBannerStore()
+const sidebarStore = useSidebarStore()
 const article = ref(null)
 const loading = ref(true)
 const error = ref(null)
+const processedArticleHtml = ref('')
 
 const formatDate = (dateStr) => {
   if (!dateStr) return ''
@@ -59,6 +62,21 @@ const formatDate = (dateStr) => {
     month: 'long',
     day: 'numeric',
   })
+}
+
+// 为标题添加 id
+const addHeadingIds = (html) => {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(html, 'text/html')
+  const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6')
+
+  headings.forEach((heading, index) => {
+    if (!heading.id) {
+      heading.id = `heading-${index}`
+    }
+  })
+
+  return doc.body.innerHTML
 }
 
 const loadArticle = async (slug) => {
@@ -80,6 +98,13 @@ const loadArticle = async (slug) => {
 
     // 设置文章 banner 信息
     bannerStore.setArticleBanner(article.value)
+
+    // 为文章标题添加 id
+    const processedHtml = addHeadingIds(article.value.html)
+    processedArticleHtml.value = processedHtml
+
+    // 设置侧边栏文章内容
+    sidebarStore.setArticleContent(processedHtml)
   } catch (err) {
     error.value = err.message
     console.error('Failed to load article:', err)
@@ -107,6 +132,8 @@ watch(
 onUnmounted(() => {
   // 组件卸载时恢复默认 banner
   bannerStore.setDefaultBanner()
+  // 重置侧边栏状态
+  sidebarStore.reset()
 })
 </script>
 

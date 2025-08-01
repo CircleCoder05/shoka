@@ -1,9 +1,31 @@
 <template>
   <div id="sidebar">
     <div class="inner">
+      <!-- 切换按钮 - 只在文章页面显示 -->
+      <div v-if="isArticlePage" class="tab">
+        <div
+          class="item overview"
+          :class="{ active: activePanel === 'overview' }"
+          @click="switchPanel('overview')"
+        >
+          <span>概览</span>
+        </div>
+        <div
+          class="item contents"
+          :class="{ active: activePanel === 'contents' }"
+          @click="switchPanel('contents')"
+        >
+          <span>目录</span>
+        </div>
+      </div>
+
       <div class="panels">
         <div class="inner">
-          <div class="overview panel" data-title="站点概览">
+          <div
+            class="overview panel"
+            :class="{ active: activePanel === 'overview' }"
+            data-title="站点概览"
+          >
             <!-- 作者信息 -->
             <div class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
               <img class="image" itemprop="image" alt="CircleCoder" :src="author.avatar" />
@@ -86,6 +108,15 @@
               </li>
             </ul>
           </div>
+
+          <!-- 目录面板 -->
+          <div
+            class="contents panel"
+            :class="{ active: activePanel === 'contents' }"
+            data-title="目录"
+          >
+            <TableOfContents :content="articleContent" />
+          </div>
         </div>
       </div>
     </div>
@@ -93,7 +124,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { useSidebarStore } from '@/stores/sidebar'
+import TableOfContents from './TableOfContents.vue'
+
+const route = useRoute()
+const sidebarStore = useSidebarStore()
 
 const author = ref({
   name: 'CircleCoder',
@@ -111,6 +148,20 @@ const social = ref({
   github: 'https://github.com/CircleCoder05',
   music: 'https://music.163.com/#/user/home?id=yourid',
 })
+
+// 判断是否为文章页面
+const isArticlePage = computed(() => {
+  return route.name === 'post'
+})
+
+// 从 store 获取状态
+const activePanel = computed(() => sidebarStore.activePanel)
+const articleContent = computed(() => sidebarStore.articleContent)
+
+// 切换面板
+const switchPanel = (panel) => {
+  sidebarStore.switchPanel(panel)
+}
 </script>
 
 <style scoped>
@@ -155,8 +206,73 @@ const social = ref({
 }
 
 .panels .panel {
-  display: block;
+  display: none;
   padding: 0.875rem 0.9375rem 2rem;
+}
+
+.panels .panel.active {
+  display: block;
+}
+
+/* 切换按钮样式 */
+.tab {
+  position: absolute;
+  display: inline-flex;
+  padding: 1.875rem 0 0.625rem;
+  margin: 0;
+  min-height: 1.875rem;
+  z-index: 10;
+}
+
+.tab .item {
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.875rem;
+  padding: 0.3125rem 0.9375rem;
+  color: var(--grey-5);
+  border-radius: 0.625rem;
+  text-align: center;
+  text-decoration: none;
+  background-color: rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease-out;
+  margin: 0 0.3125rem;
+}
+
+.tab .item span {
+  display: none;
+  word-break: keep-all;
+}
+
+.tab .item.active span {
+  display: inherit;
+}
+
+.tab .item:hover,
+.tab .item.active {
+  color: #fff;
+  background-image: linear-gradient(to right, var(--color-pink) 0, var(--color-orange) 100%);
+  box-shadow: 0 0 0.75rem var(--color-pink-a3);
+}
+
+.tab .item.active:hover {
+  box-shadow: 0 0 0.75rem var(--color-pink);
+}
+
+.tab .item::before {
+  font-family: 'ic';
+  margin-right: 0.3125rem;
+}
+
+.tab .item.overview::before {
+  content: '\e900'; /* 概览图标 */
+}
+
+.tab .item.contents::before {
+  content: '\e901'; /* 目录图标 */
+}
+
+.tab .item.active::before {
+  margin-right: 0.3125rem;
 }
 
 /* 作者信息样式 */
