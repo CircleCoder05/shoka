@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 export const useSidebarStore = defineStore('sidebar', () => {
   // 侧边栏状态
-  const activePanel = ref('overview')
+  const activePanel = ref('contents') // 默认显示目录
   const articleContent = ref('')
 
   // 切换面板
@@ -18,7 +18,13 @@ export const useSidebarStore = defineStore('sidebar', () => {
 
   // 重置状态
   const reset = () => {
-    activePanel.value = 'overview'
+    // 在文章页面保持目录模式，其他页面显示概览
+    const currentPath = window.location.pathname
+    if (currentPath.includes('/post/')) {
+      activePanel.value = 'contents'
+    } else {
+      activePanel.value = 'overview'
+    }
     articleContent.value = ''
   }
 
