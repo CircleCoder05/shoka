@@ -23,24 +23,16 @@
         <h1 class="article-title">{{ articleTitle }}</h1>
         <div class="article-meta">
           <div class="meta-item">
-            <span class="meta-label">作者:</span>
-            <span class="meta-value">{{ articleAuthor }}</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">发布时间:</span>
+            <span class="icon"><i class="ic i-calendar"></i></span>
             <span class="meta-value">{{ formatDate(articleDate) }}</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">字数:</span>
+            <span class="icon"><i class="ic i-pen"></i></span>
             <span class="meta-value">{{ articleWordCount }}</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">阅读时间:</span>
-            <span class="meta-value">{{ articleReadTime }}分钟</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">浏览量:</span>
-            <span class="meta-value">{{ articleViews }}</span>
+            <span class="icon"><i class="ic i-clock"></i></span>
+            <span class="meta-value">{{ articleReadTime }}</span>
           </div>
         </div>
         <div class="article-categories" v-if="articleCategories && articleCategories.length">
@@ -385,15 +377,25 @@ onUnmounted(() => {
   align-items: center;
   gap: 8px;
   font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.meta-label {
-  opacity: 0.8;
-  font-weight: 500;
+.meta-item .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
 }
 
-.meta-value {
+.meta-item .icon i {
+  font-size: 1.1em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.meta-item .meta-value {
   font-weight: 600;
+  color: #fff;
 }
 
 .article-categories {
@@ -488,8 +490,8 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .app-banner {
-    height: 50vh;
-    min-height: 280px;
+    height: 60vh;
+    min-height: 60vh;
     margin-top: 0; /* 移除margin-top */
   }
 
@@ -507,20 +509,31 @@ onUnmounted(() => {
   }
 
   .article-meta {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: nowrap;
   }
 
   .meta-item {
     font-size: 0.9rem;
+    gap: 6px;
+  }
+
+  .meta-item .icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .meta-item .icon i {
+    font-size: 1em;
   }
 }
 
 @media (max-width: 480px) {
   .app-banner {
-    height: 40vh;
-    min-height: 240px;
+    height: 60vh;
+    min-height: 60vh;
     margin-top: 0; /* 移除margin-top */
   }
 
@@ -537,11 +550,21 @@ onUnmounted(() => {
   }
 
   .article-meta {
-    gap: 8px;
+    gap: 12px;
   }
 
   .meta-item {
     font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  .meta-item .icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .meta-item .icon i {
+    font-size: 0.9em;
   }
 
   .category-tag {
