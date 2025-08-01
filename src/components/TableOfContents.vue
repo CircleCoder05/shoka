@@ -113,47 +113,56 @@ const autoCollapseEnabled = ref(false) // 自动折叠开关
 
 // 生成目录项
 const generateToc = (content) => {
-  if (!content) return []
+  try {
+    if (!content) return []
 
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(content, 'text/html')
-  const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6')
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(content, 'text/html')
+    const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6')
 
-  const items = []
-  const stack = []
+    const items = []
+    const stack = []
 
-  headings.forEach((heading, index) => {
-    const level = parseInt(heading.tagName.charAt(1))
-    const text = heading.textContent.trim()
-    let id = heading.id
+    headings.forEach((heading, index) => {
+      try {
+        const level = parseInt(heading.tagName.charAt(1))
+        const text = heading.textContent.trim()
+        let id = heading.id
 
-    // 如果没有 id，生成一个
-    if (!id) {
-      id = `heading-${index}`
-    }
+        // 如果没有 id，生成一个
+        if (!id) {
+          id = `heading-${index}`
+        }
 
-    const item = {
-      id,
-      text,
-      level,
-      children: [],
-    }
+        const item = {
+          id,
+          text,
+          level,
+          children: [],
+        }
 
-    // 构建层级结构
-    while (stack.length > 0 && stack[stack.length - 1].level >= level) {
-      stack.pop()
-    }
+        // 构建层级结构
+        while (stack.length > 0 && stack[stack.length - 1].level >= level) {
+          stack.pop()
+        }
 
-    if (stack.length === 0) {
-      items.push(item)
-    } else {
-      stack[stack.length - 1].children.push(item)
-    }
+        if (stack.length === 0) {
+          items.push(item)
+        } else {
+          stack[stack.length - 1].children.push(item)
+        }
 
-    stack.push(item)
-  })
+        stack.push(item)
+      } catch (error) {
+        console.warn('TOC: Failed to process heading:', heading, error)
+      }
+    })
 
-  return items
+    return items
+  } catch (error) {
+    console.warn('TOC: Failed to generate TOC:', error)
+    return []
+  }
 }
 
 // 获取目录项样式类
@@ -201,98 +210,136 @@ const toggleAutoCollapse = () => {
 
 // 滚动到锚点
 const scrollToAnchor = (id, event) => {
-  event.preventDefault()
+  try {
+    event.preventDefault()
 
-  const element = document.getElementById(id)
-  if (element) {
-    const headerHeight = 56 // 固定导航栏高度
-    const elementTop = element.offsetTop - headerHeight - 20
+    const element = document.getElementById(id)
+    if (element) {
+      const headerHeight = 56 // 固定导航栏高度
+      const elementTop = element.offsetTop - headerHeight - 20
 
-    window.scrollTo({
-      top: elementTop,
-      behavior: 'smooth',
-    })
+      window.scrollTo({
+        top: elementTop,
+        behavior: 'smooth',
+      })
 
-    // 更新 URL
-    const url = new URL(window.location)
-    url.hash = id
-    window.history.replaceState(null, '', url)
+      // 更新 URL
+      const url = new URL(window.location)
+      url.hash = id
+      window.history.replaceState(null, '', url)
+    }
+  } catch (error) {
+    console.warn('TOC: Failed to scroll to anchor:', id, error)
   }
 }
 
 // 监听滚动，更新当前活动项
 const updateActiveItem = () => {
-  const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6')
-  const headerHeight = 56
+  try {
+    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6')
+    const headerHeight = 56
 
-  let currentId = ''
+    let currentId = ''
 
-  headings.forEach((heading) => {
-    const rect = heading.getBoundingClientRect()
-    if (rect.top <= headerHeight + 50) {
-      currentId = heading.id
+    headings.forEach((heading) => {
+      try {
+        const rect = heading.getBoundingClientRect()
+        if (rect.top <= headerHeight + 50) {
+          currentId = heading.id
+        }
+      } catch (error) {
+        console.warn('TOC Scroll error for heading:', heading, error)
+      }
+    })
+
+    if (currentId && activeId.value !== currentId) {
+      console.log('TOC Scroll Active changed:', activeId.value, '->', currentId)
+      activeId.value = currentId
+      // 在自动模式下，滚动时也触发智能折叠
+      if (autoCollapseEnabled.value) {
+        smartExpandCollapse(currentId)
+      }
     }
-  })
-
-  if (currentId && activeId.value !== currentId) {
-    console.log('TOC Scroll Active changed:', activeId.value, '->', currentId)
-    activeId.value = currentId
-    // 在自动模式下，滚动时也触发智能折叠
-    if (autoCollapseEnabled.value) {
-      smartExpandCollapse(currentId)
-    }
+  } catch (error) {
+    console.warn('TOC updateActiveItem error:', error)
   }
 }
 
 // 监听滚动事件
 onMounted(() => {
-  window.addEventListener('scroll', updateActiveItem)
+  try {
+    window.addEventListener('scroll', updateActiveItem)
+  } catch (error) {
+    console.warn('TOC: Failed to add scroll listener:', error)
+  }
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', updateActiveItem)
+  try {
+    window.removeEventListener('scroll', updateActiveItem)
+  } catch (error) {
+    console.warn('TOC: Failed to remove scroll listener:', error)
+  }
 })
 
 // 创建 Intersection Observer
 const createIntersectionObserver = () => {
-  if (!window.IntersectionObserver) return
+  try {
+    if (!window.IntersectionObserver) {
+      console.warn('TOC: IntersectionObserver not supported')
+      return
+    }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      let newActiveId = null
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let newActiveId = null
 
-      // 找到最合适的活动项
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const rect = entry.boundingClientRect
-          const headerHeight = 56
+        // 找到最合适的活动项
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            try {
+              // 确保 boundingClientRect 是属性而不是方法
+              const rect = entry.boundingClientRect || entry.getBoundingClientRect?.()
+              if (!rect) return
 
-          // 选择在视口顶部附近的标题
-          if (rect.top <= headerHeight + 100) {
-            newActiveId = entry.target.id
+              const headerHeight = 56
+
+              // 选择在视口顶部附近的标题
+              if (rect.top <= headerHeight + 100) {
+                newActiveId = entry.target.id
+              }
+            } catch (error) {
+              console.warn('TOC IntersectionObserver error:', error)
+            }
           }
+        })
+
+        // 更新活动项
+        if (newActiveId && activeId.value !== newActiveId) {
+          console.log('TOC Observer Active changed:', activeId.value, '->', newActiveId)
+          activeId.value = newActiveId
+          // 智能展开和折叠
+          smartExpandCollapse(newActiveId)
         }
-      })
+      },
+      {
+        rootMargin: '-56px 0px -50% 0px',
+        threshold: [0, 0.1, 0.5, 1],
+      },
+    )
 
-      // 更新活动项
-      if (newActiveId && activeId.value !== newActiveId) {
-        console.log('TOC Observer Active changed:', activeId.value, '->', newActiveId)
-        activeId.value = newActiveId
-        // 智能展开和折叠
-        smartExpandCollapse(newActiveId)
+    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6')
+    console.log('TOC Found headings:', headings.length)
+    headings.forEach((heading) => {
+      try {
+        observer.observe(heading)
+      } catch (error) {
+        console.warn('TOC: Failed to observe heading:', heading, error)
       }
-    },
-    {
-      rootMargin: '-56px 0px -50% 0px',
-      threshold: [0, 0.1, 0.5, 1],
-    },
-  )
-
-  const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6')
-  console.log('TOC Found headings:', headings.length)
-  headings.forEach((heading) => {
-    observer.observe(heading)
-  })
+    })
+  } catch (error) {
+    console.warn('TOC: Failed to create IntersectionObserver:', error)
+  }
 }
 
 // 智能展开和折叠
@@ -361,18 +408,26 @@ const initializeExpandedItems = () => {
 watch(
   () => props.content,
   (newContent) => {
-    tocItems.value = generateToc(newContent)
-    // 初始化展开状态
-    initializeExpandedItems()
+    try {
+      tocItems.value = generateToc(newContent)
+      // 初始化展开状态
+      initializeExpandedItems()
+    } catch (error) {
+      console.warn('TOC: Failed to update content:', error)
+    }
   },
   { immediate: true },
 )
 
 onMounted(() => {
-  // 延迟执行，确保 DOM 已渲染
-  setTimeout(() => {
-    createIntersectionObserver()
-  }, 100)
+  try {
+    // 延迟执行，确保 DOM 已渲染
+    setTimeout(() => {
+      createIntersectionObserver()
+    }, 100)
+  } catch (error) {
+    console.warn('TOC: Failed to mount component:', error)
+  }
 })
 </script>
 
