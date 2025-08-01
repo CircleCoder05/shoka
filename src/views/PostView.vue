@@ -1,39 +1,37 @@
 <template>
-  <div class="post-content-wrapper">
-    <div v-if="loading" class="loading">
-      <div class="loading-spinner"></div>
-      <p>加载中...</p>
-    </div>
-    <div v-else-if="error" class="error">
-      <h2>文章加载失败</h2>
-      <p>{{ error }}</p>
-    </div>
-    <div v-else-if="article" class="post-card-outer">
-      <div class="post-header">
-        <h1 class="post-title">{{ article.title }}</h1>
-        <div class="post-meta">
-          <span class="post-date">{{ formatDate(article.date) }}</span>
-          <span v-if="article.author" class="post-author">作者: {{ article.author }}</span>
-          <div v-if="article.tags && article.tags.length" class="post-tags">
-            <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
-          </div>
+  <div v-if="loading" class="loading">
+    <div class="loading-spinner"></div>
+    <p>加载中...</p>
+  </div>
+  <div v-else-if="error" class="error">
+    <h2>文章加载失败</h2>
+    <p>{{ error }}</p>
+  </div>
+  <div v-else-if="article" class="post-card-outer">
+    <div class="post-header">
+      <h1 class="post-title">{{ article.title }}</h1>
+      <div class="post-meta">
+        <span class="post-date">{{ formatDate(article.date) }}</span>
+        <span v-if="article.author" class="post-author">作者: {{ article.author }}</span>
+        <div v-if="article.tags && article.tags.length" class="post-tags">
+          <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
         </div>
       </div>
-      <div
-        class="post-content"
-        v-html="processedArticleHtml"
-        v-code-block
-        v-image-optimize
-        v-media-block
-      ></div>
-
-      <!-- 文章底部：版权信息和上一篇/下一篇导航 -->
-      <PostFooter
-        :current-slug="route.params.slug"
-        :author="article.author || 'CircleCoder'"
-        site-name="碼農書架"
-      />
     </div>
+    <div
+      class="post-content"
+      v-html="processedArticleHtml"
+      v-code-block
+      v-image-optimize
+      v-media-block
+    ></div>
+
+    <!-- 文章底部：版权信息和上一篇/下一篇导航 -->
+    <PostFooter
+      :current-slug="route.params.slug"
+      :author="article.author || 'CircleCoder'"
+      site-name="碼農書架"
+    />
   </div>
 </template>
 
@@ -140,16 +138,6 @@ onUnmounted(() => {
 </script>
 
 <style>
-/* 基础布局 */
-.post-content-wrapper {
-  width: 80%;
-  max-width: 960px;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
 /* 加载和错误状态 */
 .loading,
 .error {
@@ -191,15 +179,16 @@ onUnmounted(() => {
 /* 文章卡片 */
 .post-card-outer {
   width: 100%;
-  max-width: 960px;
+  max-width: 1050px !important;
   background: #fff;
   border-radius: 0;
   box-shadow:
     0 8px 48px 0 rgba(237, 110, 160, 0.18),
     0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 2.5rem;
-  margin: 0 auto;
+  padding: 2rem;
+  margin: 0;
   overflow: visible;
+  box-sizing: border-box;
 }
 
 /* 文章头部 */
@@ -504,9 +493,6 @@ onUnmounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 1024px) {
-  .post-content-wrapper {
-    width: 85%;
-  }
   .post-card-outer {
     padding: 2rem;
   }
@@ -516,9 +502,6 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .post-content-wrapper {
-    width: 90%;
-  }
   .post-card-outer {
     padding: 1.5rem;
     border-radius: 12px;
@@ -567,9 +550,6 @@ onUnmounted(() => {
 }
 
 @media (max-width: 480px) {
-  .post-content-wrapper {
-    width: 95%;
-  }
   .post-card-outer {
     padding: 1rem;
     border-radius: 8px;
