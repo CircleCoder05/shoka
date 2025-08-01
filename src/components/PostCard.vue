@@ -52,8 +52,9 @@ defineProps({
 .post-card {
   display: flex;
   height: 14rem;
-  width: calc(100% - 2rem);
-  min-width: calc(100% - 2rem);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   border-radius: 0.5rem;
   box-shadow:
     0 8px 32px -4px rgba(237, 110, 160, 0.18),
@@ -61,7 +62,8 @@ defineProps({
   transition: all 0.2s ease-in-out;
   margin-bottom: 2rem;
   background: #fff;
-  overflow: visible;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .post-card:hover {
@@ -98,13 +100,13 @@ defineProps({
 /* 信息区域样式 */
 .info {
   position: relative;
-  width: 50%;
   height: 100%;
   flex: 1;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   padding: 0;
+  min-width: 0;
 }
 
 .info-content {
@@ -172,7 +174,8 @@ defineProps({
   padding: 0;
   gap: 0.5rem;
   background: none;
-  overflow: visible;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .info-footer a {
@@ -187,12 +190,18 @@ defineProps({
   background: none;
   transition: all 0.2s;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .info-footer a.btn {
   color: #fff;
   background-image: linear-gradient(to right, #ed6ea0 0, #ec8c69 100%);
   border-radius: 0.5rem 0 0.5rem 0;
+  flex-shrink: 0;
 }
 
 .info-footer a.btn:hover {
@@ -232,13 +241,15 @@ defineProps({
     flex-direction: column;
     height: fit-content;
     max-height: fit-content;
+    width: 100%;
+    min-width: 100%;
   }
 
   .cover,
   .post-card:nth-child(2n) .cover {
     width: 100%;
     height: 14rem;
-    margin: auto;
+    margin: 0;
     clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
     border-radius: 0.625rem 0.625rem 0 0;
   }
@@ -254,6 +265,17 @@ defineProps({
   .post-card:nth-child(2n) .info-content {
     padding: 1rem 1rem 0 1rem;
   }
+
+  .info-footer,
+  .post-card:nth-child(2n) .info-footer {
+    gap: 0.25rem;
+    padding: 0 !important;
+  }
+
+  .info-footer a {
+    font-size: 0.8em;
+    padding: 0.25rem 0.75rem;
+  }
 }
 
 /* 响应式适配 */
@@ -263,16 +285,16 @@ defineProps({
   .post-card {
     height: 16rem;
   }
-  
+
   .info h3 {
     font-size: 1.2em;
   }
-  
+
   .excerpt {
     font-size: 0.9em;
     max-height: 5.5rem;
   }
-  
+
   .meta {
     font-size: 0.85em;
   }
@@ -283,11 +305,11 @@ defineProps({
   .post-card {
     height: 14rem;
   }
-  
+
   .info h3 {
     font-size: 1.1em;
   }
-  
+
   .excerpt {
     font-size: 0.875em;
     max-height: 5rem;
@@ -299,83 +321,34 @@ defineProps({
   .post-card {
     height: 13rem;
   }
-  
+
   .cover {
     margin-right: 1.25rem;
   }
-  
+
   .post-card:nth-child(2n) .cover {
     margin-left: 1.25rem;
   }
-  
+
   .info-content {
     padding: 0.875rem 1.25rem 0 0;
   }
-  
+
   .post-card:nth-child(2n) .info-content {
     padding: 0.875rem 0 0 1.25rem;
   }
-  
+
   .info h3 {
     font-size: 1.05em;
   }
-  
+
   .excerpt {
     font-size: 0.85em;
     max-height: 4.5rem;
   }
-  
+
   .meta {
     font-size: 0.8em;
-  }
-}
-
-/* 移动端适配 (480px - 767px) */
-@media (max-width: 767px) and (min-width: 481px) {
-  .post-card,
-  .post-card:nth-child(2n) {
-    flex-direction: column;
-    height: fit-content;
-    max-height: fit-content;
-  }
-
-  .cover,
-  .post-card:nth-child(2n) .cover {
-    width: 100%;
-    height: 12rem;
-    margin: auto;
-    clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
-    border-radius: 0.625rem 0.625rem 0 0;
-  }
-
-  .info,
-  .post-card:nth-child(2n) .info {
-    width: 100%;
-    height: 12rem;
-    padding: 0;
-  }
-
-  .info-content,
-  .post-card:nth-child(2n) .info-content {
-    padding: 0.875rem 0.875rem 0 0.875rem;
-  }
-  
-  .info h3 {
-    font-size: 1em;
-  }
-  
-  .excerpt {
-    font-size: 0.8em;
-    max-height: 4rem;
-  }
-  
-  .meta {
-    font-size: 0.75em;
-  }
-  
-  .info-footer a {
-    font-size: 0.8em;
-    padding: 0.25rem 0.75rem;
   }
 }
 
@@ -387,13 +360,15 @@ defineProps({
     height: fit-content;
     max-height: fit-content;
     margin-bottom: 1.5rem;
+    width: 100%;
+    min-width: 100%;
   }
 
   .cover,
   .post-card:nth-child(2n) .cover {
     width: 100%;
     height: 10rem;
-    margin: auto;
+    margin: 0;
     clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
     border-radius: 0.5rem 0.5rem 0 0;
   }
@@ -409,30 +384,31 @@ defineProps({
   .post-card:nth-child(2n) .info-content {
     padding: 0.75rem 0.75rem 0 0.75rem;
   }
-  
+
+  .info-footer {
+    gap: 0.2rem;
+    padding: 0 0.75rem 0.75rem 0.75rem;
+  }
+
   .info h3 {
     font-size: 0.95em;
     margin: 0.5rem 0;
   }
-  
+
   .excerpt {
     font-size: 0.75em;
     max-height: 3.5rem;
     margin-bottom: 0.375rem;
   }
-  
+
   .meta {
     font-size: 0.7em;
   }
-  
+
   .meta .item {
     margin-right: 0.5rem;
   }
-  
-  .info-footer {
-    gap: 0.375rem;
-  }
-  
+
   .info-footer a {
     font-size: 0.75em;
     padding: 0.2rem 0.6rem;
@@ -444,12 +420,14 @@ defineProps({
   .post-card,
   .post-card:nth-child(2n) {
     margin-bottom: 1rem;
+    width: 100%;
+    min-width: 100%;
   }
 
   .cover,
   .post-card:nth-child(2n) .cover {
     height: 8rem;
-    border-radius: 0.375rem 0.375rem 0 0;
+    margin: 0;
   }
 
   .info,
@@ -461,30 +439,31 @@ defineProps({
   .post-card:nth-child(2n) .info-content {
     padding: 0.5rem 0.5rem 0 0.5rem;
   }
-  
+
+  .info-footer {
+    gap: 0.15rem;
+    padding: 0 0.5rem 0.5rem 0.5rem;
+  }
+
   .info h3 {
     font-size: 0.9em;
     margin: 0.375rem 0;
   }
-  
+
   .excerpt {
     font-size: 0.7em;
     max-height: 3rem;
     margin-bottom: 0.25rem;
   }
-  
+
   .meta {
     font-size: 0.65em;
   }
-  
+
   .meta .item {
     margin-right: 0.375rem;
   }
-  
-  .info-footer {
-    gap: 0.25rem;
-  }
-  
+
   .info-footer a {
     font-size: 0.7em;
     padding: 0.15rem 0.5rem;
@@ -494,13 +473,15 @@ defineProps({
 /* 触摸设备优化 */
 @media (hover: none) and (pointer: coarse) {
   .post-card:hover {
-    box-shadow: 0 8px 32px -4px rgba(237, 110, 160, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow:
+      0 8px 32px -4px rgba(237, 110, 160, 0.18),
+      0 2px 8px rgba(0, 0, 0, 0.08);
   }
-  
+
   .post-card:hover .cover img {
     transform: none;
   }
-  
+
   .info-footer a.btn:hover {
     transform: none;
   }
