@@ -145,22 +145,18 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useMobileSidebarStore } from '@/stores/mobileSidebar'
+import { useStatisticsStore } from '@/stores/statistics'
 import TableOfContents from './TableOfContents.vue'
 
 const route = useRoute()
 const sidebarStore = useSidebarStore()
 const mobileSidebarStore = useMobileSidebarStore()
+const statisticsStore = useStatisticsStore()
 
 const author = ref({
   name: 'CircleCoder',
   avatar: 'https://avatars.githubusercontent.com/u/9919?s=200&v=4',
   description: '空天报国，敢为人先',
-})
-
-const stats = ref({
-  posts: 45,
-  categories: 7,
-  tags: 9,
 })
 
 const social = ref({
@@ -178,6 +174,13 @@ const activePanel = computed(() => sidebarStore.activePanel)
 const articleContent = computed(() => sidebarStore.articleContent)
 const isMobileSidebarOpen = computed(() => mobileSidebarStore.isMobileSidebarOpen)
 
+// 动态统计数据
+const stats = computed(() => ({
+  posts: statisticsStore.archives.length,
+  categories: statisticsStore.categories.length,
+  tags: statisticsStore.tags.length,
+}))
+
 // 切换面板
 const switchPanel = (panel) => {
   sidebarStore.switchPanel(panel)
@@ -187,6 +190,16 @@ const switchPanel = (panel) => {
 const closeMobileSidebar = () => {
   mobileSidebarStore.closeMobileSidebar()
 }
+
+// 初始化统计数据
+const initStatistics = async () => {
+  if (statisticsStore.archives.length === 0) {
+    await statisticsStore.loadStatistics()
+  }
+}
+
+// 组件挂载时加载统计数据
+initStatistics()
 </script>
 
 <style scoped>
