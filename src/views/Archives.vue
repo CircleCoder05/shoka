@@ -1,9 +1,9 @@
 <template>
   <div class="archives-page">
-    <!-- 文章日历 -->
-    <ArticleCalendar :articles="statisticsStore.archives" />
-
     <div class="archives-container">
+      <!-- 文章日历 -->
+      <ArticleCalendar :articles="statisticsStore.archives" />
+
       <!-- 时间轴 -->
       <div class="timeline-wrapper">
         <div class="timeline">
@@ -198,11 +198,19 @@ onMounted(async () => {
 .archives-container {
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 2rem;
   margin-bottom: 3rem;
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.archives-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-color: #d1d5db;
 }
 
 .archives-container::before {
@@ -707,5 +715,58 @@ onMounted(async () => {
   color: #ed6ea0;
   margin: 0;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .archives-page {
+    padding: 1rem;
+  }
+
+  .archives-container {
+    padding: 1.5rem;
+  }
+
+  .timeline-wrapper {
+    padding: 1rem 0;
+  }
+
+  .timeline {
+    padding: 1rem 0;
+  }
+
+  .year-text {
+    font-size: 2rem;
+  }
+
+  .month-text {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .archives-page {
+    padding: 0.5rem;
+  }
+
+  .archives-container {
+    padding: 1rem;
+  }
+
+  .timeline-wrapper {
+    padding: 0.5rem 0;
+  }
+
+  .timeline {
+    padding: 0.5rem 0;
+  }
+
+  .year-text {
+    font-size: 1.8rem;
+  }
+
+  .month-text {
+    font-size: 1.3rem;
+  }
 }
 </style>
