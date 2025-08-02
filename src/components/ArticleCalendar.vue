@@ -225,26 +225,11 @@ onUnmounted(() => {
 
 <style scoped>
 .article-calendar {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 .calendar-container {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
   position: relative;
-  overflow: hidden;
-}
-
-.calendar-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #ed6ea0 0%, #ec8c69 100%);
 }
 
 .calendar-header {
