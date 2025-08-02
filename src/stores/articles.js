@@ -126,7 +126,8 @@ export const useArticlesStore = defineStore('articles', () => {
               ...articleInfo,
               ...frontMatter,
               content: markdownContent,
-              excerpt: markdownContent.substring(0, 200) + '...',
+              // 使用 JSON 中的 excerpt，如果没有则生成
+              excerpt: articleInfo.excerpt || markdownContent.substring(0, 200) + '...',
             }
 
             // 收集分类和标签

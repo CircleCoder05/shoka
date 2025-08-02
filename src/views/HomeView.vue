@@ -36,47 +36,6 @@ import Pagination from '../components/Pagination.vue'
 const articlesStore = useArticlesStore()
 const currentPage = ref(1)
 const pageSize = 6
-const randomImages = ref([])
-
-// 加载随机图片列表
-async function loadRandomImages() {
-  try {
-    const response = await fetch('/img/images.yml')
-    if (response.ok) {
-      const yamlText = await response.text()
-      // 简单的YAML解析，提取URL
-      const urls = yamlText
-        .split('\n')
-        .filter((line) => line.trim().startsWith('- '))
-        .map((line) => line.trim().substring(2))
-      randomImages.value = urls
-    }
-  } catch (error) {
-    console.warn('Failed to load random images:', error)
-    // 使用默认图片
-    randomImages.value = [
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
-    ]
-  }
-}
-
-// 根据slug生成固定的随机图片
-function getRandomImage(slug) {
-  if (randomImages.value.length === 0) {
-    return 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop'
-  }
-
-  // 使用slug生成固定的随机数
-  let hash = 0
-  for (let i = 0; i < slug.length; i++) {
-    const char = slug.charCodeAt(i)
-    hash = (hash << 5) - hash + char
-    hash = hash & hash // 转换为32位整数
-  }
-
-  const index = Math.abs(hash) % randomImages.value.length
-  return randomImages.value[index]
-}
 
 const totalPages = computed(() => {
   return Math.ceil(articlesStore.articles.length / pageSize)
@@ -99,7 +58,7 @@ const paginatedArticles = computed(() => {
     return {
       ...article,
       url: `/post/${article.slug}`,
-      cover: getRandomImage(article.slug), // 使用随机图片作为封面
+      cover: article.cover,
       category: {
         name: categoryName,
         url: `/categories/${categoryName}`,
@@ -109,7 +68,6 @@ const paginatedArticles = computed(() => {
 })
 
 onMounted(async () => {
-  await loadRandomImages()
   if (!articlesStore.articles.length) await articlesStore.loadArticles()
 })
 </script>
