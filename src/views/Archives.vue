@@ -1,5 +1,5 @@
 <template>
-  <div class="archives-container">
+  <PageContainer>
     <!-- 文章日历 -->
     <ArticleCalendar :articles="statisticsStore.archives" />
 
@@ -101,7 +101,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </PageContainer>
 </template>
 
 <script setup>
@@ -109,6 +109,7 @@ import { onMounted, ref } from 'vue'
 import { useStatisticsStore } from '@/stores/statistics'
 import TimelineArticleCard from '@/components/TimelineArticleCard.vue'
 import ArticleCalendar from '@/components/ArticleCalendar.vue'
+import PageContainer from '@/components/PageContainer.vue'
 
 const statisticsStore = useStatisticsStore()
 
@@ -187,20 +188,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.archives-container {
-  width: 100%;
-  max-width: 1050px !important;
-  background: #fff;
-  border-radius: 0;
-  box-shadow:
-    0 8px 48px 0 rgba(237, 110, 160, 0.18),
-    0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 2rem;
-  margin: 0;
-  overflow: visible;
-  box-sizing: border-box;
-}
-
 .loading,
 .error {
   display: flex;
