@@ -8,26 +8,6 @@
       <p>{{ loadingMessage }}</p>
     </div>
 
-    <!-- 控制面板 -->
-    <div class="controls">
-      <button @click="resetCamera" class="control-btn" title="重置视角">
-        <i class="ic i-refresh"></i>
-      </button>
-      <button
-        @click="toggleAnimation"
-        class="control-btn"
-        :title="isAnimating ? '暂停动画' : '播放动画'"
-      >
-        <i :class="isAnimating ? 'ic i-pause' : 'ic i-play'"></i>
-      </button>
-      <button @click="toggleWireframe" class="control-btn" title="线框模式">
-        <i class="ic i-code"></i>
-      </button>
-      <button @click="toggleLighting" class="control-btn" title="切换光照">
-        <i class="ic i-lightbulb"></i>
-      </button>
-    </div>
-
     <!-- 错误信息 -->
     <div v-if="errorMessage" class="error-message">
       <i class="ic i-warning"></i>
@@ -48,6 +28,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
 import { MMDLoader } from '@/utils/mmd-loader/MMDLoader.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 const props = defineProps({
   modelPath: {
@@ -65,15 +46,12 @@ const props = defineProps({
 })
 
 const container = ref(null)
-const isAnimating = ref(true)
-const isWireframe = ref(false)
-const isLightingOn = ref(true)
 const loading = ref(true)
 const loadingMessage = ref('正在加载模型...')
 const errorMessage = ref('')
 const modelInfo = ref(null)
 
-let scene, camera, renderer, model
+let scene, camera, renderer, model, controls
 let animationId = null
 
 // 初始化 Three.js 场景
@@ -87,7 +65,7 @@ const initScene = () => {
     0.1,
     1000,
   )
-  camera.position.set(0, 10, 30)
+  camera.position.set(0, 15, 50) // 调整相机位置，让模型更大
 
   renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(container.value.clientWidth, container.value.clientHeight)
@@ -95,17 +73,30 @@ const initScene = () => {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
   renderer.outputColorSpace = THREE.SRGBColorSpace
   container.value.appendChild(renderer.domElement)
+
+  // 添加OrbitControls
+  controls = new OrbitControls(camera, renderer.domElement)
+  controls.enableDamping = true
+  controls.dampingFactor = 0.05
+  controls.enableZoom = true
+  controls.enablePan = true
+  controls.enableRotate = true
 }
 
 // 设置光照
 const setupLighting = () => {
-  const ambientLight = new THREE.AmbientLight(0x404040, 0.5)
+  const ambientLight = new THREE.AmbientLight(0x404040, 1.8) // 增强环境光到1.2
   scene.add(ambientLight)
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8) // 增强主光源
   directionalLight.position.set(5, 10, 7)
   directionalLight.castShadow = true
   scene.add(directionalLight)
+
+  // 添加补光
+  const fillLight = new THREE.DirectionalLight(0xffffff, 0.8)
+  fillLight.position.set(-5, 5, -5)
+  scene.add(fillLight)
 }
 
 // 加载模型
@@ -130,6 +121,10 @@ const loadModel = async () => {
       model.traverse((child) => {
         if (child.isMesh) {
           console.log('网格:', child.name, '材质:', child.material)
+          console.log('材质类型:', child.material.type)
+          console.log('材质颜色:', child.material.color)
+          console.log('材质纹理:', child.material.map)
+          console.log('材质透明度:', child.material.opacity)
 
           // 强制替换MeshToonMaterial为MeshLambertMaterial，但保留原颜色
           if (child.material) {
@@ -138,6 +133,8 @@ const loadModel = async () => {
               child.material = child.material.map((mat) => {
                 if (mat.type === 'MeshToonMaterial') {
                   console.warn('替换MeshToonMaterial为MeshLambertMaterial，保留原颜色')
+                  console.log('原材质颜色:', mat.color)
+                  console.log('原材质纹理:', mat.map)
                   return new THREE.MeshLambertMaterial({
                     color: mat.color || 0xcccccc, // 保留原颜色
                     map: mat.map, // 保留纹理
@@ -145,12 +142,17 @@ const loadModel = async () => {
                     opacity: mat.opacity || 1.0,
                     side: mat.side || THREE.FrontSide,
                     morphTargets: false, // 禁用morphTargets
+                    // 增强材质亮度
+                    emissive: new THREE.Color(0x444444), // 增强自发光颜色
+                    emissiveIntensity: 0.4, // 增强自发光强度
                   })
                 }
                 return mat
               })
             } else if (child.material.type === 'MeshToonMaterial') {
               console.warn('替换MeshToonMaterial为MeshLambertMaterial，保留原颜色')
+              console.log('原材质颜色:', child.material.color)
+              console.log('原材质纹理:', child.material.map)
               child.material = new THREE.MeshLambertMaterial({
                 color: child.material.color || 0xcccccc, // 保留原颜色
                 map: child.material.map, // 保留纹理
@@ -158,6 +160,9 @@ const loadModel = async () => {
                 opacity: child.material.opacity || 1.0,
                 side: child.material.side || THREE.FrontSide,
                 morphTargets: false, // 禁用morphTargets
+                // 增强材质亮度
+                emissive: new THREE.Color(0x444444), // 增强自发光颜色
+                emissiveIntensity: 0.4, // 增强自发光强度
               })
             }
           }
@@ -182,8 +187,16 @@ const loadModel = async () => {
       const center = box.getCenter(new THREE.Vector3())
       const size = box.getSize(new THREE.Vector3())
       const maxDim = Math.max(size.x, size.y, size.z)
-      camera.position.set(maxDim * 2, maxDim * 1.5, maxDim * 2)
+
+      // 放大模型显示
+      camera.position.set(maxDim * 0.1, maxDim * 0.4, maxDim * -1.1) // 让模型更大
       camera.lookAt(center)
+
+      // 更新OrbitControls目标
+      if (controls) {
+        controls.target.copy(center)
+        controls.update()
+      }
 
       // 更新模型信息
       modelInfo.value = {
@@ -211,46 +224,17 @@ const loadModel = async () => {
 const animate = () => {
   animationId = requestAnimationFrame(animate)
 
-  if (isAnimating.value && model) {
-    model.rotation.y += 0.005
+  // 禁用自动旋转，使用OrbitControls
+  // if (isAnimating.value && model) {
+  //   model.rotation.y += 0.005
+  // }
+
+  // 更新OrbitControls
+  if (controls) {
+    controls.update()
   }
 
   renderer.render(scene, camera)
-}
-
-// 重置相机
-const resetCamera = () => {
-  if (model) {
-    const box = new THREE.Box3().setFromObject(model)
-    const center = box.getCenter(new THREE.Vector3())
-    camera.position.set(0, 10, 30)
-    camera.lookAt(center)
-  }
-}
-
-// 切换动画
-const toggleAnimation = () => {
-  isAnimating.value = !isAnimating.value
-}
-
-// 切换线框模式
-const toggleWireframe = () => {
-  isWireframe.value = !isWireframe.value
-  model.traverse((child) => {
-    if (child.isMesh) {
-      child.material.wireframe = isWireframe.value
-    }
-  })
-}
-
-// 切换光照
-const toggleLighting = () => {
-  isLightingOn.value = !isLightingOn.value
-  scene.traverse((child) => {
-    if (child.isLight) {
-      child.intensity = isLightingOn.value ? 1 : 0
-    }
-  })
 }
 
 // 重试加载
@@ -347,14 +331,14 @@ onUnmounted(() => {
   transform: translateX(-50%);
   display: flex;
   gap: 8px;
-  z-index: 5;
+  z-index: 1000; /* 确保在最上层 */
 }
 
 .control-btn {
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.7); /* 深色背景 */
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   color: white;
   cursor: pointer;
@@ -364,12 +348,13 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* 添加阴影 */
 }
 
 .control-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.8);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .error-message {
