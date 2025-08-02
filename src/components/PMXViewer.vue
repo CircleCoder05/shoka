@@ -51,7 +51,7 @@ const loadingMessage = ref('正在加载模型...')
 const errorMessage = ref('')
 const modelInfo = ref(null)
 
-let scene, camera, renderer, model, controls
+let scene, camera, renderer, model, controls, mixer, clock
 let animationId = null
 
 // 初始化 Three.js 场景
@@ -81,6 +81,9 @@ const initScene = () => {
   controls.enableZoom = true
   controls.enablePan = true
   controls.enableRotate = true
+
+  // 初始化时钟用于动画
+  clock = new THREE.Clock()
 }
 
 // 设置光照
@@ -126,52 +129,26 @@ const loadModel = async () => {
           console.log('材质纹理:', child.material.map)
           console.log('材质透明度:', child.material.opacity)
 
-          // 强制替换MeshToonMaterial为MeshLambertMaterial，但保留原颜色
-          if (child.material) {
-            if (Array.isArray(child.material)) {
-              // 处理材质数组
-              child.material = child.material.map((mat) => {
-                if (mat.type === 'MeshToonMaterial') {
-                  console.warn('替换MeshToonMaterial为MeshLambertMaterial，保留原颜色')
-                  console.log('原材质颜色:', mat.color)
-                  console.log('原材质纹理:', mat.map)
-                  return new THREE.MeshLambertMaterial({
-                    color: mat.color || 0xcccccc, // 保留原颜色
-                    map: mat.map, // 保留纹理
-                    transparent: mat.transparent || false,
-                    opacity: mat.opacity || 1.0,
-                    side: mat.side || THREE.FrontSide,
-                    morphTargets: false, // 禁用morphTargets
-                    // 增强材质亮度
-                    emissive: new THREE.Color(0x444444), // 增强自发光颜色
-                    emissiveIntensity: 0.4, // 增强自发光强度
-                  })
-                }
-                return mat
-              })
-            } else if (child.material.type === 'MeshToonMaterial') {
-              console.warn('替换MeshToonMaterial为MeshLambertMaterial，保留原颜色')
-              console.log('原材质颜色:', child.material.color)
-              console.log('原材质纹理:', child.material.map)
-              child.material = new THREE.MeshLambertMaterial({
-                color: child.material.color || 0xcccccc, // 保留原颜色
-                map: child.material.map, // 保留纹理
-                transparent: child.material.transparent || false,
-                opacity: child.material.opacity || 1.0,
-                side: child.material.side || THREE.FrontSide,
-                morphTargets: false, // 禁用morphTargets
-                // 增强材质亮度
-                emissive: new THREE.Color(0x444444), // 增强自发光颜色
-                emissiveIntensity: 0.4, // 增强自发光强度
-              })
-            }
-          }
-
-          // 禁用几何体的morphTargets
+          // 更温和地处理morphTargets，避免影响材质渲染
           if (child.geometry && child.geometry.morphTargets) {
-            console.warn('禁用几何体的morphTargets')
-            child.geometry.morphTargets = []
-            child.geometry.morphAttributes = {}
+            console.warn('检测到morphTargets，尝试温和处理')
+
+            // 检查是否有实际的morph数据
+            const hasRealMorphData = child.geometry.morphTargets.some(
+              (target) => target && target.vertices && target.vertices.length > 0,
+            )
+
+            if (hasRealMorphData) {
+              console.log('发现真实的morph数据，保持原样')
+              // 保持morphTargets，但确保材质设置正确
+              if (child.material && child.material.morphTargets !== false) {
+                child.material.morphTargets = true
+              }
+            } else {
+              console.log('morphTargets为空或无效，可以安全禁用')
+              child.geometry.morphTargets = []
+              child.geometry.morphAttributes = {}
+            }
           }
 
           // 设置阴影
@@ -206,6 +183,9 @@ const loadModel = async () => {
       }
 
       loading.value = false
+
+      // 尝试加载动画
+      loadAnimation()
     }
   } catch (error) {
     console.error('加载失败:', error)
@@ -220,14 +200,302 @@ const loadModel = async () => {
   }
 }
 
+// 加载动画
+const loadAnimation = async () => {
+  try {
+    console.log('尝试加载动画...')
+
+    // 首先检查模型是否有内置动画
+    if (model && model.animations && model.animations.length > 0) {
+      console.log('发现模型内置动画:', model.animations.length, '个')
+
+      // 创建动画混合器
+      mixer = new THREE.AnimationMixer(model)
+
+      // 播放所有内置动画
+      model.animations.forEach((clip, index) => {
+        console.log(`播放内置动画 ${index}:`, clip.name, '时长:', clip.duration)
+        const action = mixer.clipAction(clip)
+        action.setLoop(THREE.LoopRepeat, Infinity) // 循环播放
+        action.play()
+      })
+
+      console.log('内置动画播放成功！')
+      return
+    }
+
+    // 检查模型是否有骨骼
+    if (model && model.skeleton) {
+      console.log('发现模型骨骼，尝试创建简单动画')
+      createBoneAnimation()
+      return
+    }
+
+    // 检查是否有动画文件
+    const animationResponse = await fetch('/pmx/changzhang-pmx/animation.vmd')
+    if (animationResponse.ok) {
+      console.log('找到动画文件，开始加载...')
+
+      // 使用MMDLoader加载动画
+      const loader = new MMDLoader()
+      loader.setPath('/pmx/changzhang-pmx/')
+
+      // 使用正确的API加载动画
+      loader.loadAnimation(
+        'animation.vmd',
+        model,
+        (animation) => {
+          console.log('动画加载成功！')
+
+          // 创建动画混合器
+          mixer = new THREE.AnimationMixer(model)
+          const action = mixer.clipAction(animation)
+          action.play()
+        },
+        (progress) => {
+          console.log('动画加载进度:', progress)
+        },
+        (error) => {
+          console.error('动画加载失败:', error)
+        },
+      )
+    } else {
+      console.log('未找到动画文件，尝试创建简单动画')
+      createSimpleAnimation()
+    }
+  } catch (error) {
+    console.log('动画加载失败或文件不存在:', error.message)
+    createSimpleAnimation()
+  }
+}
+
+// 创建骨骼动画
+const createBoneAnimation = () => {
+  console.log('创建骨骼动画...')
+
+  // 遍历模型查找骨骼
+  const allBones = []
+  model.traverse((child) => {
+    if (child.isBone) {
+      console.log('发现骨骼:', child.name)
+      allBones.push(child)
+    }
+  })
+
+  if (allBones.length > 0) {
+    console.log('为', allBones.length, '个骨骼创建动画')
+
+    // 创建呼吸动画（身体轻微上下移动）
+    const breathingTracks = []
+
+    // 找到身体主要骨骼
+    const bodyBones = allBones.filter(
+      (bone) =>
+        bone.name.toLowerCase().includes('spine') ||
+        bone.name.toLowerCase().includes('chest') ||
+        bone.name.toLowerCase().includes('body') ||
+        bone.name.toLowerCase().includes('waist'),
+    )
+
+    // 创建呼吸动画 - 身体轻微上下移动
+    bodyBones.forEach((bone) => {
+      const positionTrack = new THREE.VectorKeyframeTrack(
+        `${bone.name}.position`,
+        [0, 1, 2, 3, 4], // 4秒循环
+        [
+          bone.position.x,
+          bone.position.y,
+          bone.position.z,
+          bone.position.x,
+          bone.position.y + 0.02,
+          bone.position.z, // 轻微上升
+          bone.position.x,
+          bone.position.y,
+          bone.position.z,
+          bone.position.x,
+          bone.position.y - 0.02,
+          bone.position.z, // 轻微下降
+          bone.position.x,
+          bone.position.y,
+          bone.position.z,
+        ],
+      )
+      breathingTracks.push(positionTrack)
+    })
+
+    // 找到右手骨骼
+    const rightHandBones = allBones.filter(
+      (bone) =>
+        bone.name.toLowerCase().includes('r') &&
+        (bone.name.toLowerCase().includes('arm') ||
+          bone.name.toLowerCase().includes('hand') ||
+          bone.name.toLowerCase().includes('clavicle')),
+    )
+
+    console.log(
+      '找到右手骨骼:',
+      rightHandBones.map((b) => b.name),
+    )
+
+    // 找到武器对象 - 由于整个模型是一个网格，我们需要检查材质名称
+    let weaponObject = null
+    model.traverse((child) => {
+      if (child.isMesh) {
+        console.log('检查网格材质:', child.material.name || '未命名材质')
+        console.log('材质颜色:', child.material.color)
+        console.log('材质纹理:', child.material.map ? child.material.map.name : '无纹理')
+        console.log('材质类型:', child.material.type)
+
+        // 检查材质名称是否包含武器相关词汇
+        if (
+          child.material.name &&
+          (child.material.name.toLowerCase().includes('shark') ||
+            child.material.name.toLowerCase().includes('weapon') ||
+            child.material.name.toLowerCase().includes('sickle'))
+        ) {
+          console.log('发现武器材质:', child.material.name)
+          child.userData.isWeapon = true
+          weaponObject = child
+        }
+
+        // 检查材质颜色是否为武器颜色（红色、黑色等）
+        if (child.material.color) {
+          const color = child.material.color
+          console.log('材质RGB值:', color.r, color.g, color.b)
+
+          // 检查是否是红色或黑色（可能是武器）
+          if (
+            (color.r > 0.8 && color.g < 0.2 && color.b < 0.2) || // 红色
+            (color.r < 0.3 && color.g < 0.3 && color.b < 0.3)
+          ) {
+            // 黑色
+            console.log('发现可能的武器材质（颜色检测）:', color)
+            child.userData.isWeapon = true
+            weaponObject = child
+          }
+        }
+
+        // 检查材质数组
+        if (Array.isArray(child.material)) {
+          console.log('发现材质数组，长度:', child.material.length)
+          child.material.forEach((mat, index) => {
+            console.log(`材质 ${index}:`, mat.name || '未命名', '颜色:', mat.color)
+
+            // 检查每个材质的颜色
+            if (mat.color) {
+              const color = mat.color
+              console.log(`材质 ${index} RGB值:`, color.r, color.g, color.b)
+
+              // 检查是否是红色或黑色（可能是武器）
+              if (
+                (color.r > 0.8 && color.g < 0.2 && color.b < 0.2) || // 红色
+                (color.r < 0.3 && color.g < 0.3 && color.b < 0.3)
+              ) {
+                // 黑色
+                console.log(`发现可能的武器材质 ${index}（颜色检测）:`, color)
+                child.userData.isWeapon = true
+                weaponObject = child
+              }
+            }
+          })
+        }
+      }
+    })
+
+    // 创建武器挥舞动画
+    const weaponTracks = []
+    rightHandBones.forEach((bone) => {
+      // 创建挥舞动画 - 每6秒挥舞一次
+      const rotationTrack = new THREE.QuaternionKeyframeTrack(
+        `${bone.name}.quaternion`,
+        [0, 1, 2, 3, 4, 5, 6], // 6秒循环
+        [
+          bone.quaternion.x,
+          bone.quaternion.y,
+          bone.quaternion.z,
+          bone.quaternion.w,
+          bone.quaternion.x,
+          bone.quaternion.y,
+          bone.quaternion.z,
+          bone.quaternion.w,
+          bone.quaternion.x + 0.2,
+          bone.quaternion.y,
+          bone.quaternion.z,
+          bone.quaternion.w, // 开始挥舞
+          bone.quaternion.x + 0.4,
+          bone.quaternion.y,
+          bone.quaternion.z,
+          bone.quaternion.w, // 挥舞到最高点
+          bone.quaternion.x + 0.2,
+          bone.quaternion.y,
+          bone.quaternion.z,
+          bone.quaternion.w, // 回落
+          bone.quaternion.x,
+          bone.quaternion.y,
+          bone.quaternion.z,
+          bone.quaternion.w,
+          bone.quaternion.x,
+          bone.quaternion.y,
+          bone.quaternion.z,
+          bone.quaternion.w,
+        ],
+      )
+      weaponTracks.push(rotationTrack)
+    })
+
+    // 合并所有动画轨道
+    const allTracks = [...breathingTracks, ...weaponTracks]
+
+    if (allTracks.length > 0) {
+      const breathingClip = new THREE.AnimationClip('Breathing', 4, breathingTracks)
+      const weaponClip = new THREE.AnimationClip('WeaponSwing', 6, weaponTracks)
+
+      mixer = new THREE.AnimationMixer(model)
+
+      // 播放呼吸动画
+      const breathingAction = mixer.clipAction(breathingClip)
+      breathingAction.setLoop(THREE.LoopRepeat, Infinity)
+      breathingAction.play()
+
+      // 播放武器挥舞动画
+      const weaponAction = mixer.clipAction(weaponClip)
+      weaponAction.setLoop(THREE.LoopRepeat, Infinity)
+      weaponAction.play()
+
+      console.log('呼吸动画和武器挥舞动画创建成功！')
+    }
+  }
+}
+
+// 创建简单的循环动画
+const createSimpleAnimation = () => {
+  console.log('创建简单的循环动画...')
+
+  // 创建简单的旋转动画
+  const rotationTrack = new THREE.NumberKeyframeTrack(
+    '.rotation[y]',
+    [0, 2, 4],
+    [0, Math.PI, Math.PI * 2],
+  )
+
+  const clip = new THREE.AnimationClip('SimpleRotation', 4, [rotationTrack])
+
+  mixer = new THREE.AnimationMixer(model)
+  const action = mixer.clipAction(clip)
+  action.setLoop(THREE.LoopRepeat, Infinity)
+  action.play()
+
+  console.log('简单动画创建成功！')
+}
+
 // 动画循环
 const animate = () => {
   animationId = requestAnimationFrame(animate)
 
-  // 禁用自动旋转，使用OrbitControls
-  // if (isAnimating.value && model) {
-  //   model.rotation.y += 0.005
-  // }
+  // 更新动画混合器
+  if (mixer && clock) {
+    mixer.update(clock.getDelta())
+  }
 
   // 更新OrbitControls
   if (controls) {
