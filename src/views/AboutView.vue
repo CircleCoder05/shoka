@@ -23,8 +23,8 @@
         </div>
 
         <div class="model-section">
-          <h3>我的3D角色</h3>
-          <PMXViewer />
+          <h3>我的3D模型 - GLB</h3>
+          <GLBViewer />
         </div>
       </div>
 
@@ -47,7 +47,7 @@
 
 <script setup>
 import PageContainer from '@/components/PageContainer.vue'
-import PMXViewer from '@/components/PMXViewer.vue'
+import GLBViewer from '@/components/GLBViewer.vue'
 </script>
 
 <style scoped>
