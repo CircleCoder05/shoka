@@ -1,5 +1,8 @@
 <template>
   <div class="archives-page">
+    <!-- 文章日历 -->
+    <ArticleCalendar :articles="statisticsStore.archives" />
+
     <div class="archives-container">
       <!-- 时间轴 -->
       <div class="timeline-wrapper">
@@ -107,6 +110,7 @@
 import { onMounted, ref } from 'vue'
 import { useStatisticsStore } from '@/stores/statistics'
 import TimelineArticleCard from '@/components/TimelineArticleCard.vue'
+import ArticleCalendar from '@/components/ArticleCalendar.vue'
 
 const statisticsStore = useStatisticsStore()
 
