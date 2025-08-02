@@ -1,5 +1,5 @@
 <template>
-  <div class="categories-page">
+  <div class="categories-container">
     <div class="page-header">
       <h1 class="page-title">文章分类</h1>
       <p class="page-subtitle">按主题分类整理的文章</p>
@@ -128,10 +128,18 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.categories-page {
-  max-width: 1050px;
-  margin: 0 auto;
+.categories-container {
+  width: 100%;
+  max-width: 1050px !important;
+  background: #fff;
+  border-radius: 0;
+  box-shadow:
+    0 8px 48px 0 rgba(237, 110, 160, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 2rem;
+  margin: 0;
+  overflow: visible;
+  box-sizing: border-box;
 }
 
 .page-header {
