@@ -121,8 +121,24 @@ const formatDate = (dateString) => {
 
 const getCategoryName = (category) => {
   if (!category) return null
+
+  // 如果category是数组，取第一个元素
+  let cleanCategory = category
+  if (Array.isArray(category)) {
+    cleanCategory = category[0]
+  } else if (typeof category === 'string' && category.startsWith('[') && category.endsWith(']')) {
+    // 处理数组字符串的情况，如 "[\"操作系统\"]"
+    try {
+      const parsed = JSON.parse(category)
+      cleanCategory = Array.isArray(parsed) ? parsed[0] : parsed
+    } catch {
+      // 如果JSON解析失败，尝试简单的字符串处理
+      cleanCategory = category.replace(/^\[["']?|["']?\]$/g, '')
+    }
+  }
+
   const categories = statisticsStore.categories
-  return categories.find((cat) => cat.slug === category)?.name || category
+  return categories.find((cat) => cat.slug === cleanCategory)?.name || cleanCategory
 }
 
 const getTagsArray = (tags) => {
@@ -176,12 +192,12 @@ if (!String.prototype.hashCode) {
   width: 100%;
   max-width: 100%;
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  min-height: 200px;
   box-sizing: border-box;
 }
 
@@ -196,17 +212,18 @@ if (!String.prototype.hashCode) {
 }
 
 .article-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-color: #d1d5db;
 }
 
 /* 封面图片 */
 .article-cover {
-  width: 240px;
-  height: 180px;
+  width: 280px;
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
+  align-self: stretch;
 }
 
 .article-cover img {
@@ -223,7 +240,7 @@ if (!String.prototype.hashCode) {
 /* 文章信息 */
 .article-info {
   flex: 1;
-  padding: 1.5rem;
+  padding: 1.2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -232,8 +249,8 @@ if (!String.prototype.hashCode) {
 }
 
 .article-title {
-  margin: 0 0 1rem 0;
-  font-size: 1.3rem;
+  margin: 0 0 0.8rem 0;
+  font-size: 1.2rem;
   font-weight: 700;
   line-height: 1.4;
   word-wrap: break-word;
@@ -252,17 +269,21 @@ if (!String.prototype.hashCode) {
 
 .article-meta {
   display: flex;
-  gap: 1rem;
-  font-size: 0.8rem;
+  gap: 0.6rem;
+  font-size: 0.7rem;
   color: #666;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
+  min-height: 16px;
+  /* line-height: 1.2; */
 }
 
 .article-meta span {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.3rem;
+  /* line-height: 1.2; */
+  margin-bottom: 0%;
 }
 
 .article-meta i {
@@ -272,15 +293,16 @@ if (!String.prototype.hashCode) {
 
 .article-excerpt {
   color: #666;
-  line-height: 1.5;
+  line-height: 1.6;
   font-size: 0.85rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  min-height: 30px;
 }
 
 .article-footer {
@@ -288,13 +310,13 @@ if (!String.prototype.hashCode) {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  gap: 0.6rem;
 }
 
 .article-stats {
   display: flex;
-  gap: 0.8rem;
-  font-size: 0.75rem;
+  gap: 0.6rem;
+  font-size: 0.7rem;
   color: #999;
   flex-wrap: wrap;
 }
@@ -335,22 +357,22 @@ if (!String.prototype.hashCode) {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 0.4rem 0.8rem;
+  padding: 0.35rem 0.7rem;
   background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
   color: #fff;
   text-decoration: none;
-  border-radius: 18px;
-  font-size: 0.8rem;
+  border-radius: 16px;
+  font-size: 0.75rem;
   font-weight: 600;
   transition: all 0.3s ease;
   white-space: nowrap;
   flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(237, 110, 160, 0.3);
+  box-shadow: 0 2px 8px rgba(237, 110, 160, 0.25);
 }
 
 .read-more-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(237, 110, 160, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.35);
 }
 
 /* 响应式设计 */
@@ -385,16 +407,16 @@ if (!String.prototype.hashCode) {
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .article-cover {
-    width: 200px;
-    height: 150px;
+    width: 240px;
+    height: 100%;
   }
 
   .article-info {
-    padding: 1.2rem;
+    padding: 1rem;
   }
 
   .article-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 }
 </style>
