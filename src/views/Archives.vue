@@ -1,105 +1,103 @@
 <template>
-  <div class="archives-page">
-    <div class="archives-container">
-      <!-- 文章日历 -->
-      <ArticleCalendar :articles="statisticsStore.archives" />
+  <div class="archives-container">
+    <!-- 文章日历 -->
+    <ArticleCalendar :articles="statisticsStore.archives" />
 
-      <!-- 时间轴 -->
-      <div class="timeline-wrapper">
-        <div class="timeline">
-          <div class="timeline-line"></div>
+    <!-- 时间轴 -->
+    <div class="timeline-wrapper">
+      <div class="timeline">
+        <div class="timeline-line"></div>
 
-          <!-- 所有文章列表 -->
-          <div class="articles-container">
-            <template v-for="(article, index) in statisticsStore.archives" :key="article.slug">
-              <!-- 年份标记（独立item） -->
-              <div v-if="shouldShowYear(article, index)" class="article-timeline-item year-item">
-                <div class="timeline-node">
-                  <div class="node-dot"></div>
-                  <div class="node-line"></div>
-                </div>
-                <div class="year-marker">
-                  <h2 class="year-text">{{ new Date(article.date).getFullYear() }}</h2>
-                  <button
-                    class="collapse-btn year-collapse-btn"
-                    @click="toggleYearCollapse(new Date(article.date).getFullYear())"
-                    :class="{ collapsed: isYearCollapsed(new Date(article.date).getFullYear()) }"
-                  >
-                    <i
-                      class="ic i-arrow-down"
-                      :class="{ rotated: !isYearCollapsed(new Date(article.date).getFullYear()) }"
-                    ></i>
-                  </button>
-                </div>
+        <!-- 所有文章列表 -->
+        <div class="articles-container">
+          <template v-for="(article, index) in statisticsStore.archives" :key="article.slug">
+            <!-- 年份标记（独立item） -->
+            <div v-if="shouldShowYear(article, index)" class="article-timeline-item year-item">
+              <div class="timeline-node">
+                <div class="node-dot"></div>
+                <div class="node-line"></div>
               </div>
-
-              <!-- 月份标记（独立item） -->
-              <transition name="month-fade" mode="out-in">
-                <div
-                  v-if="
-                    shouldShowMonth(article, index) &&
-                    !isYearCollapsed(new Date(article.date).getFullYear())
-                  "
-                  class="article-timeline-item month-item"
-                  key="month-visible"
+              <div class="year-marker">
+                <h2 class="year-text">{{ new Date(article.date).getFullYear() }}</h2>
+                <button
+                  class="collapse-btn year-collapse-btn"
+                  @click="toggleYearCollapse(new Date(article.date).getFullYear())"
+                  :class="{ collapsed: isYearCollapsed(new Date(article.date).getFullYear()) }"
                 >
-                  <div class="timeline-node">
-                    <div class="node-dot"></div>
-                    <div class="node-line"></div>
-                  </div>
-                  <div class="month-marker">
-                    <span class="month-text">{{
-                      getMonthName(new Date(article.date).getMonth() + 1)
-                    }}</span>
-                    <button
-                      class="collapse-btn month-collapse-btn"
-                      @click="
-                        toggleMonthCollapse(
-                          new Date(article.date).getFullYear(),
-                          new Date(article.date).getMonth() + 1,
-                        )
-                      "
-                      :class="{
-                        collapsed: isMonthCollapsed(
-                          new Date(article.date).getFullYear(),
-                          new Date(article.date).getMonth() + 1,
-                        ),
-                      }"
-                    >
-                      <i
-                        class="ic i-arrow-down"
-                        :class="{
-                          rotated: !isMonthCollapsed(
-                            new Date(article.date).getFullYear(),
-                            new Date(article.date).getMonth() + 1,
-                          ),
-                        }"
-                      ></i>
-                    </button>
-                  </div>
-                </div>
-              </transition>
+                  <i
+                    class="ic i-arrow-down"
+                    :class="{ rotated: !isYearCollapsed(new Date(article.date).getFullYear()) }"
+                  ></i>
+                </button>
+              </div>
+            </div>
 
-              <!-- 文章卡片（独立item） -->
+            <!-- 月份标记（独立item） -->
+            <transition name="month-fade" mode="out-in">
               <div
-                class="article-timeline-item article-item"
-                :class="{
-                  collapsed: isArticleCollapsed(article),
-                  'year-collapsed': isYearCollapsed(new Date(article.date).getFullYear()),
-                  'month-collapsed': isMonthCollapsed(
-                    new Date(article.date).getFullYear(),
-                    new Date(article.date).getMonth() + 1,
-                  ),
-                }"
+                v-if="
+                  shouldShowMonth(article, index) &&
+                  !isYearCollapsed(new Date(article.date).getFullYear())
+                "
+                class="article-timeline-item month-item"
+                key="month-visible"
               >
                 <div class="timeline-node">
                   <div class="node-dot"></div>
                   <div class="node-line"></div>
                 </div>
-                <TimelineArticleCard :article="article" />
+                <div class="month-marker">
+                  <span class="month-text">{{
+                    getMonthName(new Date(article.date).getMonth() + 1)
+                  }}</span>
+                  <button
+                    class="collapse-btn month-collapse-btn"
+                    @click="
+                      toggleMonthCollapse(
+                        new Date(article.date).getFullYear(),
+                        new Date(article.date).getMonth() + 1,
+                      )
+                    "
+                    :class="{
+                      collapsed: isMonthCollapsed(
+                        new Date(article.date).getFullYear(),
+                        new Date(article.date).getMonth() + 1,
+                      ),
+                    }"
+                  >
+                    <i
+                      class="ic i-arrow-down"
+                      :class="{
+                        rotated: !isMonthCollapsed(
+                          new Date(article.date).getFullYear(),
+                          new Date(article.date).getMonth() + 1,
+                        ),
+                      }"
+                    ></i>
+                  </button>
+                </div>
               </div>
-            </template>
-          </div>
+            </transition>
+
+            <!-- 文章卡片（独立item） -->
+            <div
+              class="article-timeline-item article-item"
+              :class="{
+                collapsed: isArticleCollapsed(article),
+                'year-collapsed': isYearCollapsed(new Date(article.date).getFullYear()),
+                'month-collapsed': isMonthCollapsed(
+                  new Date(article.date).getFullYear(),
+                  new Date(article.date).getMonth() + 1,
+                ),
+              }"
+            >
+              <div class="timeline-node">
+                <div class="node-dot"></div>
+                <div class="node-line"></div>
+              </div>
+              <TimelineArticleCard :article="article" />
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -189,38 +187,18 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.archives-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
 .archives-container {
+  width: 100%;
+  max-width: 1050px !important;
   background: #fff;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 0;
+  box-shadow:
+    0 8px 48px 0 rgba(237, 110, 160, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 2rem;
-  margin-bottom: 3rem;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.archives-container:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  border-color: #d1d5db;
-}
-
-.archives-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #ed6ea0 0%, #ec8c69 100%);
+  margin: 0;
+  overflow: visible;
+  box-sizing: border-box;
 }
 
 .loading,
@@ -719,11 +697,8 @@ onMounted(async () => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .archives-page {
-    padding: 1rem;
-  }
-
   .archives-container {
+    max-width: 100%;
     padding: 1.5rem;
   }
 
@@ -745,12 +720,9 @@ onMounted(async () => {
 }
 
 @media (max-width: 480px) {
-  .archives-page {
-    padding: 0.5rem;
-  }
-
   .archives-container {
-    padding: 1rem;
+    max-width: 100%;
+    padding: 0.75rem;
   }
 
   .timeline-wrapper {
