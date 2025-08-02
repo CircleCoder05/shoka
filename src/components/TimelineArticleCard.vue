@@ -62,7 +62,7 @@
 <script setup>
 import { useStatisticsStore } from '@/stores/statistics'
 
-const props = defineProps({
+defineProps({
   article: {
     type: Object,
     required: true,
@@ -71,45 +71,14 @@ const props = defineProps({
 
 const statisticsStore = useStatisticsStore()
 
-// 随机图片列表
-const randomImages = [
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292157001.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158771.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158368.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158099.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158821.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503292158043.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311942570.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311942090.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311942804.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943183.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943052.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943222.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943439.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943580.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943773.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311944494.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311944837.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311944966.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311944606.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311945788.jpg',
-  'https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311945208.jpg',
-]
-
 // 工具函数
 const getCoverImage = (article) => {
-  if (article.cover) {
-    return article.cover
-  }
-
-  // 使用随机图片
-  const index = Math.abs(article.title.hashCode()) % randomImages.length
-  return randomImages[index]
+  return article.cover
 }
 
 const handleImageError = (event) => {
-  event.target.src = randomImages[0]
-  event.target.onerror = null
+  // 如果图片加载失败，隐藏图片
+  event.target.style.display = 'none'
 }
 
 const formatDate = (dateString) => {
@@ -147,41 +116,15 @@ const getTagsArray = (tags) => {
 }
 
 const getExcerpt = (article) => {
-  if (article.excerpt) {
-    return article.excerpt
-  }
-  if (article.content) {
-    const text = article.content.replace(/[#*`]/g, '').replace(/\n/g, ' ')
-    return text.length > 100 ? text.substring(0, 100) + '...' : text
-  }
-  return '这篇文章还没有摘要...'
+  return article.excerpt || '这篇文章还没有摘要...'
 }
 
 const getWordCount = (article) => {
-  if (article.content) {
-    return article.content.replace(/\s/g, '').length
-  }
-  return 0
+  return article.wordCount || 0
 }
 
 const getReadTime = (article) => {
-  const wordCount = getWordCount(article)
-  const minutes = Math.ceil(wordCount / 300)
-  return `${minutes} 分钟`
-}
-
-// 为String添加hashCode方法
-if (!String.prototype.hashCode) {
-  String.prototype.hashCode = function () {
-    let hash = 0
-    if (this.length === 0) return hash
-    for (let i = 0; i < this.length; i++) {
-      const char = this.charCodeAt(i)
-      hash = (hash << 5) - hash + char
-      hash = hash & hash
-    }
-    return hash
-  }
+  return `${article.readTime || 1} 分钟`
 }
 </script>
 
