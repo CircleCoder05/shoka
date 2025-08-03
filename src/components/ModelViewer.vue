@@ -7,6 +7,24 @@
         <button @click="switchToNextModel" class="model-btn">切换模型</button>
       </div>
 
+      <!-- 左右箭头指示器 -->
+      <div class="rotation-arrows">
+        <img
+          src="@/assets/images/left.webp"
+          alt="左转"
+          class="arrow left-arrow"
+          :class="{ rotating: isRotating }"
+          @click="rotateModel('left')"
+        />
+        <img
+          src="@/assets/images/right.webp"
+          alt="右转"
+          class="arrow right-arrow"
+          :class="{ rotating: isRotating }"
+          @click="rotateModel('right')"
+        />
+      </div>
+
       <div class="error" v-if="error">{{ error }}</div>
     </div>
   </div>
@@ -125,6 +143,7 @@ const availableModels = computed(() => modelsStore.getAllModels())
 // 动画相关
 const isTransitioning = ref(false)
 const transitionDirection = ref('right') // 'left' 或 'right'
+const isRotating = ref(false) // 添加旋转状态
 
 // Three.js 相关变量
 let scene, camera, renderer, controls, mixer, clock
@@ -219,8 +238,7 @@ const initScene = () => {
   const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x666666, 2.5)
   scene.add(hemisphereLight)
 
-  // 添加旋转指示箭头
-  createRotationArrows()
+  // 不再需要创建3D箭头
 
   // 创建时钟用于动画
   clock = new THREE.Clock()
@@ -403,46 +421,61 @@ const animate = () => {
     mixer.update(clock.getDelta())
   }
 
-  // 旋转指示箭头动画
-  if (window.rotationArrows) {
-    window.rotationArrows.forEach((arrow, index) => {
-      arrow.rotation.y += 0.02 * (index === 0 ? 1 : -1)
-    })
+  // 处理模型旋转动画
+  if (isRotating.value && model) {
+    const currentTime = Date.now()
+    const elapsed = currentTime - rotationStartTime
+    const progress = Math.min(elapsed / rotationDuration, 1)
+
+    // 使用缓动函数让动画更自然
+    const easeProgress = 1 - Math.pow(1 - progress, 3) // 缓出效果
+
+    const startRotation = model.rotation.y
+    const rotationDiff = targetRotation - startRotation
+
+    // 处理角度跨越问题（比如从359度到1度）
+    if (Math.abs(rotationDiff) > Math.PI) {
+      if (rotationDiff > 0) {
+        model.rotation.y = startRotation + (rotationDiff - 2 * Math.PI) * easeProgress
+      } else {
+        model.rotation.y = startRotation + (rotationDiff + 2 * Math.PI) * easeProgress
+      }
+    } else {
+      model.rotation.y = startRotation + rotationDiff * easeProgress
+    }
+
+    // 动画完成
+    if (progress >= 1) {
+      isRotating.value = false
+      model.rotation.y = targetRotation
+    }
   }
 
   controls.update()
   renderer.render(scene, camera)
 }
 
-// 创建旋转指示箭头
-const createRotationArrows = () => {
-  // 创建箭头几何体
-  const arrowGeometry = new THREE.ConeGeometry(0.2, 0.6, 8)
-  const arrowMaterial = new THREE.MeshBasicMaterial({
-    color: 0xff0000, // 改为红色，更容易看到
-    transparent: true,
-    opacity: 0.8,
-  })
+// 旋转动画相关变量
+let targetRotation = 0
+let rotationStartTime = 0
+const rotationDuration = 400 // 旋转动画持续时间（毫秒）
 
-  // 创建两个箭头
-  const arrow1 = new THREE.Mesh(arrowGeometry, arrowMaterial)
-  const arrow2 = new THREE.Mesh(arrowGeometry, arrowMaterial)
+// 旋转模型
+const rotateModel = (direction) => {
+  if (!model) return
 
-  // 设置箭头位置和旋转 - 放在模型脚底附近
-  arrow1.position.set(-3, -3, 0)
-  arrow1.rotation.z = Math.PI / 4
-  arrow1.rotation.y = Math.PI / 2
+  const rotationSpeed = Math.PI / 4 // 45度
+  const currentRotation = model.rotation.y
 
-  arrow2.position.set(3, -3, 0)
-  arrow2.rotation.z = -Math.PI / 4
-  arrow2.rotation.y = -Math.PI / 2
+  if (direction === 'left') {
+    targetRotation = currentRotation + rotationSpeed
+  } else if (direction === 'right') {
+    targetRotation = currentRotation - rotationSpeed
+  }
 
-  // 添加到场景
-  scene.add(arrow1)
-  scene.add(arrow2)
-
-  // 存储箭头引用用于动画
-  window.rotationArrows = [arrow1, arrow2]
+  // 开始旋转动画
+  isRotating.value = true
+  rotationStartTime = Date.now()
 }
 
 // 切换到下一个模型
@@ -619,6 +652,55 @@ onUnmounted(() => {
 
 .error {
   color: #ff6b6b;
+}
+
+/* 旋转箭头样式 */
+.rotation-arrows {
+  position: absolute;
+  bottom: 80px; /* 从20px改为80px，更靠上 */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 50px; /* 从40px改为50px，增加间距 */
+  z-index: 15;
+}
+
+.arrow {
+  width: 60px; /* 从40px改为60px，放大50% */
+  height: 60px; /* 从40px改为60px，放大50% */
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.arrow:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.arrow.rotating {
+  opacity: 0.8; /* 从0.5改为0.8，保持可见性 */
+  animation: pulse 0.8s ease-in-out infinite;
+  /* 移除 pointer-events: none，允许连续点击 */
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.left-arrow {
+  transform: rotate(0deg);
+}
+
+.right-arrow {
+  transform: rotate(0deg);
 }
 
 @media (max-width: 768px) {
