@@ -26,6 +26,11 @@
           <h3>我的3D模型 - GLB</h3>
           <GLBViewer />
         </div>
+
+        <div class="model-section">
+          <h3>我的3D模型 - Joseph</h3>
+          <JosephViewer />
+        </div>
       </div>
 
       <div class="contact-section">
@@ -48,6 +53,7 @@
 <script setup>
 import PageContainer from '@/components/PageContainer.vue'
 import GLBViewer from '@/components/GLBViewer.vue'
+import JosephViewer from '@/components/JosephViewer.vue'
 </script>
 
 <style scoped>
@@ -64,10 +70,14 @@ h1 {
 
 .intro-section {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 3rem;
   margin-bottom: 3rem;
   align-items: start;
+}
+
+.model-section {
+  margin-bottom: 2rem;
 }
 
 .text-content h2 {
@@ -157,6 +167,10 @@ h1 {
   .intro-section {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  .model-section {
+    margin-bottom: 1.5rem;
   }
 
   h1 {
