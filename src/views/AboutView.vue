@@ -23,13 +23,8 @@
         </div>
 
         <div class="model-section">
-          <h3>我的3D模型 - GLB</h3>
-          <GLBViewer />
-        </div>
-
-        <div class="model-section">
-          <h3>我的3D模型 - Joseph</h3>
-          <JosephViewer />
+          <h3>我的3D模型</h3>
+          <ModelViewer />
         </div>
       </div>
 
@@ -52,8 +47,7 @@
 
 <script setup>
 import PageContainer from '@/components/PageContainer.vue'
-import GLBViewer from '@/components/GLBViewer.vue'
-import JosephViewer from '@/components/JosephViewer.vue'
+import ModelViewer from '@/components/ModelViewer.vue'
 </script>
 
 <style scoped>
