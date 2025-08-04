@@ -592,8 +592,8 @@ onUnmounted(() => {
 
 <style scoped>
 .model-viewer-container {
-  width: 40%;
-  margin: 0 auto;
+  width: 100%;
+  height: 100%;
 }
 
 .model-controls {
@@ -623,7 +623,7 @@ onUnmounted(() => {
 
 .model-viewer {
   width: 100%;
-  height: 500px;
+  height: 100%;
   position: relative;
   border-radius: 8px;
   overflow: hidden;
@@ -705,13 +705,13 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .model-viewer-container {
-    width: 80%;
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
   .model-viewer-container {
-    width: 95%;
+    width: 100%;
   }
 }
 </style>
