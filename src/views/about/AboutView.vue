@@ -1,8 +1,6 @@
 <template>
   <PageContainer>
     <div class="about-content">
-      <h1 class="page-title">关于我</h1>
-
       <!-- 第一个盒子：个人信息和3D模型 -->
       <div class="main-section">
         <!-- 左侧：个人信息卡片 -->
@@ -39,30 +37,20 @@ import ProfileCard from '@/views/about/ProfileCard.vue'
   max-width: 100%;
 }
 
-.page-title {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin-bottom: 3rem;
-  text-align: center;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 /* 主区域：左右分栏 */
 .main-section {
   display: flex;
   gap: 3rem;
   margin-bottom: 4rem;
   height: 600px;
+  margin-top: 2rem; /* 添加一些顶部间距 */
 }
 
 /* 左侧：个人信息卡片 - 现在使用ProfileCard组件 */
 
 /* 右侧：3D模型区域 */
 .model-section {
-  flex: 1;
+  flex: 1.5;
   height: 100%;
 }
 
