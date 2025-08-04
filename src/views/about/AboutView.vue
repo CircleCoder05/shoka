@@ -13,8 +13,8 @@
         <!-- 右侧：3D模型展示 -->
         <div class="model-section">
           <div class="model-container">
-            <h3>我的3D形象 (V2测试)</h3>
-            <FBXViewer />
+            <h3>我的3D形象</h3>
+            <ModelViewer initial-model-key="joseph02" />
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@
 
 <script setup>
 import PageContainer from '@/components/PageContainer.vue'
-import FBXViewer from '@/views/about/FBXViewer.vue'
+import ModelViewer from '@/views/about/ModelViewer.vue'
 import ProfileCard from '@/views/about/ProfileCard.vue'
 </script>
 

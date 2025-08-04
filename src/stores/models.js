@@ -42,6 +42,8 @@ export const useModelsStore = () => {
 
     return {
       modelPath: model.path,
+      format: model.format || 'glb', // 添加format字段
+      texturePath: model.texturePath || '', // 添加texturePath字段
       name: model.name,
       description: model.description,
       initialScale: config.initialScale ?? defaults.initialScale,
