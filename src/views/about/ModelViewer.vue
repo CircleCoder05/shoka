@@ -34,8 +34,10 @@
 import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { useModelsStore } from '@/stores/models'
+import { TGALoader } from 'three/examples/jsm/loaders/TGALoader.js'
 
 // Props 配置
 const props = defineProps({
@@ -221,18 +223,38 @@ const initScene = () => {
   directionalLight.shadow.mapSize.height = 2048
   scene.add(directionalLight)
 
-  // 添加自定义光源
-  modelConfig.lights.forEach((lightConfig) => {
-    if (lightConfig.type === 'point') {
-      const light = new THREE.PointLight(lightConfig.color, lightConfig.intensity)
-      light.position.set(lightConfig.position.x, lightConfig.position.y, lightConfig.position.z)
-      scene.add(light)
-    } else if (lightConfig.type === 'directional') {
-      const light = new THREE.DirectionalLight(lightConfig.color, lightConfig.intensity)
-      light.position.set(lightConfig.position.x, lightConfig.position.y, lightConfig.position.z)
-      scene.add(light)
-    }
-  })
+  // 为FBX模型添加更强的光照
+  if (modelConfig.format === 'fbx') {
+    // 添加更多点光源，增强FBX模型的可见性
+    const pointLight1 = new THREE.PointLight(0xffffff, 6.0)
+    pointLight1.position.set(-10, 10, -5)
+    scene.add(pointLight1)
+
+    const pointLight2 = new THREE.PointLight(0xffffff, 6.0)
+    pointLight2.position.set(10, 5, -10)
+    scene.add(pointLight2)
+
+    const pointLight3 = new THREE.PointLight(0xffffff, 4.0)
+    pointLight3.position.set(0, 5, 10)
+    scene.add(pointLight3)
+
+    const pointLight4 = new THREE.PointLight(0xffffff, 4.0)
+    pointLight4.position.set(0, 20, 0)
+    scene.add(pointLight4)
+  } else {
+    // 添加自定义光源（GLB模型）
+    modelConfig.lights.forEach((lightConfig) => {
+      if (lightConfig.type === 'point') {
+        const light = new THREE.PointLight(lightConfig.color, lightConfig.intensity)
+        light.position.set(lightConfig.position.x, lightConfig.position.y, lightConfig.position.z)
+        scene.add(light)
+      } else if (lightConfig.type === 'directional') {
+        const light = new THREE.DirectionalLight(lightConfig.color, lightConfig.intensity)
+        light.position.set(lightConfig.position.x, lightConfig.position.y, lightConfig.position.z)
+        scene.add(light)
+      }
+    })
+  }
 
   // 添加半球光
   const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x666666, 2.5)
@@ -245,6 +267,228 @@ const initScene = () => {
 
   // 开始渲染循环
   animate()
+}
+
+// 加载GLB模型
+const loadGLBModel = async (modelPath, modelConfig) => {
+  const loader = new GLTFLoader()
+  const gltf = await new Promise((resolve, reject) => {
+    loader.load(modelPath, resolve, undefined, reject)
+  })
+
+  // 处理模型
+  model = gltf.scene
+  scene.add(model)
+
+  // 处理材质和贴图
+  model.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = true
+      child.receiveShadow = true
+
+      if (child.material) {
+        if (Array.isArray(child.material)) {
+          child.material.forEach((material) => {
+            processMaterial(material)
+          })
+        } else {
+          processMaterial(child.material)
+        }
+      }
+    }
+  })
+
+  // 调整模型大小和位置
+  const box = new THREE.Box3().setFromObject(model)
+  const size = box.getSize(new THREE.Vector3())
+  const center = box.getCenter(new THREE.Vector3())
+
+  const maxDim = Math.max(size.x, size.y, size.z)
+  const scale = modelConfig.initialScale / maxDim
+  model.scale.setScalar(scale)
+
+  // 将模型居中
+  model.position.sub(center.multiplyScalar(scale))
+
+  // 应用模型旋转
+  if (modelConfig.modelRotation) {
+    model.rotation.set(
+      (modelConfig.modelRotation.x * Math.PI) / 180,
+      (modelConfig.modelRotation.y * Math.PI) / 180,
+      (modelConfig.modelRotation.z * Math.PI) / 180,
+    )
+  }
+
+  // 设置动画
+  if (gltf.animations.length > 0) {
+    mixer = new THREE.AnimationMixer(model)
+    const action = mixer.clipAction(gltf.animations[0])
+    action.play()
+  }
+}
+
+// 加载FBX模型
+const loadFBXModel = async (modelPath, modelConfig) => {
+  const loader = new FBXLoader()
+  loader.setResourcePath('/3d/')
+
+  const fbx = await new Promise((resolve, reject) => {
+    loader.load(modelPath, resolve, undefined, reject)
+  })
+
+  // 处理模型
+  model = fbx
+  scene.add(model)
+
+  // 处理材质和贴图
+  model.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = true
+      child.receiveShadow = true
+
+      if (child.material) {
+        if (Array.isArray(child.material)) {
+          child.material.forEach((material) => {
+            processFBXMaterial(material, modelConfig)
+          })
+        } else {
+          processFBXMaterial(child.material, modelConfig)
+        }
+      }
+    }
+  })
+
+  // 调整模型大小和位置
+  const box = new THREE.Box3().setFromObject(model)
+  const size = box.getSize(new THREE.Vector3())
+  const center = box.getCenter(new THREE.Vector3())
+
+  const maxDim = Math.max(size.x, size.y, size.z)
+  const scale = modelConfig.initialScale / maxDim
+  model.scale.setScalar(scale)
+
+  // 将模型居中
+  model.position.sub(center.multiplyScalar(scale))
+
+  // 应用模型旋转
+  if (modelConfig.modelRotation) {
+    model.rotation.set(
+      (modelConfig.modelRotation.x * Math.PI) / 180,
+      (modelConfig.modelRotation.y * Math.PI) / 180,
+      (modelConfig.modelRotation.z * Math.PI) / 180,
+    )
+  }
+
+  // 设置动画
+  if (fbx.animations.length > 0) {
+    mixer = new THREE.AnimationMixer(model)
+    fbx.animations.forEach((clip) => {
+      const action = mixer.clipAction(clip)
+      action.play()
+    })
+  }
+}
+
+// 处理FBX材质
+const processFBXMaterial = (material, modelConfig) => {
+  // 确保材质可见
+  material.transparent = false
+  material.opacity = 1.0
+  material.side = THREE.DoubleSide // 双面渲染
+
+  // 增加颜色饱和度和鲜艳度
+  const color = material.color
+  const hsl = {}
+  color.getHSL(hsl)
+
+  hsl.s = Math.min(1.0, hsl.s * (modelConfig.saturationMultiplier || 1.5))
+  hsl.l = Math.min(0.8, hsl.l * (modelConfig.brightnessMultiplier || 1.2))
+  color.setHSL(hsl.h, hsl.s, hsl.l)
+
+  material.needsUpdate = true
+
+  // 处理MeshPhongMaterial
+  if (material.isMeshPhongMaterial) {
+    material.shininess = modelConfig.shininess || 15
+    material.specular = new THREE.Color(0x111111)
+    material.transparent = false
+    material.opacity = 1.0
+  }
+
+  // 处理Standard材质
+  if (material.isMeshStandardMaterial) {
+    material.roughness = modelConfig.roughness || 0.7
+    material.metalness = modelConfig.metalness || 0.1
+    material.transparent = false
+    material.opacity = 1.0
+  }
+
+  // 处理贴图 - 尝试手动加载TGA贴图
+  if (material.map && !material.map.image) {
+    console.log('尝试手动加载TGA贴图:', material.map.name)
+
+    // 根据贴图名称猜测TGA文件路径
+    let texturePath = ''
+    const baseTexturePath = modelConfig.texturePath || '/3d/joseph02.fbm'
+    if (material.map.name.includes('47')) {
+      texturePath = `${baseTexturePath}/joseph_head_diff.tga`
+    } else if (material.map.name.includes('48')) {
+      texturePath = `${baseTexturePath}/joseph_body_diff.tga`
+    } else if (material.map.name.includes('49')) {
+      texturePath = `${baseTexturePath}/joseph_wuqi01_diff.tga`
+    } else if (material.map.name.includes('50')) {
+      texturePath = `${baseTexturePath}/joseph_wuqi02_diff.tga`
+    }
+
+    if (texturePath) {
+      const tgaLoader = new TGALoader()
+      fetch(texturePath)
+        .then((response) => response.arrayBuffer())
+        .then((buffer) => {
+          console.log('TGA贴图加载成功:', texturePath)
+          const textureData = tgaLoader.parse(buffer)
+          const texture = new THREE.DataTexture(
+            textureData.data,
+            textureData.width,
+            textureData.height,
+            THREE.RGBAFormat,
+          )
+          texture.flipY = textureData.flipY
+          texture.generateMipmaps = textureData.generateMipmaps
+          texture.minFilter = textureData.minFilter
+          texture.encoding = THREE.sRGBEncoding
+          texture.needsUpdate = true
+
+          material.map = texture
+          material.needsUpdate = true
+        })
+        .catch((error) => {
+          console.warn('TGA贴图加载失败:', texturePath, error)
+        })
+    }
+  } else if (material.map && material.map.image) {
+    // 贴图已有图片数据，正常处理
+    try {
+      material.map.encoding = THREE.sRGBEncoding
+      material.map.flipY = false
+      material.map.generateMipmaps = true
+      material.map.minFilter = THREE.LinearMipmapLinearFilter
+      material.map.magFilter = THREE.LinearFilter
+      material.map.wrapS = THREE.ClampToEdgeWrapping
+      material.map.wrapT = THREE.ClampToEdgeWrapping
+      material.map.needsUpdate = true
+      material.needsUpdate = true
+
+      console.log(
+        '贴图已处理:',
+        material.map.name,
+        '尺寸:',
+        material.map.image.width + 'x' + material.map.image.height,
+      )
+    } catch (error) {
+      console.warn('设置贴图属性时出错:', error)
+    }
+  }
 }
 
 // 加载模型
@@ -269,61 +513,23 @@ const loadModel = async () => {
       throw new Error('模型配置未找到')
     }
 
-    const loader = new GLTFLoader()
     const modelPath = modelConfig.modelPath
+    const modelFormat = modelConfig.format || 'glb' // 默认GLB格式
 
-    const gltf = await new Promise((resolve, reject) => {
-      loader.load(modelPath, resolve, undefined, reject)
+    console.log('ModelViewer: 加载模型', {
+      modelKey: currentModelKey.value,
+      modelPath,
+      modelFormat,
+      modelConfig,
     })
 
-    // 处理模型
-    model = gltf.scene
-    scene.add(model)
-
-    // 处理材质和贴图
-    model.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true
-        child.receiveShadow = true
-
-        if (child.material) {
-          if (Array.isArray(child.material)) {
-            child.material.forEach((material) => {
-              processMaterial(material)
-            })
-          } else {
-            processMaterial(child.material)
-          }
-        }
-      }
-    })
-
-    // 调整模型大小和位置
-    const box = new THREE.Box3().setFromObject(model)
-    const size = box.getSize(new THREE.Vector3())
-    const center = box.getCenter(new THREE.Vector3())
-
-    const maxDim = Math.max(size.x, size.y, size.z)
-    const scale = modelConfig.initialScale / maxDim
-    model.scale.setScalar(scale)
-
-    // 将模型居中
-    model.position.sub(center.multiplyScalar(scale))
-
-    // 应用模型旋转 - 绕模型自己的中心旋转
-    if (modelConfig.modelRotation) {
-      model.rotation.set(
-        (modelConfig.modelRotation.x * Math.PI) / 180,
-        (modelConfig.modelRotation.y * Math.PI) / 180,
-        (modelConfig.modelRotation.z * Math.PI) / 180,
-      )
-    }
-
-    // 设置动画
-    if (gltf.animations.length > 0) {
-      mixer = new THREE.AnimationMixer(model)
-      const action = mixer.clipAction(gltf.animations[0])
-      action.play()
+    // 根据格式选择加载器
+    if (modelFormat === 'fbx') {
+      console.log('ModelViewer: 使用FBX加载器')
+      await loadFBXModel(modelPath, modelConfig)
+    } else {
+      console.log('ModelViewer: 使用GLB加载器')
+      await loadGLBModel(modelPath, modelConfig)
     }
 
     loading.value = false
