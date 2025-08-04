@@ -1,6 +1,11 @@
 <template>
-  <div class="page-container">
-    <slot />
+  <div class="page-container" :class="{ 'with-background': $slots.background }">
+    <div v-if="$slots.background" class="background-slot">
+      <slot name="background" />
+    </div>
+    <div class="content-slot">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -21,6 +26,28 @@
   margin: 0;
   overflow: visible;
   box-sizing: border-box;
+  position: relative;
+}
+
+.page-container.with-background {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.background-slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.content-slot {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
 }
 
 /* 响应式设计 */

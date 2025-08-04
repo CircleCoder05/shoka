@@ -1,5 +1,9 @@
 <template>
   <PageContainer>
+    <template #background>
+      <div class="about-background"></div>
+    </template>
+
     <div class="about-content">
       <!-- 第一个盒子：个人信息和3D模型 -->
       <div class="main-section">
@@ -33,8 +37,18 @@ import ProfileCard from '@/views/about/ProfileCard.vue'
 </script>
 
 <style scoped>
+.about-background {
+  width: 100%;
+  height: 100%;
+  background-image: url('@/assets/images/selfback.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .about-content {
   max-width: 100%;
+  min-height: 100vh;
 }
 
 /* 主区域：左右分栏 */
