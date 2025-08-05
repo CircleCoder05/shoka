@@ -394,7 +394,8 @@ const processFBXMaterial = (material, modelConfig) => {
   // 确保材质可见
   material.transparent = false
   material.opacity = 1.0
-  material.side = THREE.DoubleSide // 双面渲染
+  material.side = THREE.FrontSide // 改为单面渲染，避免双面渲染导致的问题
+  material.alphaTest = 0.1 // 添加alpha测试
 
   // 增加颜色饱和度和鲜艳度
   const color = material.color
@@ -404,6 +405,22 @@ const processFBXMaterial = (material, modelConfig) => {
   hsl.s = Math.min(1.0, hsl.s * (modelConfig.saturationMultiplier || 1.5))
   hsl.l = Math.min(0.8, hsl.l * (modelConfig.brightnessMultiplier || 1.2))
   color.setHSL(hsl.h, hsl.s, hsl.l)
+
+  // 如果是灰色或接近灰色的颜色，给它们一些颜色（和GLB处理一致）
+  if (hsl.s < 0.1) {
+    const materialName = material.name.toLowerCase()
+    let colorConfig = modelConfig.materialColors.default
+
+    if (materialName.includes('body') || materialName.includes('skin')) {
+      colorConfig = modelConfig.materialColors.body
+    } else if (materialName.includes('hair')) {
+      colorConfig = modelConfig.materialColors.hair
+    } else if (materialName.includes('cloth') || materialName.includes('fabric')) {
+      colorConfig = modelConfig.materialColors.cloth
+    }
+
+    color.setHSL(colorConfig.h, colorConfig.s, colorConfig.l)
+  }
 
   material.needsUpdate = true
 
@@ -426,18 +443,39 @@ const processFBXMaterial = (material, modelConfig) => {
   // 处理贴图 - 尝试手动加载TGA贴图
   if (material.map && !material.map.image) {
     console.log('尝试手动加载TGA贴图:', material.map.name)
+    console.log('材质信息:', {
+      name: material.name,
+      type: material.type,
+      transparent: material.transparent,
+      opacity: material.opacity,
+      side: material.side,
+    })
 
     // 根据贴图名称猜测TGA文件路径
     let texturePath = ''
     const baseTexturePath = modelConfig.texturePath || '/3d/joseph02.fbm'
-    if (material.map.name.includes('47')) {
-      texturePath = `${baseTexturePath}/joseph_head_diff.tga`
-    } else if (material.map.name.includes('48')) {
-      texturePath = `${baseTexturePath}/joseph_body_diff.tga`
-    } else if (material.map.name.includes('49')) {
-      texturePath = `${baseTexturePath}/joseph_wuqi01_diff.tga`
-    } else if (material.map.name.includes('50')) {
-      texturePath = `${baseTexturePath}/joseph_wuqi02_diff.tga`
+
+    // joseph02模型的贴图映射
+    if (baseTexturePath.includes('joseph02')) {
+      if (material.map.name.includes('47')) {
+        texturePath = `${baseTexturePath}/joseph_head_diff.tga`
+      } else if (material.map.name.includes('48')) {
+        texturePath = `${baseTexturePath}/joseph_body_diff.tga`
+      } else if (material.map.name.includes('49')) {
+        texturePath = `${baseTexturePath}/joseph_wuqi01_diff.tga`
+      } else if (material.map.name.includes('50')) {
+        texturePath = `${baseTexturePath}/joseph_wuqi02_diff.tga`
+      }
+    }
+    // antique01模型的贴图映射
+    else if (baseTexturePath.includes('antique01')) {
+      if (material.map.name.includes('6')) {
+        texturePath = `${baseTexturePath}/h55_survivor_w_gd_body_diff.tga`
+      } else if (material.map.name.includes('5')) {
+        texturePath = `${baseTexturePath}/h55_survivor_w_gd_head_diff.tga`
+      } else if (material.map.name.includes('7')) {
+        texturePath = `${baseTexturePath}/h55_survivor_w_gd_weapon_diff.tga`
+      }
     }
 
     if (texturePath) {
@@ -447,6 +485,13 @@ const processFBXMaterial = (material, modelConfig) => {
         .then((buffer) => {
           console.log('TGA贴图加载成功:', texturePath)
           const textureData = tgaLoader.parse(buffer)
+          console.log('贴图数据:', {
+            width: textureData.width,
+            height: textureData.height,
+            format: textureData.format,
+            type: textureData.type,
+          })
+
           const texture = new THREE.DataTexture(
             textureData.data,
             textureData.width,
@@ -457,10 +502,14 @@ const processFBXMaterial = (material, modelConfig) => {
           texture.generateMipmaps = textureData.generateMipmaps
           texture.minFilter = textureData.minFilter
           texture.encoding = THREE.sRGBEncoding
+          texture.wrapS = THREE.ClampToEdgeWrapping
+          texture.wrapT = THREE.ClampToEdgeWrapping
           texture.needsUpdate = true
 
           material.map = texture
           material.needsUpdate = true
+
+          console.log('材质贴图已设置:', material.map.name)
         })
         .catch((error) => {
           console.warn('TGA贴图加载失败:', texturePath, error)
