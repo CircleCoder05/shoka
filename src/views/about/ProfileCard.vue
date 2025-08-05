@@ -9,84 +9,25 @@
       <div class="profile-header">
         <div class="avatar-section">
           <div class="avatar-placeholder">
-            <img
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=CircleCoder"
-              alt="头像"
-              class="avatar-image"
-            />
+            <img :src="profileData.avatar" alt="头像" class="avatar-image" />
           </div>
           <div class="name-info">
-            <h2 class="nickname">CircleCoder</h2>
-            <p class="title">全栈开发工程师</p>
+            <h2 class="nickname">{{ profileData.nickname }}</h2>
+            <p class="title">{{ profileData.title }}</p>
           </div>
         </div>
       </div>
 
       <!-- 信息列表 -->
       <div class="info-list">
-        <div class="info-item">
+        <div v-for="(item, index) in profileData.info" :key="index" class="info-item">
           <div class="info-item-background"></div>
           <div class="info-icon">
-            <i class="ic i-user"></i>
+            <i :class="`ic ${item.icon}`"></i>
           </div>
           <div class="info-content">
-            <label>昵称</label>
-            <span>CircleCoder</span>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-item-background"></div>
-          <div class="info-icon">
-            <i class="ic i-heart"></i>
-          </div>
-          <div class="info-content">
-            <label>性别</label>
-            <span>男</span>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-item-background"></div>
-          <div class="info-icon">
-            <i class="ic i-home"></i>
-          </div>
-          <div class="info-content">
-            <label>家乡</label>
-            <span>中国</span>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-item-background"></div>
-          <div class="info-icon">
-            <i class="ic i-graduation-cap"></i>
-          </div>
-          <div class="info-content">
-            <label>学校</label>
-            <span>某知名大学</span>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-item-background"></div>
-          <div class="info-icon">
-            <i class="ic i-code"></i>
-          </div>
-          <div class="info-content">
-            <label>专业</label>
-            <span>计算机科学与技术</span>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-item-background"></div>
-          <div class="info-icon">
-            <i class="ic i-gamepad"></i>
-          </div>
-          <div class="info-content">
-            <label>爱好</label>
-            <span>编程、游戏、音乐</span>
+            <label>{{ item.label }}</label>
+            <span>{{ item.value }}</span>
           </div>
         </div>
       </div>
@@ -95,7 +36,24 @@
 </template>
 
 <script setup>
-// 组件逻辑
+defineProps({
+  profileData: {
+    type: Object,
+    default: () => ({
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=CircleCoder',
+      nickname: 'CircleCoder',
+      title: '全栈开发工程师',
+      info: [
+        { label: '昵称', value: 'CircleCoder', icon: 'i-user' },
+        { label: '性别', value: '男', icon: 'i-heart' },
+        { label: '家乡', value: '中国', icon: 'i-home' },
+        { label: '学校', value: '某知名大学', icon: 'i-graduation-cap' },
+        { label: '专业', value: '计算机科学与技术', icon: 'i-code' },
+        { label: '爱好', value: '编程、游戏、音乐', icon: 'i-gamepad' },
+      ],
+    }),
+  },
+})
 </script>
 
 <style scoped>
@@ -194,7 +152,7 @@
 }
 
 .title {
-  color: #667eea;
+  color: #8b4513; /* 棕色标题 */
   font-size: 1rem;
   margin: 0;
   font-weight: 500;
@@ -216,24 +174,24 @@
 }
 
 .info-list::-webkit-scrollbar-track {
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(139, 69, 19, 0.1); /* 棕色背景 */
   border-radius: 3px;
 }
 
 .info-list::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.3);
+  background: rgba(139, 69, 19, 0.3); /* 棕色滑块 */
   border-radius: 3px;
 }
 
 .info-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.5);
+  background: rgba(139, 69, 19, 0.5); /* 棕色滑块悬停 */
 }
 
 .info-item {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1.5rem; /* 图标和内容之间的间距 */
+  gap: 0.8rem; /* 图标和内容之间的间距，调小一点 */
   padding: 0.75rem 1.5rem; /* 增加左右内边距，整体向右挪动 */
   border-radius: 12px;
   transition: all 0.3s ease;
@@ -295,6 +253,11 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap; /* 防止换行 */
+  padding: 0.5rem 0.8rem; /* 添加内边距 */
+  background: #dbbd87; /* 土黄色背景 */
+  border-radius: 8px; /* 圆角 */
+  color: #8b4513; /* 棕色文字 */
+  font-weight: bold; /* 加粗 */
 }
 
 .info-content span {
