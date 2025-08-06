@@ -49,21 +49,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, onUnmounted } from 'vue'
+import { ref, onMounted, watch, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticlesStore } from '@/stores/articles'
 import { useBannerStore } from '@/stores/banner'
 import PostFooter from '@/components/PostFooter.vue'
 import { useSidebarStore } from '@/stores/sidebar'
+import { useConfigStore } from '@/stores/config'
 
 const route = useRoute()
 const articlesStore = useArticlesStore()
 const bannerStore = useBannerStore()
 const sidebarStore = useSidebarStore()
+const configStore = useConfigStore()
 const article = ref(null)
 const loading = ref(true)
 const error = ref(null)
 const processedArticleHtml = ref('')
+
+// 获取配置
+const colors = computed(() => configStore.colors)
+const fonts = computed(() => configStore.fonts)
 
 const formatDate = (dateStr) => {
   if (!dateStr) return ''
@@ -126,7 +132,8 @@ const loadArticle = async (slug) => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await configStore.loadConfig()
   console.log('🚨 PostView mounted!')
   console.log('Route params:', route.params)
   console.log('Route fullPath:', route.fullPath)
@@ -214,9 +221,10 @@ onUnmounted(() => {
 .post-title {
   font-size: 2.5em;
   font-weight: bold;
-  color: #3b82f6;
+  color: v-bind('colors.primary');
   margin: 0 0 1rem 0;
   line-height: 1.2;
+  font-family: v-bind('fonts.title');
 }
 
 .post-meta {
@@ -288,11 +296,11 @@ onUnmounted(() => {
 .post-content {
   font-size: 1em;
   line-height: 1.6;
-  color: #333;
+  color: v-bind('colors.text');
   word-break: break-word;
-  background: #fff;
+  background: v-bind('colors.background');
   overflow: hidden;
-  font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif';
+  font-family: v-bind('fonts.content');
   font-weight: 400;
   letter-spacing: 0.2px;
 }
@@ -305,10 +313,10 @@ onUnmounted(() => {
   font-weight: 900;
   margin: 2.2em 0 1em 0;
   line-height: 1.3;
-  color: #3b82f6;
-  border-bottom: 1.5px solid #dbeafe;
+  color: v-bind('colors.primary');
+  border-bottom: 1.5px solid v-bind('colors.border');
   padding-bottom: 0.2em;
-  font-family: 'SimHei', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', 'Arial', 'sans-serif';
+  font-family: v-bind('fonts.title');
   letter-spacing: 0.5px;
 }
 
