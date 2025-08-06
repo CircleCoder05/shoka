@@ -190,7 +190,7 @@ function generateArticlesIndex() {
 
       // 从文件路径提取分类
       const pathParts = filePath.split('/')
-      const category = pathParts.length > 1 ? pathParts[0] : 'uncategorized'
+      const category = pathParts.length > 1 ? pathParts[0] : '未分类'
       const slug = filePath.replace('.md', '')
 
       // 计算字数和阅读时间
