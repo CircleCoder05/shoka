@@ -69,14 +69,16 @@
 
               <!-- 社交链接 -->
               <div class="social">
-                <span class="exturl item github" :data-url="social.github" title="GitHub">
-                  <i class="ic i-github"></i>
-                </span>
-                <span class="exturl item music" :data-url="social.music" title="Music">
-                  <i class="ic i-cloud-music"></i>
-                </span>
-                <a href="mailto:3196932484@qq.com" title="3196932484@qq.com" class="item email">
-                  <i class="ic i-envelope"></i>
+                <a
+                  v-for="item in configStore.siteConfig.social || []"
+                  :key="item.name"
+                  :href="item.url"
+                  :class="['item', item.name]"
+                  :title="item.name"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i :class="['ic', item.icon]"></i>
                 </a>
               </div>
 
@@ -481,69 +483,113 @@ onMounted(async () => {
 }
 
 .social .item {
-  display: inline-block;
-  width: 1.875rem;
-  height: 1.875rem;
-  line-height: 1.875rem;
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  margin: 0 0.15rem;
+  background: transparent;
+  color: inherit;
+  font-size: 1.25rem;
+  text-decoration: none !important;
+  border: none;
   position: relative;
   overflow: hidden;
-  border-radius: 38%;
-  margin: 0 0.25rem;
+  transition:
+    color 0.2s,
+    box-shadow 0.2s;
 }
-
 .social .item i {
-  font-size: 1.4em;
-  vertical-align: middle;
-  transform: scale(0.8);
-  transition: all 0.35s cubic-bezier(0.31, -0.105, 0.43, 1.59) 0s;
+  font-size: 1.25em;
+  transition: color 0.2s;
+  z-index: 1;
 }
-
 .social .item::before {
-  top: 90%;
-  left: -110%;
   content: '';
-  width: 120%;
-  height: 120%;
   position: absolute;
-  transform: rotate(45deg);
-  transition: all 0.35s cubic-bezier(0.31, -0.105, 0.43, 1.59) 0s;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background: transparent;
+  transition:
+    background 0.4s,
+    transform 0.4s;
+  transform: translateY(60%) skewY(-10deg);
 }
 
-.social .item:focus::before,
-.social .item:hover::before {
-  top: -10%;
-  left: -10%;
-}
-
-.social .item:focus i,
-.social .item:hover i {
-  color: var(--grey-0);
-  transform: scale(1);
-}
-
-.social .item.github::before {
-  background-color: #191717;
-}
-
-.social .item.github i {
+/* 社交icon主色和hover动画 */
+.social .item.github {
   color: #191717;
 }
-
-.social .item.music::before {
-  background-color: #e60026;
-}
-
-.social .item.music i {
+.social .item.music {
   color: #e60026;
 }
-
-.social .item.email::before {
-  background-color: #55acd5;
+.social .item.email {
+  color: #55acd5;
+}
+.social .item.twitter {
+  color: #00aff0;
+}
+.social .item.facebook {
+  color: #3b5998;
+}
+.social .item.youtube {
+  color: #ff0000;
+}
+.social .item.weibo {
+  color: #ea716e;
+}
+.social .item.google {
+  color: #4285f4;
+}
+.social .item.zhihu {
+  color: #1e88e5;
 }
 
-.social .item.email i {
-  color: #55acd5;
+.social .item.github:hover::before {
+  background: linear-gradient(135deg, #191717 0%, #191717 100%);
+  transform: translateY(0) skewY(0);
+}
+.social .item.music:hover::before {
+  background: linear-gradient(135deg, #e60026 0%, #e60026 100%);
+  transform: translateY(0) skewY(0);
+}
+.social .item.email:hover::before {
+  background: linear-gradient(135deg, #55acd5 0%, #55acd5 100%);
+  transform: translateY(0) skewY(0);
+}
+.social .item.twitter:hover::before {
+  background: linear-gradient(135deg, #00aff0 0%, #00aff0 100%);
+  transform: translateY(0) skewY(0);
+}
+.social .item.facebook:hover::before {
+  background: linear-gradient(135deg, #3b5998 0%, #3b5998 100%);
+  transform: translateY(0) skewY(0);
+}
+.social .item.youtube:hover::before {
+  background: linear-gradient(135deg, #ff0000 0%, #ff0000 100%);
+  transform: translateY(0) skewY(0);
+}
+.social .item.weibo:hover::before {
+  background: linear-gradient(135deg, #ea716e 0%, #ea716e 100%);
+  transform: translateY(0) skewY(0);
+}
+.social .item.google:hover::before {
+  background: linear-gradient(135deg, #4285f4 0%, #4285f4 100%);
+  transform: translateY(0) skewY(0);
+}
+.social .item.zhihu:hover::before {
+  background: linear-gradient(135deg, #1e88e5 0%, #1e88e5 100%);
+  transform: translateY(0) skewY(0);
+}
+
+.social .item:hover,
+.social .item:hover i {
+  color: #fff !important;
+  text-decoration: none !important;
 }
 
 /* 导航菜单样式 */
@@ -562,11 +608,13 @@ onMounted(async () => {
 }
 
 .overview .menu .item a {
-  color: inherit;
+  color: #888 !important;
+  font-family:
+    'Microsoft YaHei', 'PingFang SC', 'SimHei', 'Helvetica Neue', Arial, sans-serif !important;
   display: block;
   line-height: 3;
   text-decoration: none;
-  font-family: 'SimHei', '黑体', sans-serif;
+  transition: color 0.2s;
 }
 
 .overview .menu .item a.router-link-active {
@@ -873,5 +921,51 @@ onMounted(async () => {
 }
 #sidebar::-webkit-scrollbar-corner {
   background: transparent;
+}
+
+/* 强制所有分辨率下社交icon为圆角正方形 */
+.social .item,
+.social .item::before {
+  border-radius: 0.5rem !important;
+}
+
+.state .name {
+  font-family:
+    'Microsoft YaHei', 'PingFang SC', 'SimHei', 'Helvetica Neue', Arial, sans-serif !important;
+  color: #888 !important;
+  transition: color 0.2s;
+}
+.state .count {
+  font-family: 'Microsoft YaHei', 'PingFang SC', 'SimHei', 'Helvetica Neue', Arial, sans-serif;
+  color: #888;
+  transition: color 0.2s;
+}
+.state .item:hover .name,
+.state .item:hover .count {
+  color: #3b82f6 !important;
+}
+
+/* 作者名和格言灰色+微软雅黑 */
+.overview .author .name,
+.overview .author .description {
+  color: #888 !important;
+  font-family:
+    'Microsoft YaHei', 'PingFang SC', 'SimHei', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* 导航栏菜单灰色+微软雅黑，hover高亮蓝色 */
+.menu .item a {
+  color: #888 !important;
+  font-family:
+    'Microsoft YaHei', 'PingFang SC', 'SimHei', 'Helvetica Neue', Arial, sans-serif !important;
+  transition: color 0.2s;
+}
+.menu .item a:hover {
+  color: #3b82f6 !important;
+}
+.menu .item a.router-link-exact-active,
+.menu .item a.router-link-active,
+.menu .item.active > a {
+  color: #ffffff !important;
 }
 </style>
