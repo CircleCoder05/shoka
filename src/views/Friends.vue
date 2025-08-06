@@ -9,17 +9,6 @@
       <p class="page-subtitle">感谢这些优秀的朋友们</p>
     </div>
 
-    <!-- 搜索框 -->
-    <div class="search-section">
-      <div class="search-box">
-        <i class="ic i-search"></i>
-        <input v-model="searchQuery" type="text" placeholder="搜索友链..." class="search-input" />
-        <button v-if="searchQuery" @click="clearSearch" class="clear-btn">
-          <i class="ic i-close"></i>
-        </button>
-      </div>
-    </div>
-
     <!-- 加载状态 -->
     <div v-if="friendsStore.loading" class="loading">
       <div class="loading-spinner"></div>
@@ -33,19 +22,9 @@
     </div>
 
     <!-- 友链内容 -->
-    <div v-else class="friends-content">
-      <!-- 搜索结果为空 -->
-      <div v-if="filteredFriends.length === 0 && searchQuery" class="empty-search">
-        <div class="empty-icon">
-          <i class="ic i-search"></i>
-        </div>
-        <h3>未找到相关友链</h3>
-        <p>试试其他关键词吧</p>
-        <button @click="clearSearch" class="clear-search-btn">清除搜索</button>
-      </div>
-
+    <div v-if="!friendsStore.loading && !friendsStore.error" class="friends-content">
       <!-- 友链分类 -->
-      <div v-else class="friends-categories">
+      <div class="friends-categories">
         <div v-for="category in filteredFriends" :key="category.category" class="category-section">
           <!-- 分类标题 -->
           <div class="category-header">
@@ -100,25 +79,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useFriendsStore } from '@/stores/friends'
 import PageContainer from '@/components/PageContainer.vue'
 
 const friendsStore = useFriendsStore()
-const searchQuery = ref('')
 
 // 过滤后的友链数据
 const filteredFriends = computed(() => {
-  if (!searchQuery.value) {
-    return friendsStore.allFriends
-  }
-  return friendsStore.searchFriends(searchQuery.value)
+  return friendsStore.allFriends
 })
-
-// 清除搜索
-const clearSearch = () => {
-  searchQuery.value = ''
-}
 
 // 打开友链链接
 const openFriendLink = (url) => {
@@ -169,60 +139,6 @@ onMounted(() => {
   margin: 0;
 }
 
-.search-section {
-  margin-bottom: 2rem;
-}
-
-.search-box {
-  position: relative;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.search-box i {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  font-size: 1.1rem;
-}
-
-.search-input {
-  width: 100%;
-  padding: 1rem 3rem 1rem 3rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 25px;
-  font-size: 1rem;
-  background: #fff;
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #38a1db;
-  box-shadow: 0 0 0 3px rgba(56, 161, 219, 0.1);
-}
-
-.clear-btn {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-.clear-btn:hover {
-  background: #f5f5f5;
-  color: #333;
-}
-
 .loading,
 .error {
   display: flex;
@@ -258,51 +174,6 @@ onMounted(() => {
   100% {
     transform: rotate(360deg);
   }
-}
-
-.empty-search {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  text-align: center;
-  color: #666;
-}
-
-.empty-icon {
-  font-size: 4rem;
-  color: #ddd;
-  margin-bottom: 1rem;
-}
-
-.empty-search h3 {
-  font-size: 1.5rem;
-  color: #333;
-  margin: 0 0 0.5rem 0;
-}
-
-.empty-search p {
-  font-size: 1rem;
-  color: #666;
-  margin: 0 0 1.5rem 0;
-}
-
-.clear-search-btn {
-  padding: 0.8rem 1.5rem;
-  background: linear-gradient(135deg, #38a1db 0%, #ed6ea0 100%);
-  color: #fff;
-  border: none;
-  border-radius: 25px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.clear-search-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(56, 161, 219, 0.3);
 }
 
 .friends-categories {
@@ -488,12 +359,6 @@ onMounted(() => {
 
   .page-title i {
     font-size: 1.8rem;
-  }
-
-  .stats-card {
-    flex-direction: column;
-    gap: 2rem;
-    padding: 1.5rem;
   }
 
   .friends-grid {
