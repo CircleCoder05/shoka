@@ -231,7 +231,7 @@ watch(
 }
 
 .posts a {
-  color: #25c9f7;
+  color: #ed6ea0;
   text-decoration: none;
   font-size: 0.9rem;
   line-height: 1.3;
@@ -246,7 +246,7 @@ watch(
 }
 
 .posts a:hover {
-  color: #ed6ea0;
+  color: #25c9f7;
 }
 
 .meta-footer {
