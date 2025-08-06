@@ -29,12 +29,17 @@ export const useArticlesStore = defineStore('articles', () => {
     articles.value.forEach((article) => {
       if (article.categories && article.categories.length > 0) {
         article.categories.forEach((category) => {
-          // 确保category是字符串，如果是数组则取第一个元素
-          const categoryName = Array.isArray(category) ? category[0] : category
-          if (!grouped[categoryName]) {
-            grouped[categoryName] = []
+          // 新的数据结构：category是对象，包含key和name
+          const categoryKey = category.key || category
+          const categoryName = category.name || category
+
+          if (!grouped[categoryKey]) {
+            grouped[categoryKey] = {
+              name: categoryName,
+              posts: [],
+            }
           }
-          grouped[categoryName].push(article)
+          grouped[categoryKey].posts.push(article)
         })
       }
     })

@@ -164,6 +164,28 @@ function generateExcerpt(content) {
   return excerpt
 }
 
+// 加载分类映射表
+function loadCategoryMap() {
+  try {
+    const categoryMapFile = path.join(__dirname, '../public/category-cover-map.json')
+    const categoryMapContent = fs.readFileSync(categoryMapFile, 'utf-8')
+    return JSON.parse(categoryMapContent)
+  } catch (err) {
+    console.warn('Failed to load category-cover-map.json:', err.message)
+    return {}
+  }
+}
+
+// 将中文分类名映射为英文key
+function mapCategoryToKey(categoryName, categoryMap) {
+  // 直接查找：中文名 -> 英文key
+  if (categoryMap[categoryName]) {
+    return categoryMap[categoryName]
+  }
+  // 如果没找到映射，返回原分类名
+  return categoryName
+}
+
 // 生成文章索引
 function generateArticlesIndex() {
   const postsDir = path.join(__dirname, '../public/posts')
@@ -171,8 +193,9 @@ function generateArticlesIndex() {
 
   console.log('Scanning markdown files...')
 
-  // 加载图片列表
+  // 加载图片列表和分类映射
   const imagesList = loadImagesList()
+  const categoryMap = loadCategoryMap()
 
   // 扫描所有 markdown 文件
   const markdownFiles = scanMarkdownFiles(postsDir)
@@ -200,6 +223,38 @@ function generateArticlesIndex() {
       // 生成摘要
       const excerpt = frontMatter.excerpt || generateExcerpt(markdownContent)
 
+      // 处理分类：将中文分类名映射为英文key，同时保留中文显示名
+      let processedCategories = []
+      if (frontMatter.categories) {
+        if (Array.isArray(frontMatter.categories)) {
+          processedCategories = frontMatter.categories.map((cat) => {
+            const categoryName = Array.isArray(cat) ? cat[0] : cat
+            const categoryKey = mapCategoryToKey(categoryName, categoryMap)
+            return {
+              key: categoryKey,
+              name: categoryName,
+            }
+          })
+        } else {
+          const categoryKey = mapCategoryToKey(frontMatter.categories, categoryMap)
+          processedCategories = [
+            {
+              key: categoryKey,
+              name: frontMatter.categories,
+            },
+          ]
+        }
+      } else {
+        // 使用路径中的分类
+        const categoryKey = mapCategoryToKey(category, categoryMap)
+        processedCategories = [
+          {
+            key: categoryKey,
+            name: category,
+          },
+        ]
+      }
+
       // 生成文章信息
       const articleInfo = {
         path: filePath,
@@ -208,9 +263,7 @@ function generateArticlesIndex() {
         title: frontMatter.title || path.basename(filePath, '.md'),
         date: formatDate(frontMatter.date || ''),
         tags: frontMatter.tags || [],
-        categories: Array.isArray(frontMatter.categories)
-          ? frontMatter.categories
-          : [frontMatter.categories || category],
+        categories: processedCategories,
         author: frontMatter.author || 'CircleCoder',
         excerpt: excerpt,
         cover: frontMatter.cover || getRandomImage(imagesList),

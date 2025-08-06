@@ -48,7 +48,10 @@ export const useStatisticsStore = defineStore('statistics', () => {
       if (article.categories && Array.isArray(article.categories)) {
         article.categories.forEach((category) => {
           let categoryName = ''
-          if (Array.isArray(category)) {
+          // 新的数据结构：category是对象，包含key和name
+          if (typeof category === 'object' && category.name) {
+            categoryName = category.name
+          } else if (Array.isArray(category)) {
             categoryName = category[0] || ''
           } else if (typeof category === 'string') {
             categoryName = category
@@ -127,7 +130,9 @@ export const useStatisticsStore = defineStore('statistics', () => {
         if (article.categories && Array.isArray(article.categories)) {
           article.categories.forEach((category) => {
             let categoryName = ''
-            if (Array.isArray(category)) {
+            if (typeof category === 'object' && category.name) {
+              categoryName = category.name
+            } else if (Array.isArray(category)) {
               categoryName = category[0] || ''
             } else if (typeof category === 'string') {
               categoryName = category
@@ -170,7 +175,9 @@ export const useStatisticsStore = defineStore('statistics', () => {
       if (article.categories && Array.isArray(article.categories)) {
         return article.categories.some((category) => {
           let cat = ''
-          if (Array.isArray(category)) {
+          if (typeof category === 'object' && category.name) {
+            cat = category.name
+          } else if (Array.isArray(category)) {
             cat = category[0] || ''
           } else if (typeof category === 'string') {
             cat = category

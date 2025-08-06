@@ -91,6 +91,11 @@ const formatDate = (dateString) => {
 const getCategoryName = (category) => {
   if (!category) return null
 
+  // 新的数据结构：category是对象，包含key和name
+  if (typeof category === 'object' && category.name) {
+    return category.name
+  }
+
   // 如果category是数组，取第一个元素
   let cleanCategory = category
   if (Array.isArray(category)) {

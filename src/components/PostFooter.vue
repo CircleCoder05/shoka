@@ -156,6 +156,12 @@ const getBackgroundStyle = async (article) => {
 // 获取分类名称（去除数组符号）
 const getCategoryName = (category) => {
   if (!category) return '未分类'
+  
+  // 新的数据结构：category是对象，包含key和name
+  if (typeof category === 'object' && category.name) {
+    return category.name
+  }
+  
   // 如果是数组，取第一个元素
   if (Array.isArray(category)) {
     return category[0] || '未分类'
