@@ -26,23 +26,59 @@ export const useArticlesStore = defineStore('articles', () => {
   // 计算属性
   const articlesByCategory = computed(() => {
     const grouped = {}
-    articles.value.forEach((article) => {
+    console.log('🔍 [articlesByCategory] 开始分组，文章总数:', articles.value.length)
+
+    articles.value.forEach((article, idx) => {
+      console.log(`📄 [articlesByCategory] 处理第${idx}篇文章:`, article.slug)
+      console.log(`📄 [articlesByCategory] 文章categories:`, article.categories)
+
       if (article.categories && article.categories.length > 0) {
-        article.categories.forEach((category) => {
-          // 新的数据结构：category是对象，包含key和name
+        article.categories.forEach((category, catIdx) => {
+          console.log(`🏷️ [articlesByCategory] 第${idx}篇文章的第${catIdx}个分类:`, category)
+          console.log(`🏷️ [articlesByCategory] 分类类型:`, typeof category)
+          console.log(`🏷️ [articlesByCategory] 分类是否为对象:`, typeof category === 'object')
+
           const categoryKey = category.key || category
           const categoryName = category.name || category
+
+          console.log(
+            `🔑 [articlesByCategory] 提取的key:`,
+            categoryKey,
+            `类型:`,
+            typeof categoryKey,
+          )
+          console.log(
+            `📝 [articlesByCategory] 提取的name:`,
+            categoryName,
+            `类型:`,
+            typeof categoryName,
+          )
 
           if (!grouped[categoryKey]) {
             grouped[categoryKey] = {
               name: categoryName,
               posts: [],
             }
+            console.log(`✅ [articlesByCategory] 创建新分组:`, categoryKey)
+          } else {
+            console.log(`📈 [articlesByCategory] 添加到现有分组:`, categoryKey)
           }
+
           grouped[categoryKey].posts.push(article)
+          console.log(
+            `📊 [articlesByCategory] 分组后该分类文章数:`,
+            grouped[categoryKey].posts.length,
+          )
         })
+      } else {
+        console.log(`❌ [articlesByCategory] 第${idx}篇文章无categories字段或为空`)
       }
     })
+
+    console.log('🎯 [articlesByCategory] 最终分组结果:')
+    console.log('🎯 [articlesByCategory] 分组keys:', Object.keys(grouped))
+    console.log('🎯 [articlesByCategory] 完整分组数据:', grouped)
+
     return grouped
   })
 
