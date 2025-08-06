@@ -14,7 +14,16 @@
         <span class="post-date">{{ formatDate(article.date) }}</span>
         <span v-if="article.author" class="post-author">作者: {{ article.author }}</span>
         <div v-if="article.tags && article.tags.length" class="post-tags">
-          <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
+          <span v-for="tag in article.tags" :key="tag" class="tag">
+            <i class="ic i-tags"></i>
+            {{ tag }}
+          </span>
+        </div>
+        <div v-if="article.category" class="post-category">
+          <span class="category">
+            <i class="ic i-flag"></i>
+            {{ article.category }}
+          </span>
         </div>
       </div>
     </div>
@@ -201,7 +210,7 @@ onUnmounted(() => {
 .post-title {
   font-size: 2.5em;
   font-weight: bold;
-  color: #e9546b;
+  color: #3b82f6;
   margin: 0 0 1rem 0;
   line-height: 1.2;
 }
@@ -236,6 +245,35 @@ onUnmounted(() => {
   border-radius: 20px;
   font-size: 0.85em;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.tag i {
+  font-size: 0.8em;
+}
+
+.post-category {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.category {
+  background: #dbeafe;
+  color: #3b82f6;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.category i {
+  font-size: 0.8em;
 }
 
 /* 文章内容 */
