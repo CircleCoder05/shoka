@@ -11,19 +11,23 @@
     <div class="post-header">
       <h1 class="post-title">{{ article.title }}</h1>
       <div class="post-meta">
-        <span class="post-date">{{ formatDate(article.date) }}</span>
-        <span v-if="article.author" class="post-author">作者: {{ article.author }}</span>
-        <div v-if="article.tags && article.tags.length" class="post-tags">
-          <span v-for="tag in article.tags" :key="tag" class="tag">
-            <i class="ic i-tags"></i>
-            {{ tag }}
-          </span>
+        <div class="meta-row">
+          <span class="post-date">{{ formatDate(article.date) }}</span>
+          <span v-if="article.author" class="post-author">作者: {{ article.author }}</span>
         </div>
-        <div v-if="article.category" class="post-category">
-          <span class="category">
-            <i class="ic i-flag"></i>
-            {{ article.category }}
-          </span>
+        <div class="meta-row">
+          <div v-if="article.tags && article.tags.length" class="post-tags">
+            <span v-for="tag in article.tags" :key="tag" class="tag">
+              <i class="ic i-tags"></i>
+              {{ tag }}
+            </span>
+          </div>
+          <div v-if="article.category" class="post-category">
+            <span class="category">
+              <i class="ic i-flag"></i>
+              {{ article.category }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -222,6 +226,10 @@ onUnmounted(() => {
   gap: 1rem;
   color: #666;
   font-size: 0.95em;
+}
+
+.meta-row {
+  display: contents;
 }
 
 .post-date {
@@ -551,7 +559,32 @@ onUnmounted(() => {
   .post-meta {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  .post-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  .meta-row {
+    display: flex !important;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .post-date,
+  .post-author {
+    display: inline;
+  }
+
+  .post-tags,
+  .post-category {
+    display: inline-flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
   }
   .post-content {
     font-size: 1em;

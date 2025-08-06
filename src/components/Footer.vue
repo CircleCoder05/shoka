@@ -104,42 +104,14 @@ onUnmounted(() => {
 /* 移动端适配 */
 @media (max-width: 768px) {
   .footer {
-    padding: 14px 0;
-    margin-top: 16px;
-  }
-
-  .footer-content {
-    padding: 0 12px;
-    font-size: 14px;
-  }
-
-  .icp {
-    font-size: 15px;
-  }
-
-  .runtime {
-    font-size: 13px;
+    display: none;
   }
 }
 
 /* 小屏手机适配 */
 @media (max-width: 480px) {
   .footer {
-    padding: 12px 0;
-    margin-top: 12px;
-  }
-
-  .footer-content {
-    padding: 0 8px;
-    font-size: 13px;
-  }
-
-  .icp {
-    font-size: 14px;
-  }
-
-  .runtime {
-    font-size: 12px;
+    display: none;
   }
 }
 </style>
