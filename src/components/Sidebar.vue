@@ -112,11 +112,7 @@
                     </li>
                   </ul>
                 </li>
-                <li class="item">
-                  <router-link to="/statistics" rel="section" @click="closeMobileSidebar">
-                    <i class="ic i-clock"></i>统计
-                  </router-link>
-                </li>
+
                 <li class="item">
                   <router-link to="/friends" rel="section" @click="closeMobileSidebar">
                     <i class="ic i-heart"></i>友链
