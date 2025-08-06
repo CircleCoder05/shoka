@@ -54,13 +54,17 @@ export const useStatisticsStore = defineStore('statistics', () => {
             categoryName = category
           }
           if (categoryName) {
+            // 处理未分类的特殊情况
+            if (categoryName === 'uncategorized') categoryName = '未分类'
             categoryCounts[categoryName] = (categoryCounts[categoryName] || 0) + 1
           }
         })
       }
       // 如果没有categories但有category字段，也统计
       else if (article.category && typeof article.category === 'string') {
-        categoryCounts[article.category] = (categoryCounts[article.category] || 0) + 1
+        let categoryName = article.category
+        if (categoryName === 'uncategorized') categoryName = '未分类'
+        categoryCounts[categoryName] = (categoryCounts[categoryName] || 0) + 1
       }
     })
 
@@ -129,11 +133,15 @@ export const useStatisticsStore = defineStore('statistics', () => {
               categoryName = category
             }
             if (categoryName) {
+              // 处理未分类的特殊情况
+              if (categoryName === 'uncategorized') categoryName = '未分类'
               allCategories.add(categoryName)
             }
           })
         } else if (article.category && typeof article.category === 'string') {
-          allCategories.add(article.category)
+          let categoryName = article.category
+          if (categoryName === 'uncategorized') categoryName = '未分类'
+          allCategories.add(categoryName)
         }
 
         // 处理标签
@@ -167,12 +175,16 @@ export const useStatisticsStore = defineStore('statistics', () => {
           } else if (typeof category === 'string') {
             cat = category
           }
+          // 处理未分类的特殊情况
+          if (cat === 'uncategorized') cat = '未分类'
           return cat === categoryName
         })
       }
       // 检查category字段
       else if (article.category && typeof article.category === 'string') {
-        return article.category === categoryName
+        let cat = article.category
+        if (cat === 'uncategorized') cat = '未分类'
+        return cat === categoryName
       }
       return false
     })
