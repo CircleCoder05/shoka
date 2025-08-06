@@ -61,7 +61,7 @@ const paginatedArticles = computed(() => {
       cover: article.cover,
       category: {
         name: categoryName,
-        url: `/categories/${categoryName}`,
+        url: `/category/${categoryName}`,
       },
     }
   })
