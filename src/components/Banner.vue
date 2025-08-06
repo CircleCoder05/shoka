@@ -13,8 +13,8 @@
 
     <!-- 默认网站标题 -->
     <div v-if="!isArticlePage" class="banner-title">
-      <h1>{{ siteTitle }}</h1>
-      <p>{{ siteSubtitle }}</p>
+      <h1>{{ bannerTitle }}</h1>
+      <p class="typewriter">{{ typedSubtitle }}</p>
     </div>
 
     <!-- 文章详情页信息 -->
@@ -63,7 +63,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
+import { useConfigStore } from '@/stores/config'
 
 // 定义组件名称
 defineOptions({
@@ -123,6 +124,8 @@ const props = defineProps({
     default: () => [],
   },
 })
+
+const configStore = useConfigStore()
 
 // 轮播图片相关
 const bannerImages = ref([])
@@ -196,6 +199,45 @@ const getCategoryName = (category) => {
   return category
 }
 
+const bannerTitle = computed(() => configStore.siteConfig.bannerTitle || 'CircleCoder')
+const bannerSubtitle = computed(() => configStore.siteConfig.bannerSubtitle || '仰望星空')
+
+// 打字机特效
+const typedSubtitle = ref('')
+let typingTimer = null
+let deleting = false
+let charIndex = 0
+const typingSpeed = 90
+const pauseAfterTyping = 2000 // 打完字后停留2秒
+const pauseAfterDeleting = 600
+const extraSpace = '\u00A0' // 不断行的空格
+
+function startTyping() {
+  const text = bannerSubtitle.value + extraSpace
+  if (!deleting) {
+    if (charIndex < text.length) {
+      typedSubtitle.value += text[charIndex]
+      charIndex++
+      typingTimer = setTimeout(startTyping, typingSpeed)
+    } else {
+      typingTimer = setTimeout(() => {
+        deleting = true
+        startTyping()
+      }, pauseAfterTyping)
+    }
+  } else {
+    if (charIndex > 1) {
+      // 保留最后一个空白字符
+      typedSubtitle.value = text.slice(0, charIndex - 1)
+      charIndex--
+      typingTimer = setTimeout(startTyping, typingSpeed)
+    } else {
+      deleting = false
+      typingTimer = setTimeout(startTyping, pauseAfterDeleting)
+    }
+  }
+}
+
 // 监听文章页面变化
 watch(
   () => props.isArticlePage,
@@ -208,14 +250,20 @@ watch(
 
 onMounted(async () => {
   await loadImageUrls()
+  configStore.loadConfig()
 
   // 所有页面都使用轮播
   initBannerImages()
   startCarousel()
+  typedSubtitle.value = extraSpace
+  charIndex = 1
+  deleting = false
+  startTyping()
 })
 
 onUnmounted(() => {
   stopCarousel()
+  if (typingTimer) clearTimeout(typingTimer)
 })
 </script>
 
@@ -331,9 +379,33 @@ onUnmounted(() => {
 }
 
 .banner-title p {
-  font-size: 1.2rem;
+  font-size: 1.7rem;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  line-height: 1.5;
+  color: #fff;
   margin: 0;
-  opacity: 0.9;
+  opacity: 0.96;
+  text-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.22),
+    0 1px 8px rgba(0, 0, 0, 0.18);
+}
+
+.typewriter {
+  border-right: 2px solid #fff;
+  white-space: pre;
+  overflow: hidden;
+  display: inline-block;
+  animation: blink-cursor 0.8s steps(1) infinite;
+}
+@keyframes blink-cursor {
+  0%,
+  100% {
+    border-color: #fff;
+  }
+  50% {
+    border-color: transparent;
+  }
 }
 
 /* 文章详情页样式 */
@@ -476,7 +548,7 @@ onUnmounted(() => {
   }
 
   .banner-title p {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
 
   .article-title {
@@ -501,7 +573,7 @@ onUnmounted(() => {
   }
 
   .banner-title p {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .article-title {
@@ -542,7 +614,7 @@ onUnmounted(() => {
   }
 
   .banner-title p {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .article-title {
