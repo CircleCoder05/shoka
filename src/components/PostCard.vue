@@ -225,6 +225,10 @@ defineProps({
   padding: 1rem 0 0 1.5rem;
 }
 
+.post-card:nth-child(2n) .meta {
+  justify-content: flex-start;
+}
+
 .post-card:nth-child(2n) .info-footer {
   flex-direction: row-reverse;
 }
