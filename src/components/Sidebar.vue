@@ -54,16 +54,16 @@
                   </a>
                 </div>
                 <div class="item categories">
-                  <a href="/categories/">
+                  <router-link to="/categories">
                     <span class="count">{{ stats.categories }}</span>
                     <span class="name">分类</span>
-                  </a>
+                  </router-link>
                 </div>
                 <div class="item tags">
-                  <a href="/tags/">
+                  <router-link to="/tags">
                     <span class="count">{{ stats.tags }}</span>
                     <span class="name">标签</span>
-                  </a>
+                  </router-link>
                 </div>
               </nav>
 

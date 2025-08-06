@@ -8,7 +8,7 @@
       <!-- 背面 -->
       <div class="card-back">
         <div class="ribbon">
-          <router-link :to="`/categories/${category.name}`">{{ category.title }}</router-link>
+          <router-link :to="`/category/${category.name}`">{{ category.title }}</router-link>
         </div>
         <div class="inner">
           <div class="posts-container">
@@ -22,7 +22,7 @@
             <span class="count">
               <i class="fas fa-file-alt"></i> {{ category.posts.length }} 篇文章
             </span>
-            <router-link :to="`/categories/${category.name}`" class="btn">more...</router-link>
+            <router-link :to="`/category/${category.name}`" class="btn">more...</router-link>
           </div>
         </div>
       </div>

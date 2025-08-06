@@ -28,9 +28,9 @@
         <div class="excerpt">{{ post.excerpt }}</div>
       </div>
       <div class="info-footer">
-        <a :href="post.category.url" :title="post.category.name">
+        <router-link :to="`/category/${post.category.name}`" :title="post.category.name">
           <i class="ic i-flag"></i>{{ post.category.name }}
-        </a>
+        </router-link>
         <router-link :to="post.url" :title="post.title" class="btn">more...</router-link>
       </div>
     </div>
