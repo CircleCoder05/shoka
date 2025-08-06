@@ -29,10 +29,12 @@ export const useArticlesStore = defineStore('articles', () => {
     articles.value.forEach((article) => {
       if (article.categories && article.categories.length > 0) {
         article.categories.forEach((category) => {
-          if (!grouped[category]) {
-            grouped[category] = []
+          // 确保category是字符串，如果是数组则取第一个元素
+          const categoryName = Array.isArray(category) ? category[0] : category
+          if (!grouped[categoryName]) {
+            grouped[categoryName] = []
           }
-          grouped[category].push(article)
+          grouped[categoryName].push(article)
         })
       }
     })
