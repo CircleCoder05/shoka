@@ -7,7 +7,10 @@
           返回
         </button>
         <div class="title-section">
-          <h1 class="page-title">{{ pageTitle }}</h1>
+          <h1 class="page-title">
+            <i class="ic" :class="type === 'category' ? 'i-flag' : 'i-tags'"></i>
+            {{ pageTitle }}
+          </h1>
           <p class="page-subtitle">{{ pageSubtitle }}</p>
         </div>
       </div>
@@ -82,16 +85,18 @@
                 class="tag-badge"
                 @click.stop="goToTag(tag)"
               >
+                <i class="ic i-tags"></i>
                 {{ tag }}
               </span>
             </div>
             <div class="article-categories" v-if="article.categories && article.categories.length">
               <span
-                v-for="category in article.categories"
+                v-for="category in getCategoryNames(article.categories)"
                 :key="category"
                 class="category-badge"
                 @click.stop="goToCategory(category)"
               >
+                <i class="ic i-flag"></i>
                 {{ category }}
               </span>
             </div>
@@ -103,7 +108,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStatisticsStore } from '@/stores/statistics'
 import PageContainer from '@/components/PageContainer.vue'
@@ -135,19 +140,11 @@ const typeText = computed(() => (type.value === 'category' ? '分类' : '标签'
 
 // 页面标题和副标题
 const pageTitle = computed(() => {
-  if (type.value === 'category') {
-    return name.value === '未分类' ? '未分类文章' : `${name.value} 分类`
-  } else {
-    return `${name.value} 标签`
-  }
+  return name.value
 })
 
 const pageSubtitle = computed(() => {
-  if (type.value === 'category') {
-    return `查看 ${name.value} 分类下的所有文章`
-  } else {
-    return `查看 ${name.value} 标签下的所有文章`
-  }
+  return ''
 })
 
 // 计算总字数
@@ -179,6 +176,51 @@ const goToArticle = (slug) => {
 
 const goToTag = (tag) => {
   router.push(`/tag/${tag}`)
+}
+
+const getCategoryNames = (categories) => {
+  if (!categories) return []
+
+  const cleanCategories = []
+
+  if (Array.isArray(categories)) {
+    // 如果是数组，处理每个元素
+    categories.forEach((category) => {
+      const cleanCategory = getCleanCategory(category)
+      if (cleanCategory && cleanCategory !== '未分类') {
+        cleanCategories.push(cleanCategory)
+      }
+    })
+  } else if (typeof categories === 'string') {
+    // 如果是字符串，尝试解析
+    const cleanCategory = getCleanCategory(categories)
+    if (cleanCategory && cleanCategory !== '未分类') {
+      cleanCategories.push(cleanCategory)
+    }
+  }
+
+  return cleanCategories
+}
+
+const getCleanCategory = (category) => {
+  if (!category) return null
+
+  let cleanCategory = category
+
+  if (Array.isArray(category)) {
+    cleanCategory = category[0]
+  } else if (typeof category === 'string' && category.startsWith('[') && category.endsWith(']')) {
+    // 处理数组字符串的情况，如 "[\"操作系统\"]"
+    try {
+      const parsed = JSON.parse(category)
+      cleanCategory = Array.isArray(parsed) ? parsed[0] : parsed
+    } catch {
+      // 如果JSON解析失败，尝试简单的字符串处理
+      cleanCategory = category.replace(/^\[["']?|["']?\]$/g, '')
+    }
+  }
+
+  return cleanCategory
 }
 
 const goToCategory = (category) => {
@@ -215,6 +257,15 @@ const loadArticles = async () => {
 onMounted(() => {
   loadArticles()
 })
+
+// 监听路由参数变化，重新加载文章
+watch(
+  () => [route.params.type, route.params.name],
+  () => {
+    loadArticles()
+  },
+  { immediate: false },
+)
 </script>
 
 <style scoped>
@@ -262,6 +313,15 @@ onMounted(() => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.page-title i {
+  font-size: 2.2rem;
+  color: #38a1db;
+  -webkit-text-fill-color: #38a1db;
 }
 
 .page-subtitle {
@@ -442,6 +502,14 @@ onMounted(() => {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.tag-badge i,
+.category-badge i {
+  font-size: 0.7rem;
 }
 
 .tag-badge {
@@ -482,6 +550,10 @@ onMounted(() => {
     font-size: 2rem;
   }
 
+  .page-title i {
+    font-size: 1.8rem;
+  }
+
   .stats {
     flex-direction: column;
     gap: 1rem;
@@ -504,6 +576,10 @@ onMounted(() => {
 @media (max-width: 480px) {
   .page-title {
     font-size: 1.8rem;
+  }
+
+  .page-title i {
+    font-size: 1.6rem;
   }
 
   .article-card {
