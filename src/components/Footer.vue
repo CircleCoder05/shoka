@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="footer-content">
-      <p>© 2024 {{ siteName }}</p>
+      <p>© {{ currentYear }} {{ siteName }}</p>
       <p class="icp">
         <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
           {{ icpNumber }}
@@ -22,7 +22,7 @@ let timer = null
 
 // 计算运行时间
 const calculateRuntime = () => {
-  const startDate = new Date(configStore.siteConfig.startDate || '2024-11-01T00:00:00')
+  const startDate = new Date(configStore.footer.startDate || '2024-11-01T00:00:00')
   const now = new Date()
   const diff = now - startDate
 
@@ -34,8 +34,9 @@ const calculateRuntime = () => {
   runtime.value = `${days}天${hours}时${minutes}分${seconds}秒`
 }
 
-const icpNumber = computed(() => configStore.siteConfig.icp || '京ICP备2025135091号')
-const siteName = computed(() => configStore.siteConfig.name || '碼農書架')
+const icpNumber = computed(() => configStore.footer?.icp || '京ICP备2025135091号')
+const siteName = computed(() => configStore.footer?.name || '碼農書架')
+const currentYear = computed(() => new Date().getFullYear())
 
 onMounted(async () => {
   await configStore.loadConfig()
