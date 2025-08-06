@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Archives from '../views/Archives.vue'
 import Categories from '../views/Categories.vue'
-import Category from '../views/Category.vue'
 import Tags from '../views/Tags.vue'
-import Tag from '../views/Tag.vue'
+import ArticleList from '../views/ArticleList.vue'
 
 import Friends from '../views/Friends.vue'
 import Statistics from '../views/Statistics.vue'
@@ -35,9 +34,10 @@ const router = createRouter({
       component: Categories,
     },
     {
-      path: '/categories/:name',
+      path: '/category/:name',
       name: 'category',
-      component: Category,
+      component: ArticleList,
+      props: (route) => ({ type: 'category', name: route.params.name }),
     },
     {
       path: '/tags',
@@ -45,9 +45,10 @@ const router = createRouter({
       component: Tags,
     },
     {
-      path: '/tags/:name',
+      path: '/tag/:name',
       name: 'tag',
-      component: Tag,
+      component: ArticleList,
+      props: (route) => ({ type: 'tag', name: route.params.name }),
     },
     {
       path: '/post-demo',
