@@ -64,6 +64,7 @@ function tryLoad(url, fallback) {
 }
 
 async function setCover() {
+  // 使用英文key进行目录映射
   const dir = getDirName(props.category.name)
   let url = `/posts/${dir}/cover.jpg`
   let fallback = `/posts/${dir}/cover.png`

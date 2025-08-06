@@ -8,9 +8,9 @@
       <h2 class="divider">精选分类</h2>
       <div class="cards">
         <CategoryCard
-          v-for="(posts, name) in articlesStore.articlesByCategory"
-          :key="name"
-          :category="{ name, title: name, posts }"
+          v-for="(categoryData, key) in articlesStore.articlesByCategory"
+          :key="key"
+          :category="{ name: key, title: categoryData.name, posts: categoryData.posts }"
         />
       </div>
       <h2 class="divider">文章列表</h2>
@@ -45,14 +45,22 @@ const paginatedArticles = computed(() => {
   const start = (currentPage.value - 1) * pageSize
   const end = start + pageSize
   return articlesStore.articles.slice(start, end).map((article) => {
-    // 处理分类名，确保是字符串而不是数组
+    // 处理分类名，适配新的数据结构
     let categoryName = '未分类'
+    let categoryKey = '未分类'
     if (article.categories && article.categories.length > 0) {
       const firstCategory = article.categories[0]
-      // 如果是字符串，直接使用；如果是数组，取第一个元素
-      categoryName = Array.isArray(firstCategory) ? firstCategory[0] : firstCategory
-      // 去除可能的引号和方括号
-      categoryName = categoryName.replace(/^['"[\]]+|['"[\]]+$/g, '')
+      // 新的数据结构：category是对象，包含key和name
+      if (typeof firstCategory === 'object' && firstCategory.key && firstCategory.name) {
+        categoryKey = firstCategory.key
+        categoryName = firstCategory.name
+      } else {
+        // 兼容旧数据结构
+        categoryName = Array.isArray(firstCategory) ? firstCategory[0] : firstCategory
+        categoryKey = categoryName
+        // 去除可能的引号和方括号
+        categoryName = categoryName.replace(/^['"[\]]+|['"[\]]+$/g, '')
+      }
     }
 
     return {
@@ -61,7 +69,8 @@ const paginatedArticles = computed(() => {
       cover: article.cover,
       category: {
         name: categoryName,
-        url: `/category/${categoryName}`,
+        key: categoryKey,
+        url: `/category/${categoryKey}`,
       },
     }
   })

@@ -207,7 +207,10 @@ const getCleanCategory = (category) => {
 
   let cleanCategory = category
 
-  if (Array.isArray(category)) {
+  // 新的数据结构：category是对象，包含key和name
+  if (typeof category === 'object' && category.name) {
+    cleanCategory = category.name
+  } else if (Array.isArray(category)) {
     cleanCategory = category[0]
   } else if (typeof category === 'string' && category.startsWith('[') && category.endsWith(']')) {
     // 处理数组字符串的情况，如 "[\"操作系统\"]"
