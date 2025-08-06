@@ -31,6 +31,7 @@ export const useConfigStore = defineStore('config', () => {
   const siteConfig = computed(() => config.value?.site || {})
   const colors = computed(() => siteConfig.value.colors || {})
   const fonts = computed(() => siteConfig.value.fonts || {})
+  const footer = computed(() => config.value?.footer || {})
 
   return {
     config,
@@ -39,6 +40,7 @@ export const useConfigStore = defineStore('config', () => {
     siteConfig,
     colors,
     fonts,
+    footer,
     loadConfig,
   }
 })
