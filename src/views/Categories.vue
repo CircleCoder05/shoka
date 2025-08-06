@@ -68,54 +68,18 @@
           </div>
         </div>
       </div>
-
-      <!-- 分类详情弹窗 -->
-      <div v-if="selectedCategory" class="category-modal" @click="closeModal">
-        <div class="modal-content" @click.stop>
-          <div class="modal-header">
-            <h2>{{ selectedCategory.name }}</h2>
-            <button class="close-btn" @click="closeModal">
-              <i class="ic i-close"></i>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="articles-list">
-              <div
-                v-for="article in selectedCategoryArticles"
-                :key="article.slug"
-                class="article-item"
-              >
-                <div class="article-date">
-                  {{ formatDate(article.date) }}
-                </div>
-                <div class="article-info">
-                  <h3 class="article-title">
-                    <router-link :to="`/post/${article.slug}`" @click="closeModal">
-                      {{ article.title }}
-                    </router-link>
-                  </h3>
-                  <div class="article-meta">
-                    <span v-if="article.tags && article.tags.length" class="tags">
-                      <i class="ic i-tags"></i>
-                      {{ getTagsString(article.tags) }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </PageContainer>
 </template>
 
 <script setup>
 import { computed, ref, onMounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStatisticsStore } from '@/stores/statistics'
 import PageContainer from '@/components/PageContainer.vue'
 import * as echarts from 'echarts'
 
+const router = useRouter()
 const statisticsStore = useStatisticsStore()
 
 const loading = computed(() => statisticsStore.loading)
@@ -131,34 +95,11 @@ const sortedCategories = computed(() => {
   return categories.sort((a, b) => b.count - a.count)
 })
 
-const selectedCategory = ref(null)
-const selectedCategoryArticles = ref([])
-
 // 图表引用
 const pieChartRef = ref(null)
 const barChartRef = ref(null)
 let pieChart = null
 let barChart = null
-
-const formatDate = (dateStr) => {
-  if (!dateStr) return ''
-  const date = new Date(dateStr)
-  return date.toLocaleDateString('zh-CN', {
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-const getTagsString = (tags) => {
-  if (!tags) return ''
-  if (Array.isArray(tags)) {
-    return tags.filter((tag) => typeof tag === 'string' && tag).join(', ')
-  }
-  if (typeof tags === 'string') {
-    return tags
-  }
-  return ''
-}
 
 const getProgressPercentage = (count) => {
   const maxCount = Math.max(...sortedCategories.value.map((c) => c.count))
@@ -166,15 +107,7 @@ const getProgressPercentage = (count) => {
 }
 
 const selectCategory = (categoryName) => {
-  // 处理未分类的特殊情况
-  const actualCategoryName = categoryName === '未分类' ? 'uncategorized' : categoryName
-  selectedCategory.value = { name: categoryName }
-  selectedCategoryArticles.value = statisticsStore.getArticlesByCategory(actualCategoryName)
-}
-
-const closeModal = () => {
-  selectedCategory.value = null
-  selectedCategoryArticles.value = []
+  router.push(`/category/${categoryName}`)
 }
 
 // 初始化饼图
@@ -655,136 +588,7 @@ onUnmounted(() => {
   transform: translateX(4px);
 }
 
-/* 弹窗样式 */
-.category-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
 
-.modal-content {
-  background: #fff;
-  border-radius: 16px;
-  max-width: 800px;
-  width: 100%;
-  max-height: 80vh;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid #eee;
-  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #333;
-  font-weight: 600;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #666;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-.close-btn:hover {
-  background: #f5f5f5;
-  color: #333;
-}
-
-.modal-body {
-  padding: 2rem;
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-.articles-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.article-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 12px;
-  background: #f8f9fa;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
-}
-
-.article-item:hover {
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-color: rgba(237, 110, 160, 0.2);
-}
-
-.article-date {
-  font-size: 0.9rem;
-  color: #666;
-  font-weight: 500;
-  min-width: 80px;
-  flex-shrink: 0;
-}
-
-.article-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.article-title {
-  margin: 0 0 0.5rem 0;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.article-title a {
-  color: #333;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.article-title a:hover {
-  color: #ed6ea0;
-}
-
-.article-meta {
-  font-size: 0.85rem;
-  color: #666;
-}
-
-.tags {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.tags i {
-  font-size: 0.8rem;
-}
 
 /* 响应式设计 */
 @media (max-width: 1200px) {

@@ -48,51 +48,19 @@
           </div>
         </div>
       </div>
-
-      <!-- 标签详情弹窗 -->
-      <div v-if="selectedTag" class="tag-modal" @click="closeModal">
-        <div class="modal-content" @click.stop>
-          <div class="modal-header">
-            <h2>{{ selectedTag.name }}</h2>
-            <button class="close-btn" @click="closeModal">
-              <i class="ic i-close"></i>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="articles-list">
-              <div v-for="article in selectedTagArticles" :key="article.slug" class="article-item">
-                <div class="article-date">
-                  {{ formatDate(article.date) }}
-                </div>
-                <div class="article-info">
-                  <h3 class="article-title">
-                    <router-link :to="`/post/${article.slug}`" @click="closeModal">
-                      {{ article.title }}
-                    </router-link>
-                  </h3>
-                  <div class="article-meta">
-                    <span v-if="article.categories && article.categories.length" class="category">
-                      <i class="ic i-flag"></i>
-                      {{ getCategoryString(article.categories) }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </PageContainer>
 </template>
 
 <script setup>
 import { computed, ref, onMounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStatisticsStore } from '@/stores/statistics'
 import PageContainer from '@/components/PageContainer.vue'
 import * as echarts from 'echarts'
 import 'echarts-wordcloud'
 
+const router = useRouter()
 const statisticsStore = useStatisticsStore()
 
 const loading = computed(() => statisticsStore.loading)
@@ -102,9 +70,6 @@ const error = computed(() => statisticsStore.error)
 const sortedTags = computed(() => {
   return statisticsStore.tagsWithCount.sort((a, b) => b.count - a.count)
 })
-
-const selectedTag = ref(null)
-const selectedTagArticles = ref([])
 
 // 图表引用
 const wordCloudRef = ref(null)
@@ -138,45 +103,8 @@ const getTagColor = (index) => {
   return tagColors[index % tagColors.length]
 }
 
-const formatDate = (dateStr) => {
-  if (!dateStr) return ''
-  const date = new Date(dateStr)
-  return date.toLocaleDateString('zh-CN', {
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-const getCategoryName = (category) => {
-  if (!category) return '未分类'
-  if (Array.isArray(category)) {
-    return category[0] || '未分类'
-  }
-  if (typeof category === 'string') {
-    return category
-  }
-  return '未分类'
-}
-
-const getCategoryString = (categories) => {
-  if (!categories) return ''
-  if (Array.isArray(categories)) {
-    const categoryNames = categories
-      .map((cat) => getCategoryName(cat))
-      .filter((name) => name && name !== '未分类')
-    return categoryNames.join(', ')
-  }
-  return ''
-}
-
 const selectTag = (tagName) => {
-  selectedTag.value = { name: tagName }
-  selectedTagArticles.value = statisticsStore.getArticlesByTag(tagName)
-}
-
-const closeModal = () => {
-  selectedTag.value = null
-  selectedTagArticles.value = []
+  router.push(`/tag/${tagName}`)
 }
 
 // 初始化词云图
@@ -482,100 +410,7 @@ onUnmounted(() => {
   transition: all 0.3s ease;
 }
 
-/* 弹窗样式 */
-.tag-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-.modal-content {
-  background: #fff;
-  border-radius: 16px;
-  max-width: 800px;
-  width: 100%;
-  max-height: 80vh;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid #eee;
-  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #333;
-  font-weight: 600;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #666;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-.close-btn:hover {
-  background: #f5f5f5;
-  color: #333;
-}
-
-.modal-body {
-  padding: 2rem;
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-.articles-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.article-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 12px;
-  background: #f8f9fa;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
-}
-
-.article-item:hover {
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-color: rgba(56, 161, 219, 0.2);
-}
-
-.article-date {
-  font-size: 0.9rem;
-  color: #666;
-  font-weight: 500;
-  min-width: 80px;
-  flex-shrink: 0;
-}
+/* 响应式设计 */
 
 .article-info {
   flex: 1;
@@ -672,29 +507,6 @@ onUnmounted(() => {
 
   .tag-count {
     font-size: 0.75rem;
-  }
-
-  .modal-content {
-    margin: 1rem;
-    max-height: 90vh;
-  }
-
-  .modal-header {
-    padding: 1rem 1.5rem;
-  }
-
-  .modal-body {
-    padding: 1.5rem;
-  }
-
-  .article-item {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .article-date {
-    min-width: auto;
-    align-self: flex-start;
   }
 }
 
