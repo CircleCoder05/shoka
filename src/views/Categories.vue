@@ -588,8 +588,6 @@ onUnmounted(() => {
   transform: translateX(4px);
 }
 
-
-
 /* 响应式设计 */
 @media (max-width: 1200px) {
   .charts-section {

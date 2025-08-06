@@ -1,10 +1,10 @@
 <template>
   <footer class="footer">
     <div class="footer-content">
-      <p>© 2024 CircleCoder 博客</p>
+      <p>© 2024 {{ siteName }}</p>
       <p class="icp">
         <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
-          京ICP备2025135091号
+          {{ icpNumber }}
         </a>
       </p>
       <p class="runtime">本站已稳定运行 {{ runtime }}</p>
@@ -13,14 +13,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useConfigStore } from '@/stores/config'
 
+const configStore = useConfigStore()
 const runtime = ref('')
 let timer = null
 
 // 计算运行时间
 const calculateRuntime = () => {
-  const startDate = new Date('2024-11-01T00:00:00')
+  const startDate = new Date(configStore.siteConfig.startDate || '2024-11-01T00:00:00')
   const now = new Date()
   const diff = now - startDate
 
@@ -32,7 +34,11 @@ const calculateRuntime = () => {
   runtime.value = `${days}天${hours}时${minutes}分${seconds}秒`
 }
 
-onMounted(() => {
+const icpNumber = computed(() => configStore.siteConfig.icp || '京ICP备2025135091号')
+const siteName = computed(() => configStore.siteConfig.name || '碼農書架')
+
+onMounted(async () => {
+  await configStore.loadConfig()
   calculateRuntime()
   // 每秒更新一次
   timer = setInterval(calculateRuntime, 1000)

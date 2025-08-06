@@ -137,28 +137,30 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useMobileSidebarStore } from '@/stores/mobileSidebar'
 import { useStatisticsStore } from '@/stores/statistics'
+import { useConfigStore } from '@/stores/config'
 import TableOfContents from './TableOfContents.vue'
 
 const route = useRoute()
 const sidebarStore = useSidebarStore()
 const mobileSidebarStore = useMobileSidebarStore()
 const statisticsStore = useStatisticsStore()
+const configStore = useConfigStore()
 
-const author = ref({
-  name: 'CircleCoder',
-  avatar: 'https://avatars.githubusercontent.com/u/9919?s=200&v=4',
-  description: '空天报国，敢为人先',
-})
+const author = computed(() => ({
+  name: configStore.siteConfig.author || 'CircleCoder',
+  avatar: configStore.siteConfig.avatar || '/img/avatar.png',
+  description: configStore.siteConfig.motto || '代码改变世界，知识改变人生',
+}))
 
-const social = ref({
-  github: 'https://github.com/CircleCoder05',
+const social = computed(() => ({
+  github: configStore.siteConfig.github || 'https://github.com/CircleCoder05',
   music: 'https://music.163.com/#/user/home?id=yourid',
-})
+}))
 
 // 判断是否为文章页面
 const isArticlePage = computed(() => {
@@ -194,8 +196,11 @@ const initStatistics = async () => {
   }
 }
 
-// 组件挂载时加载统计数据
-initStatistics()
+// 组件挂载时加载配置和统计数据
+onMounted(async () => {
+  await configStore.loadConfig()
+  await initStatistics()
+})
 </script>
 
 <style scoped>
@@ -400,11 +405,14 @@ initStatistics()
   border: 0.0625rem solid var(--body-bg-shadow);
   display: block;
   margin: 0 auto;
-  max-width: 10rem;
+  width: 10rem;
+  height: 10rem;
   padding: 0.125rem;
   box-shadow: 0 0 1rem 0.625rem var(--body-bg-shadow);
   border-radius: 50%;
   transition: all 0.2s ease-in-out;
+  overflow: hidden;
+  object-fit: cover;
 }
 
 .overview .author:hover .image {
@@ -643,7 +651,8 @@ initStatistics()
   }
 
   .overview .author .image {
-    max-width: 8rem;
+    width: 8rem;
+    height: 8rem;
   }
 
   .state .item {
@@ -699,7 +708,8 @@ initStatistics()
   }
 
   .overview .author .image {
-    max-width: 6rem;
+    width: 6rem;
+    height: 6rem;
   }
 
   .overview .author .name {
@@ -780,7 +790,8 @@ initStatistics()
   }
 
   .overview .author .image {
-    max-width: 5rem;
+    width: 5rem;
+    height: 5rem;
   }
 
   .overview .author .name {
