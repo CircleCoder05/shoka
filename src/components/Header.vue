@@ -24,7 +24,6 @@
       <router-link to="/tags"> <i class="ic i-tags"></i>标签 </router-link>
       <router-link to="/about"> <i class="ic i-user"></i>关于 </router-link>
       <router-link to="/friends"> <i class="ic i-heart"></i>友链 </router-link>
-      <router-link to="/statistics"> <i class="ic i-clock"></i>统计 </router-link>
     </nav>
   </header>
 </template>

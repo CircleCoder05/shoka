@@ -5,7 +5,6 @@ import Tags from '../views/Tags.vue'
 import ArticleList from '../views/ArticleList.vue'
 
 import Friends from '../views/Friends.vue'
-import Statistics from '../views/Statistics.vue'
 import Home from '../views/HomeView.vue'
 import About from '../views/about/AboutView.vue'
 import PostView from '@/views/PostView.vue'
@@ -64,11 +63,6 @@ const router = createRouter({
       path: '/friends',
       name: 'friends',
       component: Friends,
-    },
-    {
-      path: '/statistics',
-      name: 'statistics',
-      component: Statistics,
     },
   ],
 })
