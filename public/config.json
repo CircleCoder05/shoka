@@ -1,0 +1,68 @@
+{
+  "site": {
+    "bannerTitle": "CircleCoder 的个人博客",
+    "bannerSubtitle": "仰望星空",
+    "description": "CircleCoder的博客",
+    "author": "CircleCoder",
+    "email": "circlecoder@example.com",
+    "avatar": "/img/avatar.png",
+    "motto": "代码改变世界，知识改变人生",
+    "colors": {
+      "primary": "#111111",
+      "secondary": "#e9546b",
+      "accent": "#ed6ea0",
+      "text": "#333333",
+      "textLight": "#666666",
+      "background": "#ffffff",
+      "border": "#f3c1d1"
+    },
+    "fonts": {
+      "title": " 'Microsoft YaHei', 'SimHei','PingFang SC', 'Helvetica Neue', 'Arial', 'sans-serif'",
+      "content": "'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif'",
+      "code": "'JetBrains Mono', 'Consolas', 'Monaco', 'monospace'"
+    },
+    "social": [
+      {
+        "name": "github",
+        "url": "https://github.com/CircleCoder05",
+        "icon": "i-github",
+        "color": "#191717"
+      },
+      {
+        "name": "music",
+        "url": "https://music.163.com/#/user/home?id=yourid",
+        "icon": "i-cloud-music",
+        "color": "#e60026"
+      },
+      {
+        "name": "email",
+        "url": "mailto:3196932484@qq.com",
+        "icon": "i-envelope",
+        "color": "#55acd5"
+      },
+      {
+        "name": "twitter",
+        "url": "https://twitter.com/yourname",
+        "icon": "i-twitter",
+        "color": "#00aff0"
+      },
+      {
+        "name": "facebook",
+        "url": "https://facebook.com/yourname",
+        "icon": "i-facebook",
+        "color": "#3b5998"
+      },
+      {
+        "name": "youtube",
+        "url": "https://youtube.com/yourname",
+        "icon": "i-youtube",
+        "color": "#ff0000"
+      }
+    ]
+  },
+  "footer": {
+    "name": "碼農書架",
+    "icp": "京ICP备2025135091号",
+    "startDate": "2023-11-01T00:00:00"
+  }
+}
