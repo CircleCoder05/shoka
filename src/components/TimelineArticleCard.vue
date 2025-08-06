@@ -322,44 +322,200 @@ const getReadTime = (article) => {
 @media (max-width: 768px) {
   .article-card {
     flex-direction: column;
+    min-height: auto;
+    padding: 0.8rem;
   }
 
   .article-cover {
-    width: 100%;
-    height: 200px;
+    display: none;
   }
 
   .article-info {
-    padding: 1rem;
+    padding: 0;
+    flex: 1;
   }
 
   .article-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .article-meta {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .article-excerpt {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .article-footer {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .article-stats {
+    font-size: 0.75rem;
+  }
+
+  .article-tags {
+    display: none;
   }
 
   .read-more-btn {
-    width: 100%;
-    justify-content: center;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
   }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
+  .article-card {
+    flex-direction: column;
+    min-height: auto;
+    padding: 0.8rem;
+  }
+
   .article-cover {
-    width: 240px;
-    height: 100%;
+    display: none;
   }
 
   .article-info {
-    padding: 1rem;
+    padding: 0;
+    flex: 1;
   }
 
   .article-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .article-meta {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .article-excerpt {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .article-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .article-stats {
+    font-size: 0.75rem;
+  }
+
+  .article-tags {
+    display: none;
+  }
+
+  .read-more-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-card {
+    padding: 0.6rem;
+  }
+
+  .article-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .article-meta {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .article-excerpt {
+    font-size: 0.75rem;
+    margin-bottom: 0.3rem;
+    -webkit-line-clamp: 1;
+  }
+
+  .article-stats {
+    font-size: 0.65rem;
+  }
+
+  .read-more-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.65rem;
+  }
+}
+
+/* 宽屏但较窄时也隐藏图片 */
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .article-card {
+    flex-direction: column;
+    min-height: auto;
+    padding: 0.8rem;
+  }
+
+  .article-cover {
+    display: none;
+  }
+
+  .article-info {
+    padding: 0;
+    flex: 1;
+  }
+
+  .article-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .article-meta {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .article-excerpt {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .article-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .article-stats {
+    font-size: 0.75rem;
+  }
+
+  .article-tags {
+    display: none;
+  }
+
+  .read-more-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
   }
 }
 </style>
