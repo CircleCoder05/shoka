@@ -1,0 +1,20 @@
+[
+  {
+    "name": "示例文档.pdf",
+    "path": "/pdf/sample.pdf",
+    "size": "1.3 MB",
+    "description": "这是一个示例PDF文档，用于演示PDF查看功能。"
+  },
+  {
+    "name": "技术文档.pdf",
+    "path": "/pdf/tech-doc.pdf",
+    "size": "2.5 MB",
+    "description": "技术文档示例，包含详细的技术说明和图表。"
+  },
+  {
+    "name": "用户手册.pdf",
+    "path": "/pdf/user-manual.pdf",
+    "size": "3.1 MB",
+    "description": "用户使用手册，提供详细的操作指南和功能介绍。"
+  }
+]
