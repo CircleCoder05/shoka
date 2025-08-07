@@ -3,12 +3,12 @@
     <!-- 3D模型显示区域 -->
     <div ref="container" class="model-viewer">
       <!-- 模型切换按钮 -->
-      <div class="model-controls" v-if="availableModels.length > 1">
+      <div class="model-controls" v-if="availableModels.length > 1 && !showFallbackImage">
         <button @click="switchToNextModel" class="model-btn">切换模型</button>
       </div>
 
       <!-- 左右箭头指示器 -->
-      <div class="rotation-arrows">
+      <div class="rotation-arrows" v-if="!showFallbackImage">
         <img
           src="@/assets/images/left.webp"
           alt="左转"
@@ -23,6 +23,14 @@
           :class="{ rotating: isRotating }"
           @click="rotateModel('right')"
         />
+      </div>
+
+      <!-- 3D Canvas -->
+      <div v-if="!showFallbackImage" class="three-canvas-container"></div>
+
+      <!-- Fallback 图片 -->
+      <div v-if="showFallbackImage" class="fallback-image-container">
+        <img src="/img/figure.png" alt="形象" class="fallback-image" @error="handleImageError" />
       </div>
 
       <div class="error" v-if="error">{{ error }}</div>
@@ -136,6 +144,7 @@ const props = defineProps({
 const container = ref(null)
 const loading = ref(true)
 const error = ref('')
+const showFallbackImage = ref(false)
 
 // 模型切换相关
 const modelsStore = useModelsStore()
@@ -151,11 +160,29 @@ const isRotating = ref(false) // 添加旋转状态
 let scene, camera, renderer, controls, mixer, clock
 let model = null
 
+// 处理图片加载错误
+const handleImageError = () => {
+  console.warn('Fallback图片加载失败')
+}
+
 // 初始化场景
 const initScene = () => {
+  // 检查是否有可用的模型
+  if (availableModels.value.length === 0) {
+    console.log('没有可用的3D模型，显示静态图片')
+    showFallbackImage.value = true
+    loading.value = false
+    return
+  }
+
   // 获取当前模型配置
   const modelConfig = modelsStore.getModelConfig(currentModelKey.value)
-  if (!modelConfig) return
+  if (!modelConfig) {
+    console.log('模型配置未找到，显示静态图片')
+    showFallbackImage.value = true
+    loading.value = false
+    return
+  }
 
   // 创建场景
   scene = new THREE.Scene()
@@ -187,7 +214,12 @@ const initScene = () => {
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.NoToneMapping // 不使用色调映射，保持原始颜色
   renderer.toneMappingExposure = 1.0
-  container.value.appendChild(renderer.domElement)
+
+  // 找到three-canvas-container并添加渲染器
+  const canvasContainer = container.value.querySelector('.three-canvas-container')
+  if (canvasContainer) {
+    canvasContainer.appendChild(renderer.domElement)
+  }
 
   // 创建控制器
   controls = new OrbitControls(camera, renderer.domElement)
@@ -545,6 +577,15 @@ const loadModel = async () => {
   try {
     loading.value = true
     error.value = ''
+    showFallbackImage.value = false
+
+    // 检查是否有可用的模型
+    if (availableModels.value.length === 0) {
+      console.log('没有可用的3D模型，显示静态图片')
+      showFallbackImage.value = true
+      loading.value = false
+      return
+    }
 
     // 清除旧模型
     if (model) {
@@ -559,7 +600,10 @@ const loadModel = async () => {
     // 获取当前模型的配置
     const modelConfig = modelsStore.getModelConfig(currentModelKey.value)
     if (!modelConfig) {
-      throw new Error('模型配置未找到')
+      console.warn('模型配置未找到，显示静态图片')
+      showFallbackImage.value = true
+      loading.value = false
+      return
     }
 
     const modelPath = modelConfig.modelPath
@@ -585,6 +629,10 @@ const loadModel = async () => {
   } catch (err) {
     console.error('加载模型失败:', err)
     error.value = '加载模型失败: ' + err.message
+
+    // 加载失败时显示静态图片
+    showFallbackImage.value = true
+
     loading.value = false
   }
 }
@@ -819,6 +867,14 @@ onMounted(async () => {
   // 加载模型配置
   await modelsStore.loadModelsConfig()
 
+  // 检查是否有可用的模型
+  if (availableModels.value.length === 0) {
+    console.log('没有可用的3D模型，显示静态图片')
+    showFallbackImage.value = true
+    loading.value = false
+    return
+  }
+
   // 设置初始模型
   if (props.initialModelKey && availableModels.value.find((m) => m.key === props.initialModelKey)) {
     currentModelKey.value = props.initialModelKey
@@ -968,5 +1024,39 @@ onUnmounted(() => {
   .model-viewer-container {
     width: 100%;
   }
+}
+
+/* Fallback 图片样式 */
+.fallback-image-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.fallback-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+/* 3D Canvas 容器样式 */
+.three-canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.three-canvas-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  transition: opacity 0.3s ease;
 }
 </style>
