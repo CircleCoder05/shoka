@@ -1,0 +1,24 @@
+[
+  {
+    "path": "gossip/First_blog.md",
+    "slug": "gossip/First_blog",
+    "category": "gossip",
+    "title": "物理学照亮世界：我的第一篇博客",
+    "date": "2025-08-07",
+    "tags": [
+      "杂谈",
+      "物理"
+    ],
+    "categories": [
+      {
+        "key": "gossip",
+        "name": "杂谈"
+      }
+    ],
+    "author": "manifold",
+    "excerpt": "开篇寄语 作为一名北京师范大学物理系的学子，我怀着对物理学的热爱与敬畏，开启这段博客写作之旅。物理学不仅是探索自然规律的学科，更是照亮人类文明前行的明灯。 为什么选择写博客...",
+    "cover": "https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943222.jpg",
+    "wordCount": 423,
+    "readTime": 2
+  }
+]
