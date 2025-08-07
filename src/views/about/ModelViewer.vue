@@ -882,7 +882,7 @@ onUnmounted(() => {
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  background-image: url('./src/assets/images/role.webp');
+  background-image: url('@/assets/images/role.png');
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
