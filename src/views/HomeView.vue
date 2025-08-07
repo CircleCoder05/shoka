@@ -1,6 +1,6 @@
 <template>
   <div class="home-content">
-    <div v-if="articlesStore.loading" class="loading">
+    <div v-if="statisticsStore.loading" class="loading">
       <div class="loading-spinner"></div>
       <p>加载中...</p>
     </div>
@@ -8,9 +8,15 @@
       <h2 class="divider">精选分类</h2>
       <div class="cards">
         <CategoryCard
-          v-for="(categoryData, key) in articlesStore.articlesByCategory"
-          :key="key"
-          :category="{ name: key, title: categoryData.name, posts: categoryData.posts }"
+          v-for="category in statisticsStore.categoriesWithCount.filter(
+            (cat) => cat.name !== '未分类',
+          )"
+          :key="category.slug"
+          :category="{
+            name: category.name,
+            title: category.name,
+            posts: statisticsStore.getArticlesByCategory(category.name),
+          }"
         />
       </div>
       <h2 class="divider">文章列表</h2>
@@ -28,23 +34,23 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useArticlesStore } from '@/stores/articles'
+import { useStatisticsStore } from '@/stores/statistics'
 import CategoryCard from '../components/CategoryCard.vue'
 import PostCard from '../components/PostCard.vue'
 import Pagination from '../components/Pagination.vue'
 
-const articlesStore = useArticlesStore()
+const statisticsStore = useStatisticsStore()
 const currentPage = ref(1)
 const pageSize = 6
 
 const totalPages = computed(() => {
-  return Math.ceil(articlesStore.articles.length / pageSize)
+  return Math.ceil(statisticsStore.archives.length / pageSize)
 })
 
 const paginatedArticles = computed(() => {
   const start = (currentPage.value - 1) * pageSize
   const end = start + pageSize
-  const articles = articlesStore.articles.slice(start, end)
+  const articles = statisticsStore.archives.slice(start, end)
 
   console.log('📄 [HomeView] paginatedArticles 处理文章范围:', start, '到', end)
   console.log('📄 [HomeView] 当前页文章数:', articles.length)
@@ -100,28 +106,9 @@ const paginatedArticles = computed(() => {
 })
 
 onMounted(async () => {
-  if (!articlesStore.articles.length) await articlesStore.loadArticles()
-
-  // 调试信息
-  console.log('🏠 [HomeView] 首页加载完成')
-  console.log(
-    '🏠 [HomeView] articlesByCategory keys:',
-    Object.keys(articlesStore.articlesByCategory),
-  )
-  console.log('🏠 [HomeView] articlesByCategory 完整数据:', articlesStore.articlesByCategory)
-  console.log('🏠 [HomeView] 文章列表总数:', articlesStore.articles.length)
-
-  // 检查前几篇文章的分类处理
-  const sampleArticles = articlesStore.articles.slice(0, 3)
-  sampleArticles.forEach((article, idx) => {
-    console.log(`📋 [HomeView] 示例文章${idx + 1}:`, article.slug)
-    console.log(`📋 [HomeView] 原始categories:`, article.categories)
-    console.log(`📋 [HomeView] 处理后的category:`, {
-      name: article.category?.name,
-      key: article.category?.key,
-      url: article.category?.url,
-    })
-  })
+  if (statisticsStore.archives.length === 0) {
+    await statisticsStore.loadStatistics()
+  }
 })
 </script>
 
