@@ -240,9 +240,8 @@ const loadArticles = async () => {
     }
 
     if (type.value === 'category') {
-      // 处理未分类的特殊情况
-      const actualCategoryName = name.value === '未分类' ? 'uncategorized' : name.value
-      articles.value = statisticsStore.getArticlesByCategory(actualCategoryName)
+      // 直接使用分类名，不需要特殊映射
+      articles.value = statisticsStore.getArticlesByCategory(name.value)
     } else {
       articles.value = statisticsStore.getArticlesByTag(name.value)
     }

@@ -22,10 +22,10 @@
               {{ tag }}
             </span>
           </div>
-          <div v-if="article.category" class="post-category">
+          <div v-if="getCategoryName(article)" class="post-category">
             <span class="category">
               <i class="ic i-flag"></i>
-              {{ article.category }}
+              {{ getCategoryName(article) }}
             </span>
           </div>
         </div>
@@ -79,6 +79,26 @@ const formatDate = (dateStr) => {
     month: 'long',
     day: 'numeric',
   })
+}
+
+// 获取分类的中文显示名
+const getCategoryName = (article) => {
+  if (!article) return null
+
+  // 优先使用 categories 数组中的中文名
+  if (article.categories && article.categories.length > 0) {
+    const firstCategory = article.categories[0]
+    if (typeof firstCategory === 'object' && firstCategory.name) {
+      return firstCategory.name // 返回中文名
+    }
+  }
+
+  // 如果没有 categories，使用 category 字段
+  if (article.category) {
+    return article.category
+  }
+
+  return null
 }
 
 // 为标题添加 id
