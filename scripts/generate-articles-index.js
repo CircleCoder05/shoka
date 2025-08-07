@@ -216,12 +216,25 @@ function generateArticlesIndex() {
       const category = pathParts.length > 1 ? pathParts[0] : '未分类'
       const slug = filePath.replace('.md', '')
 
-      // 计算字数和阅读时间
-      const wordCount = calculateWordCount(markdownContent)
-      const readTime = calculateReadTime(wordCount)
-
-      // 生成摘要
-      const excerpt = frontMatter.excerpt || generateExcerpt(markdownContent)
+      // 检查文章类型
+      const articleType = frontMatter.type || 'md' // 默认为md类型
+      
+      // 根据类型处理内容
+      let wordCount = 0
+      let readTime = 0
+      let excerpt = ''
+      
+      if (articleType === 'pdf') {
+        // PDF类型文章
+        wordCount = frontMatter.wordCount || 0
+        readTime = frontMatter.readTime || 1
+        excerpt = frontMatter.abstracts || frontMatter.excerpt || 'PDF文档'
+      } else {
+        // MD类型文章
+        wordCount = calculateWordCount(markdownContent)
+        readTime = calculateReadTime(wordCount)
+        excerpt = frontMatter.excerpt || generateExcerpt(markdownContent)
+      }
 
       // 处理分类：将中文分类名映射为英文key，同时保留中文显示名
       let processedCategories = []
@@ -269,6 +282,9 @@ function generateArticlesIndex() {
         cover: frontMatter.cover || getRandomImage(imagesList),
         wordCount: wordCount,
         readTime: readTime,
+        type: articleType,
+        pdfPath: articleType === 'pdf' ? frontMatter.path : null,
+        abstracts: articleType === 'pdf' ? frontMatter.abstracts : null,
       }
 
       articlesIndex.push(articleInfo)
