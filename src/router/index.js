@@ -8,6 +8,8 @@ import Friends from '../views/Friends.vue'
 import Home from '../views/HomeView.vue'
 import About from '../views/about/AboutView.vue'
 import PostView from '@/views/PostView.vue'
+import PdfView from '@/views/PdfView.vue'
+import PdfDetailView from '@/views/PdfDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,6 +65,16 @@ const router = createRouter({
       path: '/friends',
       name: 'friends',
       component: Friends,
+    },
+    {
+      path: '/pdf',
+      name: 'pdf',
+      component: PdfView,
+    },
+    {
+      path: '/pdf/:name',
+      name: 'pdf-detail',
+      component: PdfDetailView,
     },
   ],
 })
