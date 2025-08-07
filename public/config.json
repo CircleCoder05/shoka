@@ -1,12 +1,12 @@
 {
   "site": {
-    "bannerTitle": "CircleCoder 的个人博客",
-    "bannerSubtitle": "仰望星空",
-    "description": "CircleCoder的博客",
-    "author": "CircleCoder",
-    "email": "circlecoder@example.com",
+    "bannerTitle": "Manifold 的个人博客",
+    "bannerSubtitle": "物理学照亮世界",
+    "description": "Manifold的博客",
+    "author": "Manifold",
+    "email": "manifold@example.com",
     "avatar": "/img/avatar.png",
-    "motto": "代码改变世界，知识改变人生",
+    "motto": "物理学照亮世界",
     "colors": {
       "primary": "#111111",
       "secondary": "#e9546b",
@@ -61,8 +61,8 @@
     ]
   },
   "footer": {
-    "name": "碼農書架",
+    "name": "Manifold 的个人博客",
     "icp": "京ICP备2025135091号",
-    "startDate": "2023-11-01T00:00:00"
+    "startDate": "2025-08-07T00:00:00"
   }
 }

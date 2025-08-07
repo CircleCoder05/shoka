@@ -1,12 +1,12 @@
 {
   "profile": {
-    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=CircleCoder",
-    "nickname": "CircleCoder",
-    "title": "全栈开发工程师",
+    "avatar": "/img/avatar.png",
+    "nickname": "Manifold",
+    "title": "物理学爱好者",
     "info": [
       {
         "label": "昵称",
-        "value": "CircleCoder",
+        "value": "Manifold",
         "icon": "i-user"
       },
       {
@@ -16,7 +16,7 @@
       },
       {
         "label": "格言",
-        "value": "人生苦短，及时行乐",
+        "value": "物理学照亮世界",
         "icon": "i-heart"
       },
       {
@@ -26,17 +26,17 @@
       },
       {
         "label": "学校",
-        "value": "北京航空航天大学",
+        "value": "北京师范大学",
         "icon": "i-graduation-cap"
       },
       {
         "label": "专业",
-        "value": "计算机科学与技术",
+        "value": "物理学",
         "icon": "i-code"
       },
       {
         "label": "爱好",
-        "value": "编程、游戏、音乐",
+        "value": "物理学、编程",
         "icon": "i-gamepad"
       }
     ]
@@ -53,20 +53,15 @@
     "title": "学术成果",
     "research": {
       "title": "研究领域",
-      "content": "我的研究主要集中在计算机科学和软件工程领域，特别关注前端开发技术、用户体验设计和系统架构优化。"
+      "content": "我的研究主要集中在物理学领域，特别关注量子力学、相对论、凝聚态物理等。"
     },
     "achievements": {
       "title": "主要成果",
       "list": [
-        "参与多个大型Web应用项目的架构设计和开发",
-        "在Vue.js、React等前端框架方面有深入研究",
-        "对用户体验设计和界面优化有丰富经验",
-        "在性能优化和代码质量方面有独到见解"
+        "在量子力学方面有深入研究",
+        "在相对论方面有深入研究",
+        "在凝聚态物理方面有深入研究"
       ]
-    },
-    "skills": {
-      "title": "技术栈",
-      "content": "熟练掌握JavaScript、TypeScript、Vue.js、React、Node.js等现代Web开发技术，对微服务架构和云原生技术有深入了解。"
     }
   },
   "model3d": {

@@ -2,7 +2,7 @@ name: Deploy Vue to Alibaba Cloud (pnpm)
 
 on:
   push:
-    branches: ['release']
+    branches: ['manifold']
 
 jobs:
   build-and-deploy:
@@ -43,5 +43,5 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
           rsync -avz --delete --exclude='.user.ini' -e "ssh -i private_key -p ${{ secrets.SERVER_SSH_PORT }} -o StrictHostKeyChecking=no" \
-            ./dist/ ${{ secrets.SERVER_USER }}@47.93.81.21:/www/wwwroot/circlecoder.buaapgy.cn
+            ./dist/ ${{ secrets.SERVER_USER }}@47.93.81.21:/www/wwwroot/manifold.buaapgy.cn
           rm -f private_key

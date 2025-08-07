@@ -1,54 +1,16 @@
 {
   "friends": [
     {
-      "category": "至尊好友",
+      "category": "好友",
       "description": "最珍贵的朋友们",
       "items": [
         {
-          "name": "张三的博客",
-          "url": "https://zhangsan.com",
+          "name": "CircleCoder 的小站",
+          "url": "http://circlecoder.buaapgy.cn/",
           "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=zhangsan",
           "description": "技术博主，专注于前端开发和Vue.js",
           "tags": ["前端", "Vue", "技术"],
           "backgroundColor": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-        },
-        {
-          "name": "李四的小站",
-          "url": "https://lisi.dev",
-          "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=lisi",
-          "description": "全栈开发者，热爱开源项目",
-          "tags": ["全栈", "开源", "技术"],
-          "backgroundColor": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
-        }
-      ]
-    },
-    {
-      "category": "大佬",
-      "description": "技术大牛们的博客",
-      "items": [
-        {
-          "name": "王五的技术分享",
-          "url": "https://wangwu.tech",
-          "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=wangwu",
-          "description": "资深架构师，专注于系统设计和性能优化",
-          "tags": ["架构", "性能", "设计"],
-          "backgroundColor": "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
-        },
-        {
-          "name": "赵六的编程笔记",
-          "url": "https://zhaoliu.blog",
-          "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=zhaoliu",
-          "description": "算法专家，LeetCode刷题达人",
-          "tags": ["算法", "LeetCode", "编程"],
-          "backgroundColor": "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)"
-        },
-        {
-          "name": "孙七的AI实验室",
-          "url": "https://sunqi.ai",
-          "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=sunqi",
-          "description": "AI研究员，专注于机器学习和深度学习",
-          "tags": ["AI", "机器学习", "深度学习"],
-          "backgroundColor": "linear-gradient(135deg, #fa709a 0%, #fee140 100%)"
         }
       ]
     },
