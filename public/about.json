@@ -35,6 +35,11 @@
         "icon": "i-code"
       },
       {
+        "label": "邮箱",
+        "value": "3060393280@qq.com",
+        "icon": "i-gamepad"
+      },
+      {
         "label": "爱好",
         "value": "数学、物理学、LaTeX",
         "icon": "i-gamepad"
@@ -53,7 +58,7 @@
     "title": "学术成果",
     "research": {
       "title": "研究领域",
-      "content": "现代微分几何，广义相对论，凝聚态实验"
+      "content": "现代微分几何，引力与广义相对论，凝聚态实验"
     },
     "achievements": {
       "title": "主要成果",
