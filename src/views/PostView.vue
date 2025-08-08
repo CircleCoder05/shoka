@@ -142,6 +142,9 @@ const loadArticle = async (slug) => {
     // 设置文章 banner 信息
     bannerStore.setArticleBanner(article.value)
 
+    // 设置文章页面标题
+    document.title = article.value.title
+
     // 根据文章类型处理内容
     if (article.value.type === 'pdf') {
       // PDF类型文章，不需要处理HTML内容

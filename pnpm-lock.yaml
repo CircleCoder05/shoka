@@ -17,6 +17,9 @@ importers:
       echarts-wordcloud:
         specifier: ^2.1.0
         version: 2.1.0(echarts@6.0.0)
+      hexo-oh-my-live2d:
+        specifier: ^0.1.4
+        version: 0.1.4
       highlight.js:
         specifier: ^11.11.1
         version: 11.11.1
@@ -1066,6 +1069,9 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
+  hexo-oh-my-live2d@0.1.4:
+    resolution: {integrity: sha512-k+fvMZgiwEefWcsV0JavXk0WqyMsmCGuOwCDY5lhez2MpFYdLsDujxu3PLQkK6xumxYRhmz2GwFI9fYfAUIrew==}
+
   highlight.js@11.11.1:
     resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
     engines: {node: '>=12.0.0'}
@@ -1302,6 +1308,9 @@ packages:
 
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
+
+  oh-my-live2d@0.19.3:
+    resolution: {integrity: sha512-EWva8OUmcExIFIhqGkeiVPQt44RvYYFg+nmpkrZgQVQ+xofVFq4SDYAg5NcdK40HxyV4vORBJEg4OHIHP96MrA==}
 
   ohash@2.0.11:
     resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
@@ -2597,6 +2606,10 @@ snapshots:
 
   has-flag@4.0.0: {}
 
+  hexo-oh-my-live2d@0.1.4:
+    dependencies:
+      oh-my-live2d: 0.19.3
+
   highlight.js@11.11.1: {}
 
   hookable@5.5.3: {}
@@ -2726,6 +2739,8 @@ snapshots:
   nth-check@2.1.1:
     dependencies:
       boolbase: 1.0.0
+
+  oh-my-live2d@0.19.3: {}
 
   ohash@2.0.11: {}
 

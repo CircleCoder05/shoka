@@ -3,6 +3,7 @@ import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import Sidebar from './components/Sidebar.vue'
 import Banner from './components/Banner.vue'
+import OhMyLive2d from './components/OhMyLive2d.vue'
 import { useBannerStore } from './stores/banner'
 
 const bannerStore = useBannerStore()
@@ -34,6 +35,9 @@ const bannerStore = useBannerStore()
         <Footer />
       </div>
     </div>
+
+    <!-- OhMyLive2d -->
+    <OhMyLive2d />
   </div>
 </template>
 
