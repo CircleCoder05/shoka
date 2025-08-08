@@ -1,0 +1,145 @@
+{
+  "enable": true,
+  "option": {
+    "dockedPosition": "left",
+    "mobileDisplay": true,
+    "models": [
+      {
+        "path": "https://unpkg.com/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json",
+        "mobilePosition": [0, 23],
+        "mobileScale": 0.1,
+        "mobileStageStyle": {
+          "width": 180,
+          "height": 250
+        },
+        "motionPreloadStrategy": "IDLE",
+        "position": [0, 30],
+        "scale": 0.18,
+        "stageStyle": {
+          "width": 250,
+          "height": 250
+        }
+      },
+      {
+        "path": "https://unpkg.com/cc-tia@1.0.0/model.json",
+        "scale": 0.3,
+        "position": [0, -120],
+        "mobileScale": 0.08,
+        "mobilePosition": [0, 0],
+        "mobileStageStyle": {
+          "width": 180
+        },
+        "stageStyle": {
+          "width": 320
+        }
+      },
+      {
+        "path": [
+          "https://unpkg.com/live2d-widget-model-koharu@1.0.5/assets/koharu.model.json",
+          "https://unpkg.com/live2d-widget-model-haruto@1.0.5/assets/haruto.model.json"
+        ],
+        "scale": 0.12,
+        "position": [0, 0],
+        "stageStyle": {
+          "width": 250
+        },
+        "mobileScale": 0.08,
+        "mobilePosition": [0, 0],
+        "mobileStageStyle": {
+          "width": 180
+        }
+      },
+      {
+        "path": [
+          "https://unpkg.com/cat-white@1.0.0/model.json",
+          "https://unpkg.com/cat-black@1.0.0/model.json"
+        ],
+        "scale": 0.12,
+        "position": [0, 10],
+        "mobileScale": 0.08,
+        "mobilePosition": [0, 0],
+        "mobileStageStyle": {
+          "width": 180
+        },
+        "stageStyle": {
+          "width": 250
+        }
+      },
+      {
+        "path": [
+          "https://unpkg.com/hk416-1-normal@1.0.0/model.json",
+          "https://unpkg.com/hk416-2-normal@1.0.0/model.json",
+          "https://unpkg.com/hk416-2-destroy@1.0.0/model.json"
+        ],
+        "scale": 0.09,
+        "position": [-30, 0],
+        "mobileScale": 0.08,
+        "mobilePosition": [0, 0],
+        "mobileStageStyle": {
+          "width": 180
+        },
+        "stageStyle": {
+          "width": 340
+        }
+      },
+      {
+        "path": "https://unpkg.com/kar98k-normal@1.0.0/model.json",
+        "scale": 0.09,
+        "position": [0, 10],
+        "mobileScale": 0.08,
+        "mobilePosition": [0, 0],
+        "mobileStageStyle": {
+          "width": 180
+        },
+        "stageStyle": {
+          "width": 340
+        }
+      },
+      {
+        "path": "https://unpkg.com/cc-histoire@1.0.0/model.json",
+        "scale": 0.3,
+        "position": [0, -130],
+        "mobileScale": 0.08,
+        "mobilePosition": [0, 0],
+        "mobileStageStyle": {
+          "width": 180
+        },
+        "stageStyle": {
+          "width": 320
+        }
+      }
+    ],
+    "parentElement": "document.body",
+    "primaryColor": "#38B0DE",
+    "sayHello": false,
+    "tips": {
+      "style": {
+        "width": 200,
+        "height": 100,
+        "left": "calc(50%)",
+        "top": "-100px",
+        "backgroundColor": "rgba(255, 255, 255, 0.95)",
+        "color": "#333333",
+        "borderRadius": "8px",
+        "boxShadow": "0 4px 12px rgba(0,0,0,0.15)",
+        "border": "1px solid rgba(0,0,0,0.1)"
+      },
+      "mobileStyle": {
+        "width": 160,
+        "height": 70,
+        "left": "calc(50% - 30px)",
+        "top": "-100px",
+        "backgroundColor": "rgba(255, 255, 255, 0.95)",
+        "color": "#333333",
+        "borderRadius": "6px",
+        "boxShadow": "0 2px 8px rgba(0,0,0,0.15)",
+        "border": "1px solid rgba(0,0,0,0.1)"
+      },
+      "idleTips": {
+        "enable": false,
+        "interval": 10000,
+        "message": ["你好呀~", "欢迎来到我的小站~", "今天也要加油哦！", "有什么想聊的吗？"]
+      }
+    }
+  }
+}
