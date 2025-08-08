@@ -36,7 +36,7 @@
       },
       {
         "label": "爱好",
-        "value": "物理学、编程",
+        "value": "数学、物理学、LaTeX",
         "icon": "i-gamepad"
       }
     ]
@@ -46,21 +46,20 @@
     "image": "/img/infj.png",
     "personality": {
       "title": "INFJ - 提倡者",
-      "content": "作为INFJ性格类型，我是一个理想主义者，追求深度和意义。我善于洞察他人，具有强烈的同理心和直觉。在编程和创作中，我注重细节和用户体验，喜欢探索新的可能性。"
+      "content": "作为INFJ性格类型，我是一个理想主义者，追求深度和意义。我善于洞察他人，具有强烈的同理心和直觉。"
     }
   },
   "academic": {
     "title": "学术成果",
     "research": {
       "title": "研究领域",
-      "content": "我的研究主要集中在物理学领域，特别关注量子力学、相对论、凝聚态物理等。"
+      "content": "现代微分几何，广义相对论"
     },
     "achievements": {
       "title": "主要成果",
       "list": [
-        "在量子力学方面有深入研究",
-        "在相对论方面有深入研究",
-        "在凝聚态物理方面有深入研究"
+        "Geometric Approach to Light Rings in Rotational Symmetric Spacetimes",
+        "主持国家级凝聚态相关科研项目"
       ]
     }
   },
