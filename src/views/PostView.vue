@@ -31,7 +31,12 @@
         </div>
       </div>
     </div>
+    <!-- 根据文章类型显示不同内容 -->
+    <div v-if="article.type === 'pdf'" class="post-content">
+      <PdfContent :pdf-path="article.pdfPath" />
+    </div>
     <div
+      v-else
       class="post-content"
       v-html="processedArticleHtml"
       v-code-block
@@ -54,6 +59,7 @@ import { useRoute } from 'vue-router'
 import { useArticlesStore } from '@/stores/articles'
 import { useBannerStore } from '@/stores/banner'
 import PostFooter from '@/components/PostFooter.vue'
+import PdfContent from '@/components/PdfContent.vue'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useConfigStore } from '@/stores/config'
 
@@ -136,14 +142,22 @@ const loadArticle = async (slug) => {
     // 设置文章 banner 信息
     bannerStore.setArticleBanner(article.value)
 
-    // 为文章标题添加 id
-    const processedHtml = addHeadingIds(article.value.html)
-    processedArticleHtml.value = processedHtml
-
-    // 设置侧边栏文章内容
-    sidebarStore.setArticleContent(processedHtml)
-    // 确保在文章页面显示目录侧边栏
-    sidebarStore.switchPanel('contents')
+    // 根据文章类型处理内容
+    if (article.value.type === 'pdf') {
+      // PDF类型文章，不需要处理HTML内容
+      processedArticleHtml.value = ''
+      // 对于PDF文章，可以设置一个简单的目录
+      sidebarStore.setArticleContent('<h1>PDF文档</h1>')
+      sidebarStore.switchPanel('contents')
+    } else {
+      // MD类型文章，处理HTML内容
+      const processedHtml = addHeadingIds(article.value.html)
+      processedArticleHtml.value = processedHtml
+      // 设置侧边栏文章内容
+      sidebarStore.setArticleContent(processedHtml)
+      // 确保在文章页面显示目录侧边栏
+      sidebarStore.switchPanel('contents')
+    }
   } catch (err) {
     error.value = err.message
     console.error('Failed to load article:', err)
