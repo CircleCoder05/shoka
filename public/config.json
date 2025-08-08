@@ -1,12 +1,12 @@
 {
   "site": {
     "bannerTitle": "Manifold 的个人博客",
-    "bannerSubtitle": "在这弯曲的时空里，有幸世界线交汇",
+    "bannerSubtitle": "在这弯曲的时空里，有幸与你的世界线交汇",
     "description": "Manifold的博客",
     "author": "Manifold",
     "email": "manifold@example.com",
     "avatar": "/img/avatar.png",
-    "motto": "在这弯曲的时空里，有幸世界线交汇",
+    "motto": "在这弯曲的时空里，有幸与你的世界线交汇",
     "colors": {
       "primary": "#111111",
       "secondary": "#e9546b",
