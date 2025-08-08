@@ -52,38 +52,27 @@ const paginatedArticles = computed(() => {
   const end = start + pageSize
   const articles = statisticsStore.archives.slice(start, end)
 
-  console.log('📄 [HomeView] paginatedArticles 处理文章范围:', start, '到', end)
-  console.log('📄 [HomeView] 当前页文章数:', articles.length)
-
-  return articles.map((article, idx) => {
-    console.log(`📝 [HomeView] 处理第${idx + 1}篇文章:`, article.slug)
-    console.log(`📝 [HomeView] 原始categories:`, article.categories)
-
+  return articles.map((article) => {
     // 处理分类名，适配新的数据结构
     let categoryName = '未分类'
     let categoryKey = '未分类'
     if (article.categories && article.categories.length > 0) {
       const firstCategory = article.categories[0]
-      console.log(`🏷️ [HomeView] 第一个分类:`, firstCategory, `类型:`, typeof firstCategory)
 
       // 新的数据结构：category是对象，包含key和name
       if (typeof firstCategory === 'object' && firstCategory.key && firstCategory.name) {
         categoryKey = firstCategory.key
         categoryName = firstCategory.name
-        console.log(`✅ [HomeView] 使用新数据结构 - key:`, categoryKey, `name:`, categoryName)
       } else {
         // 兼容旧数据结构
         categoryName = Array.isArray(firstCategory) ? firstCategory[0] : firstCategory
         categoryKey = categoryName
         // 去除可能的引号和方括号
         categoryName = categoryName.replace(/^['"[\]]+|['"[\]]+$/g, '')
-        console.log(`⚠️ [HomeView] 使用旧数据结构 - key:`, categoryKey, `name:`, categoryName)
       }
-    } else {
-      console.log(`❌ [HomeView] 文章无categories字段`)
     }
 
-    const result = {
+    return {
       ...article,
       url: `/post/${article.slug}`,
       cover: article.cover,
@@ -93,15 +82,6 @@ const paginatedArticles = computed(() => {
         url: `/category/${categoryKey}`,
       },
     }
-
-    console.log(`🎯 [HomeView] 最终处理结果:`, {
-      slug: article.slug,
-      categoryName: result.category.name,
-      categoryKey: result.category.key,
-      categoryUrl: result.category.url,
-    })
-
-    return result
   })
 })
 
