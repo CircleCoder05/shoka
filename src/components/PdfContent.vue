@@ -139,13 +139,13 @@ onMounted(() => {
     renderPdfPages()
   }
 
-  // 10秒后如果还在加载，就停止加载
+  // 60秒后如果还在加载，就停止加载
   setTimeout(() => {
     if (loading.value) {
       loading.value = false
       error.value = 'PDF加载超时，请检查文件是否存在'
     }
-  }, 10000)
+  }, 60000)
 })
 </script>
 
