@@ -1,9 +1,9 @@
 ---
-title: '物理学照亮世界：我的第一篇博客'
+title: '我的第一篇博客'
 date: 2025-08-07
-categories: [杂谈]
-tags: [杂谈,物理]
-author: manifold
+categories: [狭义与广义相对论]
+tags: [相对论,物理]
+author: Manifold
 ---
 
 {% media audio %}
