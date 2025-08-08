@@ -6,7 +6,7 @@ tags: [数学, 标签2]
 categories: [狭义与广义相对论]
 author: Manifold
 type: pdf
-path: /posts/diffgeo/cvelo.pdf
+path: /posts/relativity/cvelo.pdf
 abstracts: PDF 文章示例。
 wordCount: 5000
 readTime: 20
