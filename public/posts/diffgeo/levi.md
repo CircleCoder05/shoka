@@ -3,7 +3,7 @@ layout: post
 title: '将 Levi-Civita 符号的性质推广到 3 维欧氏空间的适配体元'
 date: 2025-08-08
 tags: [适配体元, Levi-Civita 符号, 张量变换, 度规行列式, 三维欧氏空间]
-categories: [狭义与广义相对论]
+categories: [现代微分几何]
 author: Manifold
 type: pdf
 path: /posts/relativity/levi.pdf

@@ -3,7 +3,7 @@ layout: post
 title: '由微分同胚映射诱导的坐标变换'
 date: 2025-08-08
 tags: [微分同胚, 坐标变换, 张量场, 推前映射, 拉回映射, 主动与被动观点]
-categories: [狭义与广义相对论]
+categories: [现代微分几何]
 author: Manifold
 type: pdf
 path: /posts/relativity/difm.pdf

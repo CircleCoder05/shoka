@@ -3,7 +3,7 @@ layout: post
 title: '一种 (或许) 新的李导数理解方法'
 date: 2025-08-08
 tags: [李导数, 单参微分同胚群, 拉回映射, 推前映射, 微分同胚]
-categories: [狭义与广义相对论]
+categories: [现代微分几何]
 author: Manifold
 type: pdf
 path: /posts/relativity/lied.pdf
