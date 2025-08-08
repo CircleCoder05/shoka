@@ -1,0 +1,14 @@
+---
+layout: post
+title: 'PDF 示例'
+date: 2024-07-08
+tags: [物理, pdf]
+categories: [物理]
+author: CircleCoder
+type: pdf
+path: /posts/physics/sample.pdf
+abstracts: PDF 文章示例。
+wordCount: 5000
+readTime: 20
+cover: /img/avatar.png
+---
