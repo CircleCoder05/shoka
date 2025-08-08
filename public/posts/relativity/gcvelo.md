@@ -53,9 +53,9 @@ author: Manifold
 ### 弯曲时空的局域惯性系
 
 在弯曲时空中不存在真正的“惯性观者”，与其相对应的是自由下落(即世界线为测地线)且无自转的观者。“无自转”的含义是观者世界线\(G(\tau)\)上的矢量场\(v^a\)沿观者世界线的协变导数
-\[
+$$
   Z^b\nabla_b v^a=0,
-\]
+$$
 其中\(Z^a=(\partial/\partial \tau)^a\)代表\(G(\tau)\)的4速。
 
 可以证明，自由下落无自转观者的固有坐标系与闵氏时空的整体惯性(洛伦兹)坐标系类似，因此被称为局部惯性系或局部洛伦兹系 (local Lorentz system, local Lorentz frame)。
@@ -65,22 +65,22 @@ author: Manifold
 ### 狭义相对论基本信条的等价表述之一
 
 用惯性坐标系可定义任何粒子的速率。设\(L\)为粒子的世界线，\(p,q\) 为\(L\)上两邻点，\((t_1,x_1,y_1,z_1)\)和\((t_2,x_2,y_2,z_2)\)分别为\(p\)和\(q\)在某惯性系\(\mathscr{R}\)中的坐标。令
-\[
+$$
     \mathrm{d}t\equiv t_{2}-t_{1}\:,\quad\mathrm{d}x\equiv x_{2}-x_{1}\:,
     \quad\mathrm{d}y\equiv y_{2}-y_{1}\:,\quad\mathrm{d}z\equiv z_{2}-z_{1}\:,
-\]
+$$
 则粒子在\(p\)时相对于\(\mathscr{R}\)系的速率定义为
-\[
+$$
     u:=\frac{\sqrt{\mathrm{d}x^{2}+\mathrm{d}y^{2}+\mathrm{d}z^{2}}}{\mathrm{d}t}\:,
-\]
+$$
 于是由式
-\[
+$$
   \mathrm{d}s^2=-\mathrm{d}t^2+\mathrm{d}x^2+\mathrm{d}y^2+\mathrm{d}z^2
-\]
+$$
 可知世界线\(L\)介于\(p,q\)之间的线元为
-\[
+$$
   \mathrm{d}s^2=-(1-u^2)\mathrm{d}t^2.
-\]
+$$
 上式表明\(u=1\)同\(\mathrm{d}s^2=0\)等价；\(u<1\)同\(\mathrm{d}s^2<0\)等价。因此，狭义相对论的两个重要基本信条——(1)光子相对于任何惯性系的速率\(u=1\)；(2)质点相对于任何惯性系的速率\(u<1\)——便可用4维语言表述如下：
 
 1. 光子世界线(是闵氏时空的)类光曲线；
@@ -92,9 +92,9 @@ author: Manifold
 
 **定义**  
 设 \(L(t)\)为任意质点，\(p\in L\)，则质点相对于任一瞬时观者(\(p,Z^a\))的 3速\(u^a\)由式
-\[
+$$
     u^a:=h^a{}_bU^b/\gamma
-\]
+$$
 定义，其中\(h_{ab}\equiv \eta _{ab}+ Z_aZ_b\)，\(\gamma \equiv - U^aZ_a\)。
 
 **定义**  
@@ -103,16 +103,16 @@ author: Manifold
 设\(p\in L,G\) 为由(\(p,Z^a\))决定的测地线，可以证明，质点\(L\) 相对于瞬时观者(\(p,Z^a\)) 的3 速率与\(L\)相对于\(G\)所在惯性系\(\mathscr{R}\)的 3 速率一致。
 
 暂时把\(L(\tau)\) 放宽为类时、类光和类空曲线，对类时和类空情况，\(\tau\)代表线长，对类光情况，\(\tau\) 代表任一参数，令\(U^a\equiv(\partial/\partial\tau)^a\)，仍用式定义 \(u^a\)，则
-\[
+$$
 \begin{aligned}
 u^{2}
-&=h_{ab}u^{a}u^{b}\\[4pt]
-&=h_{ab}(h^{a}{}_{c}U^{c})\,(h^{b}{}_{d}U^{d})\big/\gamma^{2}\\[4pt]
-&=h_{cd}U^{c}U^{d}\big/\gamma^{2}\\[4pt]
-&=(\eta_{cd}U^{c}U^{d}+Z_{c}Z_{d}U^{c}U^{d})\big/\gamma^{2}\\[4pt]
+&=h_{ab}u^{a}u^{b}\\
+&=h_{ab}(h^{a}{}_{c}U^{c})\,(h^{b}{}_{d}U^{d})\big/\gamma^{2}\\
+&=h_{cd}U^{c}U^{d}\big/\gamma^{2}\\
+&=(\eta_{cd}U^{c}U^{d}+Z_{c}Z_{d}U^{c}U^{d})\big/\gamma^{2}\\
 &=(\eta_{cd}U^{c}U^{d}+\gamma^{2})\big/\gamma^{2}.
 \end{aligned}
-\]
+$$
 上式表明
 
 1. \(u< 1\Leftrightarrow \eta _{cd}U^{c}U^{d}< 0\)，即3速率小于光速者走类时线；
