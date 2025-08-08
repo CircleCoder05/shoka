@@ -16,7 +16,7 @@
   git clone -b manifold https://github.com/CircleCoder05/shoka.git
   cd manifold
   ```
-- 你可以直接在本地修改仓库内容，后续如有问题也方便我帮你维护。
+- 你可以直接在本地修改仓库内容，后续如有问题也方便维护。
 
 ### 安装依赖（可跳过）
 
@@ -72,6 +72,12 @@ pnpm dev
   - `academic`：学术成果（可选）
   - `model3d`：3D 形象（可选）
 - 头像图片建议放在 `public/img/` 下，路径如 `/img/avatar.png`，也可以用外链（如 `https://xxx.com/avatar.png`）。
+
+#### 3D 形象配置说明
+
+- 在 `public/3d/models-config.json` 中配置 3D 模型信息
+- 支持 FBX、GLB 等格式，支持模型切换和交互控制
+- **重要**：当 `models-config.json` 中没有配置模型时，系统会自动使用 `public/img/figure.png` 作为静态图片替代，无需额外配置
 
 ### friends.json
 
@@ -132,19 +138,39 @@ pnpm dev
 - 所有文章放在 `public/posts/` 目录下，可以进行一级分类。
 - 每篇文章建议使用如下 front matter（开头三条横线之间）：
 
-  ```markdown
-  ---
-  title: 文章标题
-  date: 2025-08-07
-  categories: [分类名]
-  tags: [标签1, 标签2]
-  cover: https://oss.yourdomain.com/202503292157001.jpg # 推荐外链，也可用 /posts/physics/cover.jpg
-  ---
+### Markdown 文章
 
-  正文内容...
-  ```
+```markdown
+---
+title: 文章标题
+date: 2025-08-07
+categories: [分类名]
+tags: [标签1, 标签2]
+cover: https://oss.yourdomain.com/202503292157001.jpg # 推荐外链，也可用 /posts/physics/cover.jpg
+---
+
+正文内容...
+```
+
+### PDF 文章
+
+```markdown
+---
+title: PDF 文章标题
+date: 2025-08-07
+type: 'pdf'
+path: '/pdf/your-file.pdf'
+abstracts: 'PDF 文章摘要内容'
+categories: [分类名]
+tags: [标签1, 标签2]
+cover: https://oss.yourdomain.com/202503292157001.jpg
+---
+
+# 这里可以写一些介绍性内容，或者留空
+```
 
 - 封面图片建议用外链（如上），如用本地图片，放在对应分类文件夹下，路径如 `/posts/physics/cover.jpg`。
+- PDF 文件也需要放在 `public` 目录下。
 
 ---
 
@@ -171,6 +197,12 @@ pnpm dev
   - 清除浏览器缓存，或重启本地服务。
 - **不会写 Markdown？**
   - 可参考网上的 [Markdown 教程](https://www.markdownguide.org/basic-syntax/)。
+- **PDF 文章无法显示？**
+  - 确保 PDF 文件已放在 `public/` 目录下，且路径正确。
+  - 检查 front matter 中的 `type: "pdf"` 和 `path` 字段是否正确。
+- **3D 形象显示为静态图片？**
+  - 这是正常现象，当 `models-config.json` 中没有配置模型时，系统会自动使用静态图片替代。
+  - 如需显示 3D 模型，请在 `public/3d/models-config.json` 中配置模型信息。
 
 ---
 
