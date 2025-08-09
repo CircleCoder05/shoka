@@ -26,8 +26,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import * as echarts from 'echarts'
+import { useThemeStore } from '@/stores/theme'
 
 const props = defineProps({
   articles: {
@@ -39,9 +40,45 @@ const props = defineProps({
 const calendarChart = ref(null)
 let chartInstance = null
 
+// 主题相关
+const themeStore = useThemeStore()
+
 // 年份切换相关
 const currentYearIndex = ref(0)
 const availableYears = ref([])
+
+// 根据主题获取图表配置
+const getThemeConfig = computed(() => {
+  if (themeStore.isDark) {
+    return {
+      // 暗色主题配置
+      visualMapPieces: [
+        { min: 0, max: 0, color: '#3e4451', label: '0' },
+        { min: 1, max: 1, color: '#ed6ea0', label: '1' },
+        { min: 2, max: 2, color: '#ec8c69', label: '2' },
+        { min: 3, max: 3, color: '#d63384', label: '3' },
+        { min: 4, max: 999, color: '#b02a5b', label: '≥4' },
+      ],
+      textColor: '#abb2bf',
+      borderColor: '#3e4451',
+      tooltipBg: '#2c313c',
+    }
+  } else {
+    return {
+      // 亮色主题配置
+      visualMapPieces: [
+        { min: 0, max: 0, color: '#ebedf0', label: '0' },
+        { min: 1, max: 1, color: '#9be9a8', label: '1' },
+        { min: 2, max: 2, color: '#40c463', label: '2' },
+        { min: 3, max: 3, color: '#30a14e', label: '3' },
+        { min: 4, max: 999, color: '#216e39', label: '≥4' },
+      ],
+      textColor: '#666',
+      borderColor: '#fff',
+      tooltipBg: '#fff',
+    }
+  }
+})
 
 // 获取可用年份列表
 const getAvailableYears = () => {
@@ -98,9 +135,16 @@ const initChart = () => {
 
   const currentYear = availableYears.value[currentYearIndex.value]
 
+  const themeConfig = getThemeConfig.value
+
   const option = {
     tooltip: {
       position: 'top',
+      backgroundColor: themeConfig.tooltipBg,
+      borderColor: themeConfig.borderColor,
+      textStyle: {
+        color: themeConfig.textColor,
+      },
       formatter: function (p) {
         const date = new Date(p.data[0])
         const count = p.data[1]
@@ -119,16 +163,10 @@ const initChart = () => {
       orient: 'horizontal',
       left: 'center',
       bottom: '15px',
-      pieces: [
-        { min: 0, max: 0, color: '#ebedf0', label: '0' },
-        { min: 1, max: 1, color: '#9be9a8', label: '1' },
-        { min: 2, max: 2, color: '#40c463', label: '2' },
-        { min: 3, max: 3, color: '#30a14e', label: '3' },
-        { min: 4, max: 999, color: '#216e39', label: '≥4' },
-      ],
+      pieces: themeConfig.visualMapPieces,
       textStyle: {
         fontSize: 12,
-        color: '#666',
+        color: themeConfig.textColor,
       },
       itemWidth: 15,
       itemHeight: 15,
@@ -142,18 +180,18 @@ const initChart = () => {
       range: currentYear.toString(),
       itemStyle: {
         borderWidth: 0.5,
-        borderColor: '#fff',
+        borderColor: themeConfig.borderColor,
       },
       yearLabel: { show: false },
       dayLabel: {
         nameMap: 'cn',
         fontSize: 11,
-        color: '#666',
+        color: themeConfig.textColor,
       },
       monthLabel: {
         nameMap: 'cn',
         fontSize: 12,
-        color: '#666',
+        color: themeConfig.textColor,
       },
     },
     series: {
@@ -213,6 +251,17 @@ watch(
   { deep: true },
 )
 
+// 监听主题变化
+watch(
+  () => themeStore.isDark,
+  () => {
+    // 主题变化时重新初始化图表
+    if (chartInstance) {
+      initChart()
+    }
+  },
+)
+
 // 组件卸载时清理
 import { onUnmounted } from 'vue'
 onUnmounted(() => {
@@ -249,6 +298,12 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+/* 暗色主题下的标题 */
+html.dark-theme .calendar-title {
+  color: #abb2bf;
 }
 
 .year-selector {
@@ -283,10 +338,30 @@ onUnmounted(() => {
 }
 
 .year-btn.active {
-  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  background: #ed6ea0;
   color: #fff;
   border-color: #ed6ea0;
   box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3);
+}
+
+/* 暗色主题下的年份按钮 */
+html.dark-theme .year-btn {
+  background: #3e4451;
+  color: #abb2bf;
+  border-color: #3e4451;
+}
+
+html.dark-theme .year-btn:hover {
+  background: #ed6ea0;
+  color: #fff;
+  border-color: #ed6ea0;
+}
+
+html.dark-theme .year-btn.active {
+  background: #ed6ea0 !important;
+  color: #fff !important;
+  border-color: #ed6ea0 !important;
+  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3) !important;
 }
 
 .calendar-title i {
