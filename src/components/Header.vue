@@ -9,11 +9,16 @@
     <!-- 移动端：显示CircleCoder标题和汉堡菜单 -->
     <div class="mobile-header">
       <div class="mobile-title">CircleCoder</div>
-      <button class="mobile-menu-btn" @click="toggleMobileSidebar">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
+      <div class="mobile-actions">
+        <button class="search-btn-mobile" @click="searchStore.openSearchModal" title="搜索文章">
+          <i class="ic i-search"></i>
+        </button>
+        <button class="mobile-menu-btn" @click="toggleMobileSidebar">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
     </div>
 
     <!-- PC端：显示完整导航 -->
@@ -24,6 +29,13 @@
       <router-link to="/tags"> <i class="ic i-tags"></i>标签 </router-link>
       <router-link to="/about"> <i class="ic i-user"></i>关于 </router-link>
       <router-link to="/friends"> <i class="ic i-heart"></i>友链 </router-link>
+
+      <!-- 搜索按钮 -->
+      <button class="search-btn" @click="searchStore.openSearchModal" title="搜索文章 (Ctrl+K)">
+        <i class="ic i-search"></i>
+        <span class="search-text">搜索</span>
+        <kbd class="search-shortcut">⌘K</kbd>
+      </button>
     </nav>
   </header>
 </template>
@@ -31,8 +43,11 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useMobileSidebarStore } from '@/stores/mobileSidebar'
+import { useSearchStore } from '@/stores/search'
 
 const mobileSidebarStore = useMobileSidebarStore()
+const searchStore = useSearchStore()
+
 const toggleMobileSidebar = () => {
   mobileSidebarStore.toggleMobileSidebar()
 }
@@ -220,6 +235,79 @@ onUnmounted(() => {
 
 .nav i {
   font-size: 16px;
+}
+
+/* 搜索按钮样式 */
+.search-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-left: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.search-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.search-text {
+  font-size: 14px;
+}
+
+.search-shortcut {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-family: monospace;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 4px;
+}
+
+/* 移动端搜索按钮 */
+.mobile-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-btn-mobile {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-btn-mobile:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.search-btn-mobile i {
+  font-size: 18px;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* 平板端适配 */
