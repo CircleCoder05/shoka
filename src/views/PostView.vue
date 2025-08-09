@@ -718,6 +718,15 @@ html.dark-theme .post-meta {
   color: #7f848e !important;
 }
 
+/* 暗色模式下的标签和分类使用纯白字体 */
+html.dark-theme .post-tags .tag {
+  color: #111111 !important;
+}
+
+html.dark-theme .post-category .category {
+  color: #111111 !important;
+}
+
 html.dark-theme .post-content {
   color: #abb2bf !important;
   background: #2c313c !important;
@@ -1124,5 +1133,48 @@ html.dark-theme .post-content pre:not(.code-block pre) {
   background: #3e4451 !important;
   color: #abb2bf !important;
   border: 1px solid #5c6370 !important;
+}
+
+/* 暗色主题下的PostFooter组件样式 */
+html.dark-theme .post-footer {
+  border-top-color: #3e4451 !important;
+}
+
+html.dark-theme .post-footer .copyright-info {
+  background: #2c313c !important;
+  border-color: #3e4451 !important;
+  color: #abb2bf !important;
+}
+
+html.dark-theme .post-footer .copyright-item {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .post-footer .label {
+  color: #7f848e !important;
+}
+
+html.dark-theme .post-footer .value {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .post-footer .value.link {
+  color: #ed6ea0 !important;
+}
+
+html.dark-theme .post-footer .post-navigation {
+  background: #2c313c !important;
+  border-top-color: #3e4451 !important;
+  border-bottom-color: #3e4451 !important;
+}
+
+/* 导航项目在暗色模式下的样式调整 */
+html.dark-theme .post-footer .nav-content {
+  /* nav-content已经在main.css中被排除，现在只需要确保透明 */
+  background: transparent !important;
+}
+
+html.dark-theme .post-footer .nav-item:not(:last-child) {
+  border-right-color: rgba(255, 255, 255, 0.2) !important;
 }
 </style>

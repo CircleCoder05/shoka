@@ -260,7 +260,7 @@ body {
 .dark-theme .card:not(.friend-card),
 .dark-theme .post-card,
 .dark-theme .info-box,
-.dark-theme [class*='content']:not(.friends-content),
+.dark-theme [class*='content']:not(.friends-content):not(.nav-content),
 .dark-theme [class*='box']:not(.friend-card) {
   background: #2c313c !important;
   background-color: #2c313c !important;
