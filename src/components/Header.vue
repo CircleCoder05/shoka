@@ -13,6 +13,7 @@
         <button class="search-btn-mobile" @click="searchStore.openSearchModal" title="搜索文章">
           <i class="ic i-search"></i>
         </button>
+        <ThemeToggle :simple="true" />
         <button class="mobile-menu-btn" @click="toggleMobileSidebar">
           <span class="hamburger-line"></span>
           <span class="hamburger-line"></span>
@@ -36,6 +37,9 @@
         <span class="search-text">搜索</span>
         <kbd class="search-shortcut">⌘K</kbd>
       </button>
+
+      <!-- 主题切换 -->
+      <ThemeToggle :simple="false" />
     </nav>
   </header>
 </template>
@@ -44,6 +48,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useMobileSidebarStore } from '@/stores/mobileSidebar'
 import { useSearchStore } from '@/stores/search'
+import ThemeToggle from './ThemeToggle.vue'
 
 const mobileSidebarStore = useMobileSidebarStore()
 const searchStore = useSearchStore()
@@ -110,6 +115,17 @@ onUnmounted(() => {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateY(0);
   opacity: 1;
+}
+
+/* 暗色主题下的Header */
+html.dark-theme .header {
+  background: linear-gradient(135deg, rgba(44, 49, 60, 0.95) 0%, rgba(62, 68, 81, 0.9) 100%);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+html.dark-theme .header-in-banner {
+  background: transparent;
 }
 
 /* 导航栏隐藏状态 */
