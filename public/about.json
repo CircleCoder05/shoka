@@ -48,10 +48,10 @@
   },
   "mbti": {
     "title": "MBTI",
-    "image": "/img/infj.png",
+    "image": "/img/intj.png",
     "personality": {
-      "title": "INFJ - 提倡者",
-      "content": "作为INFJ性格类型，我是一个理想主义者，追求深度和意义。我善于洞察他人，具有强烈的同理心和直觉。"
+      "title": "INTJ-T - 架构师",
+      "content": "思想构成了人的伟大。人就像是芦苇，原本是自然界中最弱的事物，但他是会思考的芦苇。"
     }
   },
   "academic": {
