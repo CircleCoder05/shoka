@@ -526,6 +526,148 @@ kbd {
   font-size: 14px;
 }
 
+/* 暗色模式样式 */
+html.dark-theme .search-modal-overlay {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+html.dark-theme .search-modal {
+  background: #2c313c;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+html.dark-theme .search-header {
+  border-bottom-color: #3e4451;
+}
+
+html.dark-theme .search-icon {
+  color: #abb2bf;
+}
+
+html.dark-theme .search-input {
+  background: #21252b;
+  border-color: #3e4451;
+  color: #abb2bf;
+}
+
+html.dark-theme .search-input:focus {
+  border-color: #ed6ea0;
+}
+
+html.dark-theme .search-input::placeholder {
+  color: #5c6370;
+}
+
+html.dark-theme .clear-btn {
+  color: #abb2bf;
+}
+
+html.dark-theme .clear-btn:hover {
+  background: #3e4451;
+  color: #ffffff;
+}
+
+html.dark-theme .close-btn {
+  color: #abb2bf;
+}
+
+html.dark-theme .close-btn:hover {
+  background: #3e4451;
+  color: #ffffff;
+}
+
+html.dark-theme .search-tips {
+  color: #abb2bf;
+}
+
+html.dark-theme .tip-item i {
+  color: #ed6ea0;
+}
+
+html.dark-theme kbd {
+  background: #3e4451;
+  border-color: #5c6370;
+  color: #abb2bf;
+}
+
+html.dark-theme .search-loading {
+  color: #abb2bf;
+}
+
+html.dark-theme .loading-spinner {
+  border-color: #3e4451;
+  border-top-color: #ed6ea0;
+}
+
+html.dark-theme .results-header {
+  background: #21252b;
+  border-bottom-color: #3e4451;
+}
+
+html.dark-theme .results-count {
+  color: #abb2bf;
+}
+
+html.dark-theme .view-all-link {
+  color: #ed6ea0;
+}
+
+html.dark-theme .view-all-link:hover {
+  color: #ec8c69;
+}
+
+html.dark-theme .result-item {
+  border-bottom-color: #3e4451;
+}
+
+html.dark-theme .result-item:hover {
+  background: #21252b;
+}
+
+html.dark-theme .result-title {
+  color: #abb2bf;
+}
+
+html.dark-theme .result-title :deep(mark) {
+  background: #ed6ea0;
+  color: #000000;
+}
+
+html.dark-theme .result-excerpt {
+  color: #7f848e;
+}
+
+html.dark-theme .result-excerpt :deep(mark) {
+  background: #ed6ea0;
+  color: #000000;
+}
+
+html.dark-theme .result-meta {
+  color: #5c6370;
+}
+
+html.dark-theme .category-tag {
+  background: #ed6ea0;
+  color: #000000;
+}
+
+html.dark-theme .tag {
+  background: #3e4451;
+  color: #abb2bf;
+}
+
+html.dark-theme .no-results {
+  color: #abb2bf;
+}
+
+html.dark-theme .no-results i {
+  color: #5c6370;
+}
+
+html.dark-theme .no-results h3 {
+  color: #abb2bf;
+}
+
 /* 移动端适配 */
 @media (max-width: 768px) {
   .search-modal-overlay {
