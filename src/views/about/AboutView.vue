@@ -148,6 +148,17 @@ onMounted(() => {
   margin-bottom: 4rem; /* 给最后一个盒子添加底部间距 */
 }
 
+/* 暗色模式样式 */
+html.dark-theme .about-background::before {
+  background: rgba(33, 37, 43, 0.85) !important; /* 深色半透明覆盖层 */
+}
+
+/* 暗色模式下的3D标题区域 */
+html.dark-theme .model-title-container h3 {
+  color: #ffffff !important; /* 暗色模式下使用纯白文字 */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important; /* 增强文字阴影 */
+}
+
 /* 响应式设计 */
 @media (max-width: 1024px) {
   .main-section {

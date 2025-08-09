@@ -213,6 +213,18 @@ defineProps({
   z-index: 1;
 }
 
+/* 暗色模式下给背景图添加暗色覆盖层 */
+html.dark-theme .info-item-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3); /* 暗色半透明覆盖层 */
+  z-index: 1;
+}
+
 .info-item:hover {
   transform: translateX(3px);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
@@ -247,7 +259,7 @@ defineProps({
 
 .info-content label {
   font-size: 1rem; /* 更大的字体 */
-  color: #000000; /* 黑色标签 */
+  color: #8b4513; /* 棕色标签，亮色模式 */
   font-family: serif; /* 宋体 */
   font-weight: normal; /* 不加粗 */
   text-transform: uppercase;
@@ -256,16 +268,63 @@ defineProps({
   padding: 0.5rem 0.8rem; /* 添加内边距 */
   background: #dbbd87; /* 土黄色背景 */
   border-radius: 8px; /* 圆角 */
-  color: #8b4513; /* 棕色文字 */
+  color: #8b4513 !important; /* 棕色文字，亮色模式 */
   font-weight: bold; /* 加粗 */
 }
 
 .info-content span {
   font-size: 1rem;
-  color: #000000; /* 黑色文字 */
+  color: #2c3e50; /* 深灰色文字，亮色模式 */
   font-family: 'SimSun', '宋体', serif; /* 宋体 */
   font-weight: normal; /* 不加粗 */
   word-break: break-word;
+}
+
+/* 暗色模式样式 */
+html.dark-theme .profile-card {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ProfileCard背景处理 - 添加暗色遮罩 */
+html.dark-theme .profile-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(33, 37, 43, 0.8);
+  z-index: 1;
+}
+
+html.dark-theme .profile-content {
+  z-index: 3 !important;
+}
+
+/* 暗色模式文字颜色 */
+html.dark-theme .nickname {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .title {
+  color: #7f848e !important;
+}
+
+html.dark-theme .info-item {
+  background: rgba(44, 49, 60, 0.9) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark-theme .info-content label {
+  color: #000000 !important;
+}
+
+html.dark-theme .info-content span {
+  color: #000000 !important;
+}
+
+html.dark-theme .info-icon i {
+  color: #ed6ea0 !important;
 }
 
 /* 响应式设计 */
