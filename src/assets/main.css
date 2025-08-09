@@ -259,9 +259,8 @@ body {
 .dark-theme .main-content,
 .dark-theme .card:not(.friend-card),
 .dark-theme .post-card,
-.dark-theme .info-box,
-.dark-theme [class*='content']:not(.friends-content):not(.nav-content),
-.dark-theme [class*='box']:not(.friend-card) {
+.dark-theme [class*='content']:not(.friends-content):not(.nav-content):not(.info-content),
+.dark-theme [class*='box']:not(.friend-card):not(.info-box) {
   background: #2c313c !important;
   background-color: #2c313c !important;
   color: #abb2bf !important;
