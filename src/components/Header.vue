@@ -128,6 +128,35 @@ html.dark-theme .header-in-banner {
   background: transparent;
 }
 
+/* 暗色模式下强制Header导航链接保持白色 */
+html.dark-theme .header .nav a {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+html.dark-theme .header .nav a:hover {
+  color: #ffffff !important;
+}
+
+html.dark-theme .header .nav a.router-link-active {
+  color: #ffffff !important;
+}
+
+html.dark-theme .header .mobile-title {
+  color: #ffffff !important;
+}
+
+html.dark-theme .header .search-btn {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+html.dark-theme .header .search-btn:hover {
+  color: #ffffff !important;
+}
+
+html.dark-theme .header .search-btn-mobile {
+  color: #ffffff !important;
+}
+
 /* 导航栏隐藏状态 */
 .header:not(.header-visible) {
   transform: translateY(-100%);
