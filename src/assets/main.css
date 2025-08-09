@@ -28,7 +28,7 @@
 body {
   margin: 0;
   font-family: 'Mulish', 'Noto Serif SC', Arial, sans-serif;
-  background: linear-gradient(to top, #f7f7f7 0, #fff 20%) no-repeat bottom;
+  background: #fff;
   color: #222;
 }
 
@@ -249,8 +249,7 @@ body {
 }
 
 .dark-theme body {
-  background: #21252b !important;
-  background-image: linear-gradient(to top, #21252b 0, #2c313c 20%) !important;
+  background: #2c313c !important;
   color: #abb2bf !important;
 }
 
@@ -484,4 +483,33 @@ html.dark-theme .article-calendar .year-btn:hover {
   background-color: #ed6ea0 !important;
   color: #ffffff !important;
   border-color: #ed6ea0 !important;
+}
+
+/* 暗色模式下的图片暗化效果 */
+html.dark-theme .banner-image,
+html.dark-theme .banner img,
+html.dark-theme .category-card .card-front,
+html.dark-theme .post-card .cover,
+html.dark-theme .post-card img,
+html.dark-theme .article-card .cover,
+html.dark-theme .article-card img,
+html.dark-theme .post-cover,
+html.dark-theme .cover-image {
+  filter: brightness(0.7) contrast(1.1) !important;
+  transition: filter 0.3s ease !important;
+}
+
+/* 悬停时稍微恢复亮度 */
+html.dark-theme .category-card:hover .card-front,
+html.dark-theme .post-card:hover .cover,
+html.dark-theme .post-card:hover img,
+html.dark-theme .article-card:hover .cover,
+html.dark-theme .article-card:hover img {
+  filter: brightness(0.8) contrast(1.1) !important;
+}
+
+/* 暗色模式下分割线标题无背景 */
+html.dark-theme .divider {
+  background: transparent !important;
+  background-color: transparent !important;
 }

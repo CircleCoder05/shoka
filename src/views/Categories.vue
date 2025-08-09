@@ -857,7 +857,8 @@ html.dark-theme .category-card:hover .category-arrow {
 }
 
 /* 分类卡片旗子图标改为白色 */
-html.dark-theme .category-icon {
-  color: #fff !important;
+html.dark-theme .category-icon,
+html.dark-theme .category-icon i {
+  color: #ffffff !important;
 }
 </style>

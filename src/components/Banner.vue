@@ -667,4 +667,9 @@ html.dark-theme .wave4 {
     padding: 4px 12px;
   }
 }
+
+/* 暗色模式下的Banner图片暗化 */
+html.dark-theme .banner-image {
+  filter: brightness(0.6) contrast(1.2) blur(0.5px) !important;
+}
 </style>
