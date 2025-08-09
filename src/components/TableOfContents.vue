@@ -805,6 +805,31 @@ onMounted(() => {
   background: #a8a8a8;
 }
 
+/* 暗色模式样式 */
+html.dark-theme .toc-controls {
+  border-bottom-color: #3e4451;
+}
+
+html.dark-theme .toggle-slider {
+  background: #3e4451;
+  border-color: #3e4451;
+  color: #abb2bf;
+}
+
+html.dark-theme .toggle-slider::before {
+  background: #21252b;
+}
+
+html.dark-theme .toggle-slider.active {
+  background: #ed6ea0;
+  border-color: #ed6ea0;
+  color: #ffffff !important;
+}
+
+html.dark-theme .toggle-slider.active .toggle-text {
+  color: #ffffff !important;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .toc-container {
