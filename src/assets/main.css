@@ -257,19 +257,22 @@ body {
 /* 覆盖所有卡片背景 */
 .dark-theme .sidebar,
 .dark-theme .main-content,
-.dark-theme .card,
+.dark-theme .card:not(.friend-card),
 .dark-theme .post-card,
 .dark-theme .info-box,
-.dark-theme [class*='content'],
-.dark-theme [class*='box'] {
+.dark-theme [class*='content']:not(.friends-content),
+.dark-theme [class*='box']:not(.friend-card) {
   background: #2c313c !important;
   background-color: #2c313c !important;
   color: #abb2bf !important;
   border-color: #3e4451 !important;
 }
 
-/* 只覆盖非分类卡片 */
-.dark-theme [class*='card']:not(.category-card):not(.card-front):not(.card-back) {
+/* 只覆盖非分类卡片和非友链卡片 */
+.dark-theme .post-card,
+.dark-theme .article-card,
+.dark-theme .search-card,
+.dark-theme .info-card {
   background: #2c313c !important;
   background-color: #2c313c !important;
   color: #abb2bf !important;
@@ -384,8 +387,11 @@ html.dark-theme .category-card .card-front[style*='background-image'] {
   color: #abb2bf !important;
 }
 
-/* div单独处理，排除分类卡片前面 */
-.dark-theme div:not(.card-front) {
+/* div单独处理，排除分类卡片前面和友链卡片相关 */
+.dark-theme
+  div:not(.card-front):not(.friend-card):not(.friend-info):not(.friend-avatar):not(
+    .friend-action
+  ):not(.friend-tags) {
   color: #abb2bf !important;
 }
 
@@ -447,13 +453,15 @@ html.dark-theme .category-card .card-front[style*='background-image'] {
 }
 
 /* 保持品牌色不变 */
-.dark-theme [style*='background: linear-gradient'],
+.dark-theme [style*='background: linear-gradient']:not(.friend-card),
 .dark-theme [class*='pink'],
 .dark-theme [class*='orange'],
 .dark-theme .btn-primary,
 .dark-theme .primary {
   background: unset !important;
 }
+
+/* 友链卡片由JavaScript直接设置背景，无需CSS干预 */
 
 /* 链接保持品牌色 */
 .dark-theme a {
