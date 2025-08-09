@@ -210,7 +210,7 @@ const copyCode = async () => {
 }
 
 .language-tag[data-lang='c'] {
-  background: linear-gradient(135deg, #a8b9cc 0%, #555555 100%);
+  background: linear-gradient(135deg, #87ceeb 0%, #4fb3d9 100%);
   color: white;
 }
 
