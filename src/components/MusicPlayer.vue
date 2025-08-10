@@ -492,6 +492,78 @@ onUnmounted(() => {
   }
 }
 
+/* 暗色模式样式 */
+html.dark-theme .music-player {
+  background: #2c313c !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 歌曲信息暗色模式 */
+html.dark-theme .song-title {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .artist-name {
+  color: #7f848e !important;
+}
+
+/* 歌词暗色模式 */
+html.dark-theme .lyric-line {
+  color: #7f848e !important;
+}
+
+html.dark-theme .lyric-line.current {
+  color: #abb2bf !important;
+}
+
+/* 控制区域暗色模式 */
+html.dark-theme .lower-section {
+  background: #21252b !important;
+  border-top-color: #3e4451 !important;
+}
+
+/* 控制按钮暗色模式 */
+html.dark-theme .control-btn {
+  background: #2c313c !important;
+  border-color: #3e4451 !important;
+  color: #abb2bf !important;
+}
+
+html.dark-theme .control-btn:hover {
+  background: #3e4451 !important;
+}
+
+html.dark-theme .control-btn svg {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .play-btn {
+  background: #2c313c !important;
+  border-color: #3e4451 !important;
+}
+
+html.dark-theme .play-btn:hover {
+  background: #3e4451 !important;
+}
+
+html.dark-theme .play-btn svg {
+  color: #abb2bf !important;
+}
+
+/* 进度条暗色模式 */
+html.dark-theme .progress-bar {
+  background: #3e4451 !important;
+}
+
+html.dark-theme .progress-fill {
+  background: linear-gradient(90deg, #ed6ea0, #ec8c69) !important;
+}
+
+/* 时间显示暗色模式 */
+html.dark-theme .time-display {
+  color: #7f848e !important;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .preview {

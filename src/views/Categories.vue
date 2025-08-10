@@ -73,17 +73,44 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, nextTick } from 'vue'
+import { computed, ref, onMounted, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStatisticsStore } from '@/stores/statistics'
+import { useThemeStore } from '@/stores/theme'
 import PageContainer from '@/components/PageContainer.vue'
 import * as echarts from 'echarts'
 
 const router = useRouter()
 const statisticsStore = useStatisticsStore()
+const themeStore = useThemeStore()
 
 const loading = computed(() => statisticsStore.loading)
 const error = computed(() => statisticsStore.error)
+
+// 主题配置
+const getThemeConfig = computed(() => {
+  if (themeStore.isDark) {
+    return {
+      textColor: '#abb2bf',
+      backgroundColor: '#2c313c',
+      borderColor: '#3e4451',
+      tooltipBg: '#2c313c',
+      tooltipBorder: '#3e4451',
+      splitLineColor: '#3e4451',
+      axisLineColor: '#3e4451',
+    }
+  } else {
+    return {
+      textColor: '#666',
+      backgroundColor: '#fff',
+      borderColor: '#ddd',
+      tooltipBg: '#fff',
+      tooltipBorder: '#ddd',
+      splitLineColor: '#f0f0f0',
+      axisLineColor: '#ddd',
+    }
+  }
+})
 
 // 处理分类数据，将uncategorized改为未分类，并按数量排序
 const sortedCategories = computed(() => {
@@ -120,10 +147,17 @@ const initPieChart = () => {
   const isMobile = window.innerWidth <= 768
   const isSmallMobile = window.innerWidth <= 480
 
+  const themeConfig = getThemeConfig.value
+
   const option = {
     tooltip: {
       trigger: 'item',
       formatter: '{a} <br/>{b}: {c} ({d}%)',
+      backgroundColor: themeConfig.tooltipBg,
+      borderColor: themeConfig.tooltipBorder,
+      textStyle: {
+        color: themeConfig.textColor,
+      },
     },
     legend: {
       orient: isMobile ? 'horizontal' : 'vertical',
@@ -131,15 +165,16 @@ const initPieChart = () => {
       top: isMobile ? 'bottom' : 'middle',
       textStyle: {
         fontSize: isSmallMobile ? 10 : 12,
+        color: themeConfig.textColor,
       },
       type: 'scroll',
       pageButtonPosition: 'end',
       pageButtonGap: 5,
       pageButtonItemGap: 5,
       pageIconColor: '#ed6ea0',
-      pageIconInactiveColor: '#ccc',
+      pageIconInactiveColor: themeStore.isDark ? '#5c6370' : '#ccc',
       pageTextStyle: {
-        color: '#666',
+        color: themeConfig.textColor,
       },
     },
     series: [
@@ -201,11 +236,18 @@ const initBarChart = () => {
   const isMobile = window.innerWidth <= 768
   const isSmallMobile = window.innerWidth <= 480
 
+  const themeConfig = getThemeConfig.value
+
   const option = {
     tooltip: {
       trigger: 'axis',
       axisPointer: {
         type: 'shadow',
+      },
+      backgroundColor: themeConfig.tooltipBg,
+      borderColor: themeConfig.tooltipBorder,
+      textStyle: {
+        color: themeConfig.textColor,
       },
     },
     grid: {
@@ -226,12 +268,12 @@ const initBarChart = () => {
         fontSize: isSmallMobile ? 10 : 12,
         interval: 0,
         textStyle: {
-          color: '#666',
+          color: themeConfig.textColor,
         },
       },
       axisLine: {
         lineStyle: {
-          color: '#ddd',
+          color: themeConfig.axisLineColor,
         },
       },
     },
@@ -239,21 +281,21 @@ const initBarChart = () => {
       type: 'value',
       name: '文章数量',
       nameTextStyle: {
-        color: '#666',
+        color: themeConfig.textColor,
         fontSize: isSmallMobile ? 10 : 12,
       },
       axisLabel: {
         fontSize: isSmallMobile ? 10 : 12,
-        color: '#666',
+        color: themeConfig.textColor,
       },
       axisLine: {
         lineStyle: {
-          color: '#ddd',
+          color: themeConfig.axisLineColor,
         },
       },
       splitLine: {
         lineStyle: {
-          color: '#f0f0f0',
+          color: themeConfig.splitLineColor,
         },
       },
     },
@@ -319,13 +361,28 @@ const updateCharts = () => {
 }
 
 // 监听数据变化
-import { watch } from 'vue'
 watch(
   sortedCategories,
   () => {
     updateCharts()
   },
   { deep: true },
+)
+
+// 监听主题变化
+watch(
+  () => themeStore.isDark,
+  () => {
+    // 重新初始化图表以应用新主题
+    if (pieChart) {
+      pieChart.dispose()
+      initPieChart()
+    }
+    if (barChart) {
+      barChart.dispose()
+      initBarChart()
+    }
+  },
 )
 
 onMounted(async () => {
@@ -736,5 +793,72 @@ onUnmounted(() => {
   .chart {
     height: 180px;
   }
+}
+
+/* 暗色主题样式 */
+html.dark-theme .page-title {
+  color: #abb2bf;
+}
+
+html.dark-theme .page-subtitle {
+  color: #7f848e;
+}
+
+html.dark-theme .chart-container {
+  background: #2c313c !important;
+  border-color: #3e4451 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark-theme .chart-header h3 {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .chart-header p {
+  color: #7f848e !important;
+}
+
+html.dark-theme .section-header h3 {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .section-header p {
+  color: #7f848e !important;
+}
+
+html.dark-theme .category-card {
+  background: linear-gradient(135deg, #2c313c 0%, #383e4a 100%) !important;
+  border-color: #3e4451 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark-theme .category-card:hover {
+  box-shadow: 0 8px 30px rgba(237, 110, 160, 0.3) !important;
+}
+
+html.dark-theme .category-name {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .category-count {
+  color: #7f848e !important;
+}
+
+html.dark-theme .category-progress {
+  background: #3e4451 !important;
+}
+
+html.dark-theme .category-arrow {
+  color: #5c6370 !important;
+}
+
+html.dark-theme .category-card:hover .category-arrow {
+  color: #ed6ea0 !important;
+}
+
+/* 分类卡片旗子图标改为白色 */
+html.dark-theme .category-icon,
+html.dark-theme .category-icon i {
+  color: #ffffff !important;
 }
 </style>

@@ -438,7 +438,7 @@ onUnmounted(() => {
   width: auto;
   height: auto;
   border-radius: 8px;
-  margin: 1.2em auto;
+  margin: 1.2em 0;
   display: block;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   object-fit: contain;
@@ -636,7 +636,7 @@ onUnmounted(() => {
     line-height: 1.8;
   }
   .post-content img {
-    margin: 1em auto;
+    margin: 1em 0;
     border-radius: 6px;
   }
   .post-content h1 {
@@ -677,7 +677,7 @@ onUnmounted(() => {
     font-size: 0.95em;
   }
   .post-content img {
-    margin: 0.8em auto;
+    margin: 0.8em 0;
     border-radius: 4px;
   }
   .post-content pre {
@@ -696,5 +696,485 @@ onUnmounted(() => {
   .post-content td {
     max-width: 150px;
   }
+}
+
+/* 暗色主题样式 */
+html.dark-theme .post-card-outer {
+  background: #2c313c !important;
+  box-shadow:
+    0 8px 48px 0 rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+html.dark-theme .post-header {
+  border-bottom-color: #3e4451 !important;
+}
+
+html.dark-theme .post-title {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .post-meta {
+  color: #7f848e !important;
+}
+
+/* 暗色模式下的标签和分类使用纯白字体 */
+html.dark-theme .post-tags .tag {
+  color: #111111 !important;
+}
+
+html.dark-theme .post-category .category {
+  color: #111111 !important;
+}
+
+html.dark-theme .post-content {
+  color: #abb2bf !important;
+  background: #2c313c !important;
+}
+
+html.dark-theme .post-content h1,
+html.dark-theme .post-content h2,
+html.dark-theme .post-content h3,
+html.dark-theme .post-content h4 {
+  color: #abb2bf !important;
+  border-bottom-color: #3e4451 !important;
+}
+
+/* 暗色主题下的单行代码样式 */
+html.dark-theme .post-content code:not(.code-block code) {
+  background: #3e4451 !important;
+  color: #ed6ea0 !important;
+  padding: 0.2em 0.4em !important;
+}
+
+/* 亮色模式下的代码块样式 */
+html:not(.dark-theme) .post-content .code-block {
+  background: #fafafa !important;
+  border: 1px solid #e1e4e8 !important;
+  border-radius: 8px !important;
+}
+
+html:not(.dark-theme) .post-content .code-block .code-header {
+  background: #f6f8fa !important;
+  border-bottom: 1px solid #e1e4e8 !important;
+  color: #24292e !important;
+}
+
+/* 保持语言标签的原有多彩样式，不进行覆盖 */
+
+html:not(.dark-theme) .post-content .code-block .action-btn {
+  background: #ffffff !important;
+  border: 1px solid #d1d5da !important;
+  color: #586069 !important;
+}
+
+html:not(.dark-theme) .post-content .code-block .action-btn:hover {
+  background: #f6f8fa !important;
+  border-color: #0366d6 !important;
+  color: #0366d6 !important;
+}
+
+html:not(.dark-theme) .post-content .code-block .code-content {
+  background: #fafafa !important;
+}
+
+html:not(.dark-theme) .post-content .code-block pre {
+  background: #fafafa !important;
+  color: #24292e !important;
+}
+
+/* 亮色模式的highlight.js语法高亮样式 */
+html:not(.dark-theme) .post-content .code-block .hljs {
+  background: #fafafa !important;
+  color: #24292e !important;
+}
+
+/* 亮色模式 - 关键字（紫色） */
+html:not(.dark-theme) .post-content .code-block .hljs-keyword,
+html:not(.dark-theme) .post-content .code-block .hljs-selector-tag,
+html:not(.dark-theme) .post-content .code-block .hljs-built_in {
+  color: #8b5cf6 !important;
+  font-weight: 600 !important;
+}
+
+/* 亮色模式 - 字符串（绿色） */
+html:not(.dark-theme) .post-content .code-block .hljs-string,
+html:not(.dark-theme) .post-content .code-block .hljs-doctag {
+  color: #16a085 !important;
+}
+
+/* 亮色模式 - 注释（灰色斜体） */
+html:not(.dark-theme) .post-content .code-block .hljs-comment,
+html:not(.dark-theme) .post-content .code-block .hljs-quote {
+  color: #6a737d !important;
+  font-style: italic !important;
+}
+
+/* 亮色模式 - 数字（橙色） */
+html:not(.dark-theme) .post-content .code-block .hljs-number,
+html:not(.dark-theme) .post-content .code-block .hljs-literal {
+  color: #e67e22 !important;
+}
+
+/* 亮色模式 - 变量名（深红色） */
+html:not(.dark-theme) .post-content .code-block .hljs-variable,
+html:not(.dark-theme) .post-content .code-block .hljs-name {
+  color: #c0392b !important;
+}
+
+/* 亮色模式 - 属性（深青色） */
+html:not(.dark-theme) .post-content .code-block .hljs-attr,
+html:not(.dark-theme) .post-content .code-block .hljs-attribute {
+  color: #2980b9 !important;
+}
+
+/* 亮色模式 - 类名/类型（紫罗兰色） */
+html:not(.dark-theme) .post-content .code-block .hljs-title,
+html:not(.dark-theme) .post-content .code-block .hljs-class .hljs-title,
+html:not(.dark-theme) .post-content .code-block .hljs-type {
+  color: #9b59b6 !important;
+  font-weight: 600 !important;
+}
+
+/* 亮色模式 - 函数名（蓝色） */
+html:not(.dark-theme) .post-content .code-block .hljs-function .hljs-title {
+  color: #3498db !important;
+  font-weight: 600 !important;
+}
+
+/* 亮色模式 - 操作符（深灰色） */
+html:not(.dark-theme) .post-content .code-block .hljs-operator,
+html:not(.dark-theme) .post-content .code-block .hljs-symbol {
+  color: #34495e !important;
+  font-weight: 600 !important;
+}
+
+/* 亮色模式 - 正则表达式（墨绿色） */
+html:not(.dark-theme) .post-content .code-block .hljs-regexp {
+  color: #27ae60 !important;
+}
+
+/* 亮色模式 - 元标签（深蓝色） */
+html:not(.dark-theme) .post-content .code-block .hljs-meta {
+  color: #2c3e50 !important;
+}
+
+/* 亮色模式 - 模板变量（品红色） */
+html:not(.dark-theme) .post-content .code-block .hljs-template-variable,
+html:not(.dark-theme) .post-content .code-block .hljs-template-tag {
+  color: #e91e63 !important;
+}
+
+/* 亮色模式 - 展开提示区域 */
+html:not(.dark-theme) .post-content .code-block .expand-hint {
+  background: #f6f8fa !important;
+  color: #586069 !important;
+  border-top: 1px solid #e1e4e8 !important;
+}
+
+html:not(.dark-theme) .post-content .code-block .expand-hint:hover {
+  background: #f1f3f4 !important;
+  color: #24292e !important;
+}
+
+/* 暗色模式下的代码块样式 */
+html.dark-theme .post-content .code-block {
+  background: #21252b !important;
+  border: 1px solid #3e4451 !important;
+  border-radius: 8px !important;
+}
+
+html.dark-theme .post-content .code-block .code-header {
+  background: #282c34 !important;
+  border-bottom: 1px solid #3e4451 !important;
+  color: #abb2bf !important;
+}
+
+/* 暗色模式下语言标签使用黑色字体 */
+html.dark-theme .post-content .code-block .language-tag {
+  color: #000000 !important;
+}
+
+html.dark-theme .post-content .code-block .action-btn {
+  background: #21252b !important;
+  border: 1px solid #3e4451 !important;
+  color: #abb2bf !important;
+}
+
+html.dark-theme .post-content .code-block .action-btn:hover {
+  background: #3e4451 !important;
+  border-color: #ed6ea0 !important;
+  color: #ed6ea0 !important;
+}
+
+html.dark-theme .post-content .code-block .code-content {
+  background: #21252b !important;
+}
+
+html.dark-theme .post-content .code-block pre {
+  background: #21252b !important;
+  color: #abb2bf !important;
+}
+
+/* 暗色模式的highlight.js语法高亮样式 */
+html.dark-theme .post-content .code-block .hljs {
+  background: #21252b !important;
+  color: #abb2bf !important;
+}
+
+/* 暗色模式 - 关键字 */
+html.dark-theme .post-content .code-block .hljs-keyword,
+html.dark-theme .post-content .code-block .hljs-selector-tag,
+html.dark-theme .post-content .code-block .hljs-built_in {
+  color: #c678dd !important;
+}
+
+/* 暗色模式 - 字符串 */
+html.dark-theme .post-content .code-block .hljs-string,
+html.dark-theme .post-content .code-block .hljs-doctag {
+  color: #98c379 !important;
+}
+
+/* 暗色模式 - 注释 */
+html.dark-theme .post-content .code-block .hljs-comment,
+html.dark-theme .post-content .code-block .hljs-quote {
+  color: #5c6370 !important;
+  font-style: italic !important;
+}
+
+/* 暗色模式 - 数字 */
+html.dark-theme .post-content .code-block .hljs-number,
+html.dark-theme .post-content .code-block .hljs-literal {
+  color: #d19a66 !important;
+}
+
+/* 暗色模式 - 变量名 */
+html.dark-theme .post-content .code-block .hljs-variable,
+html.dark-theme .post-content .code-block .hljs-name {
+  color: #e06c75 !important;
+}
+
+/* 暗色模式 - 属性 */
+html.dark-theme .post-content .code-block .hljs-attr,
+html.dark-theme .post-content .code-block .hljs-attribute {
+  color: #e06c75 !important;
+}
+
+/* 暗色模式 - 标题/类名 */
+html.dark-theme .post-content .code-block .hljs-title,
+html.dark-theme .post-content .code-block .hljs-class .hljs-title,
+html.dark-theme .post-content .code-block .hljs-type {
+  color: #e5c07b !important;
+}
+
+/* 暗色模式 - 函数 */
+html.dark-theme .post-content .code-block .hljs-function .hljs-title {
+  color: #61dafb !important;
+}
+
+/* 暗色模式 - 操作符 */
+html.dark-theme .post-content .code-block .hljs-operator,
+html.dark-theme .post-content .code-block .hljs-symbol {
+  color: #56b6c2 !important;
+}
+
+/* 暗色模式 - 正则表达式 */
+html.dark-theme .post-content .code-block .hljs-regexp {
+  color: #98c379 !important;
+}
+
+/* 暗色模式 - 元标签 */
+html.dark-theme .post-content .code-block .hljs-meta {
+  color: #61dafb !important;
+}
+
+/* 暗色模式 - 模板变量 */
+html.dark-theme .post-content .code-block .hljs-template-variable,
+html.dark-theme .post-content .code-block .hljs-template-tag {
+  color: #e06c75 !important;
+}
+
+/* 暗色模式 - 展开提示区域 */
+html.dark-theme .post-content .code-block .expand-hint {
+  background: #282c34 !important;
+  color: #abb2bf !important;
+  border-top: 1px solid #3e4451 !important;
+}
+
+html.dark-theme .post-content .code-block .expand-hint:hover {
+  background: #3e4451 !important;
+  color: #ffffff !important;
+}
+
+/* 暗色主题下的引用块 */
+html.dark-theme .post-content blockquote {
+  background: #3e4451 !important;
+  color: #abb2bf !important;
+  border-left-color: #ed6ea0 !important;
+}
+
+/* 暗色主题下的表格 */
+html.dark-theme .post-content table {
+  background: #2c313c !important;
+  border-color: #3e4451 !important;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+html.dark-theme .post-content th {
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%) !important;
+  border-bottom-color: #ed6ea0 !important;
+}
+
+html.dark-theme .post-content tr:nth-child(odd) {
+  background: #2c313c !important;
+}
+
+html.dark-theme .post-content tr:nth-child(even) {
+  background: #383e4a !important;
+}
+
+html.dark-theme .post-content tr:hover {
+  background: linear-gradient(135deg, #3e4451 0%, #4a5568 100%) !important;
+}
+
+html.dark-theme .post-content td {
+  border-bottom-color: #3e4451 !important;
+  border-right-color: #383e4a !important;
+}
+
+/* 暗色主题下的链接 */
+html.dark-theme .post-content a {
+  color: #ed6ea0 !important;
+}
+
+html.dark-theme .post-content a:hover {
+  border-bottom-color: #ed6ea0 !important;
+}
+
+/* 暗色主题下的强调文本 */
+html.dark-theme .post-content strong {
+  color: #ed6ea0 !important;
+}
+
+html.dark-theme .post-content em {
+  color: #abb2bf !important;
+}
+
+/* 暗色主题下的列表 */
+html.dark-theme .post-content ul,
+html.dark-theme .post-content ol {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .post-content li {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .post-content li::marker {
+  color: #ed6ea0 !important;
+}
+
+/* 暗色主题下的分割线 */
+html.dark-theme .post-content hr {
+  border-color: #3e4451 !important;
+  background: #3e4451 !important;
+}
+
+/* 暗色主题下的图片 */
+html.dark-theme .post-content img {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 暗色主题下的删除线文本 */
+html.dark-theme .post-content del {
+  color: #7f848e !important;
+}
+
+/* 暗色主题下的标记文本 */
+html.dark-theme .post-content mark {
+  background: rgba(237, 110, 160, 0.3) !important;
+  color: #abb2bf !important;
+  padding: 0.1em 0.2em !important;
+  border-radius: 3px !important;
+}
+
+/* 暗色主题下的键盘按键样式 */
+html.dark-theme .post-content kbd {
+  background: #3e4451 !important;
+  color: #abb2bf !important;
+  border: 1px solid #5c6370 !important;
+  border-bottom: 3px solid #5c6370 !important;
+  box-shadow: inset 0 -1px 0 #5c6370 !important;
+}
+
+/* 暗色主题下的小字体文本 */
+html.dark-theme .post-content small {
+  color: #7f848e !important;
+}
+
+/* 暗色主题下的子标题和副标题 */
+html.dark-theme .post-content h5,
+html.dark-theme .post-content h6 {
+  color: #abb2bf !important;
+  border-bottom-color: #3e4451 !important;
+}
+
+/* 暗色主题下的段落 */
+html.dark-theme .post-content p {
+  color: #abb2bf !important;
+  line-height: 1.8 !important;
+}
+
+/* 暗色主题下的预格式化文本（非代码块） */
+html.dark-theme .post-content pre:not(.code-block pre) {
+  background: #2c3132 !important;
+  color: #abb2bf !important;
+  border: 1px solid #5c6370 !important;
+}
+
+/* 暗色主题下的PostFooter组件样式 */
+html.dark-theme .post-footer {
+  border-top-color: #3e4451 !important;
+}
+
+html.dark-theme .post-footer .copyright-info {
+  background: #2c313c !important;
+  border-color: #3e4451 !important;
+  color: #abb2bf !important;
+}
+
+html.dark-theme .post-footer .copyright-item {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .post-footer .label {
+  color: #7f848e !important;
+}
+
+html.dark-theme .post-footer .value {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .post-footer .value.link {
+  color: #ed6ea0 !important;
+}
+
+html.dark-theme .post-footer .post-navigation {
+  background: #2c313c !important;
+  border-top-color: #3e4451 !important;
+  border-bottom-color: #3e4451 !important;
+}
+
+/* 导航项目在暗色模式下的样式调整 */
+html.dark-theme .post-footer .nav-content {
+  /* nav-content已经在main.css中被排除，现在只需要确保透明 */
+  background: transparent !important;
+}
+
+html.dark-theme .post-footer .nav-item:not(:last-child) {
+  border-right-color: rgba(255, 255, 255, 0.2) !important;
 }
 </style>
