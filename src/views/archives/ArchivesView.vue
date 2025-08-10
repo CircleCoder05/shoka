@@ -107,8 +107,8 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useStatisticsStore } from '@/stores/statistics'
-import TimelineArticleCard from '@/components/TimelineArticleCard.vue'
-import ArticleCalendar from '@/components/ArticleCalendar.vue'
+import TimelineArticleCard from '@/views/archives/TimelineArticleCard.vue'
+import ArticleCalendar from '@/views/archives/ArticleCalendar.vue'
 import PageContainer from '@/components/PageContainer.vue'
 
 const statisticsStore = useStatisticsStore()
