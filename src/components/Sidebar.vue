@@ -968,4 +968,135 @@ onMounted(async () => {
 .menu .item.active > a {
   color: #ffffff !important;
 }
+
+/* 暗色模式样式 */
+html.dark-theme #sidebar {
+  background: #2c313c;
+  color: #abb2bf;
+}
+
+html.dark-theme .mobile-sidebar-overlay {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+html.dark-theme .close-line {
+  background: #abb2bf;
+}
+
+html.dark-theme .mobile-close-btn:hover .close-line {
+  background: #ffffff;
+}
+
+html.dark-theme .mobile-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 暗色模式下的切换按钮 */
+html.dark-theme .tab .item {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #abb2bf;
+}
+
+html.dark-theme .tab .item:hover,
+html.dark-theme .tab .item.active {
+  color: #ffffff !important;
+  background-image: linear-gradient(to right, #ed6ea0 0, #ec8c69 100%) !important;
+  box-shadow: 0 0 0.75rem rgba(237, 110, 160, 0.5) !important;
+}
+
+html.dark-theme .tab .item span {
+  color: #ffffff !important;
+}
+
+html.dark-theme .tab .item.active:hover {
+  box-shadow: 0 0 0.75rem #ed6ea0 !important;
+}
+
+/* 暗色模式下的作者信息 */
+html.dark-theme .overview .author .image {
+  border-color: #3e4451;
+  box-shadow: 0 0 1rem 0.625rem rgba(62, 68, 81, 0.3);
+}
+
+html.dark-theme .overview .author .name {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .overview .author .description {
+  color: #7f848e !important;
+}
+
+/* 暗色模式下的统计数据 */
+html.dark-theme .state .item:not(:first-child) {
+  border-left-color: #3e4451;
+}
+
+html.dark-theme .state .count {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .state .name {
+  color: #7f848e !important;
+}
+
+html.dark-theme .state .item:hover .name,
+html.dark-theme .state .item:hover .count {
+  color: #ed6ea0 !important;
+}
+
+/* 暗色模式下的导航菜单 */
+html.dark-theme .menu .item a {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .menu .item a:hover {
+  color: #ed6ea0 !important;
+}
+
+html.dark-theme .menu .item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+html.dark-theme .menu .item a.router-link-active {
+  color: #ffffff !important;
+  background-image: linear-gradient(to right, #ed6ea0 0, #ec8c69 100%) !important;
+  box-shadow: 0 0 0.75rem rgba(237, 110, 160, 0.5) !important;
+}
+
+/* 暗色模式下的社交链接 */
+html.dark-theme .social .item.github {
+  color: #ffffff;
+}
+
+html.dark-theme .social .item.music {
+  color: #ff4757;
+}
+
+html.dark-theme .social .item.email {
+  color: #74b9ff;
+}
+
+html.dark-theme .social .item.twitter {
+  color: #1da1f2;
+}
+
+html.dark-theme .social .item.facebook {
+  color: #4267b2;
+}
+
+html.dark-theme .social .item.youtube {
+  color: #ff0000;
+}
+
+html.dark-theme .social .item.weibo {
+  color: #e6162d;
+}
+
+html.dark-theme .social .item.google {
+  color: #4285f4;
+}
+
+html.dark-theme .social .item.zhihu {
+  color: #0084ff;
+}
 </style>

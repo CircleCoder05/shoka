@@ -1,12 +1,21 @@
 <script setup>
+import { onMounted } from 'vue'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import Sidebar from './components/Sidebar.vue'
 import Banner from './components/Banner.vue'
 import OhMyLive2d from './components/OhMyLive2d.vue'
+import SearchModal from './components/SearchModal.vue'
 import { useBannerStore } from './stores/banner'
+import { useThemeStore } from './stores/theme'
 
 const bannerStore = useBannerStore()
+const themeStore = useThemeStore()
+
+// 初始化主题系统
+onMounted(() => {
+  themeStore.init()
+})
 </script>
 
 <template>
@@ -38,6 +47,9 @@ const bannerStore = useBannerStore()
 
     <!-- OhMyLive2d -->
     <OhMyLive2d />
+
+    <!-- 搜索模态框 -->
+    <SearchModal />
   </div>
 </template>
 

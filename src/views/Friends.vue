@@ -42,7 +42,7 @@
               v-for="friend in category.items"
               :key="friend.name"
               class="friend-card"
-              :style="{ background: friend.backgroundColor || '#f8f9fa' }"
+              :style="getFriendCardStyle(friend)"
               @click="openFriendLink(friend.url)"
             >
               <!-- 头像 -->
@@ -79,11 +79,13 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useFriendsStore } from '@/stores/friends'
+import { useThemeStore } from '@/stores/theme'
 import PageContainer from '@/components/PageContainer.vue'
 
 const friendsStore = useFriendsStore()
+const themeStore = useThemeStore()
 
 // 过滤后的友链数据
 const filteredFriends = computed(() => {
@@ -101,9 +103,55 @@ const handleAvatarError = (event) => {
   event.target.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'
 }
 
+// 获取友链卡片样式
+const getFriendCardStyle = (friend) => {
+  const backgroundColor = friend.backgroundColor || '#f8f9fa'
+  return {
+    background: backgroundColor,
+    backgroundImage: backgroundColor.includes('linear-gradient') ? backgroundColor : 'none',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+  }
+}
+
+// 更新友链卡片背景样式
+const updateFriendCardStyles = () => {
+  setTimeout(() => {
+    const friendCards = document.querySelectorAll('.friend-card')
+    friendCards.forEach((card, index) => {
+      const friend = friendsStore.allFriends.flatMap((cat) => cat.items)[index]
+      if (friend && friend.backgroundColor) {
+        let finalBackground = friend.backgroundColor
+
+        // 在暗色主题下添加半透明深色蒙版使颜色变暗
+        if (themeStore.isDark) {
+          finalBackground = `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), ${friend.backgroundColor}`
+        }
+
+        card.style.setProperty('background', finalBackground, 'important')
+        card.style.setProperty('background-image', finalBackground, 'important')
+      }
+    })
+  }, 100)
+}
+
 onMounted(() => {
   friendsStore.loadFriends()
+
+  // 等待数据加载后更新卡片样式
+  setTimeout(() => {
+    updateFriendCardStyles()
+  }, 1000)
 })
+
+// 监听主题变化，重新应用样式
+watch(
+  () => themeStore.isDark,
+  () => {
+    updateFriendCardStyles()
+  },
+)
 </script>
 
 <style scoped>
@@ -410,5 +458,73 @@ onMounted(() => {
   .friend-tags {
     justify-content: center;
   }
+}
+
+/* 暗色主题样式 */
+html.dark-theme .page-title {
+  color: #abb2bf;
+}
+
+html.dark-theme .page-title i {
+  color: #ed6ea0 !important;
+  -webkit-text-fill-color: #ed6ea0 !important;
+}
+
+html.dark-theme .page-subtitle {
+  color: #7f848e;
+}
+
+html.dark-theme .loading {
+  color: #abb2bf;
+}
+
+html.dark-theme .category-section {
+  background: #2c313c !important;
+  border-color: #3e4451 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark-theme .category-title {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .category-title i {
+  color: #ed6ea0 !important;
+}
+
+html.dark-theme .category-description {
+  color: #7f848e !important;
+}
+
+html.dark-theme .category-count {
+  color: #5c6370 !important;
+}
+
+/* 友链卡片背景由JavaScript动态设置 */
+
+html.dark-theme .friends-content .friend-card .friend-name {
+  color: #fff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark-theme .friends-content .friend-card .friend-description {
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+html.dark-theme .friends-content .friend-card .tag-badge {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+html.dark-theme .friends-content .friend-card .visit-btn {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+html.dark-theme .friends-content .friend-card .visit-btn:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
 }
 </style>

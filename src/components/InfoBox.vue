@@ -25,8 +25,8 @@
 defineProps({
   data: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 })
 </script>
 
@@ -35,7 +35,10 @@ defineProps({
   position: relative;
   border-radius: 20px;
   padding: 3rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.15),
+    0 0 20px rgba(255, 255, 255, 0.3),
+    0 0 40px rgba(255, 255, 255, 0.2);
   overflow: hidden;
   min-height: 400px;
   margin-top: 4rem;
@@ -63,7 +66,7 @@ defineProps({
 .info-box-title {
   text-align: center;
   font-size: 2.5rem;
-  color: #8b4513;
+  color: #e67e22 !important; /* 橙色主标题 */
   margin-bottom: 2rem;
   font-weight: bold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
@@ -138,6 +141,40 @@ defineProps({
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
+/* 修改子标题颜色 */
+.info-box-text h3 {
+  color: #3498db !important; /* 蓝色子标题 */
+}
+
+/* 暗色模式样式 */
+html.dark-theme .info-box {
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 25px rgba(255, 255, 255, 0.4),
+    0 0 50px rgba(255, 255, 255, 0.3) !important;
+}
+
+html.dark-theme .info-box .info-box-title {
+  color: #f39c12 !important; /* 暗色模式下的橙色主标题 */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+html.dark-theme .info-box-text h3 {
+  color: #5dade2 !important; /* 暗色模式下的蓝色子标题 */
+}
+
+html.dark-theme .info-box-text p {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .info-list li {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .info-list li::before {
+  color: #ed6ea0 !important; /* 使用品牌色作为列表符号 */
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .info-box-layout {
@@ -167,4 +204,4 @@ defineProps({
     text-align: left;
   }
 }
-</style> 
+</style>

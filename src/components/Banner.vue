@@ -538,6 +538,23 @@ onUnmounted(() => {
   fill: rgba(255, 255, 255, 1);
 }
 
+/* 暗色主题下的波浪颜色 */
+html.dark-theme .wave1 {
+  fill: rgba(44, 49, 60, 0.7);
+}
+
+html.dark-theme .wave2 {
+  fill: rgba(44, 49, 60, 0.5);
+}
+
+html.dark-theme .wave3 {
+  fill: rgba(44, 49, 60, 0.3);
+}
+
+html.dark-theme .wave4 {
+  fill: rgba(44, 49, 60, 1);
+}
+
 @keyframes waveMove {
   0% {
     transform: translate3d(-90px, 0, 0);
@@ -649,5 +666,10 @@ onUnmounted(() => {
     font-size: 0.8rem;
     padding: 4px 12px;
   }
+}
+
+/* 暗色模式下的Banner图片暗化 */
+html.dark-theme .banner-image {
+  filter: brightness(0.6) contrast(1.2) blur(0.5px) !important;
 }
 </style>

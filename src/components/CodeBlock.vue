@@ -16,7 +16,7 @@
           class="action-btn expand-btn"
           :title="isExpanded ? '收起代码' : '展开代码'"
         >
-          <i class="ic" :class="isExpanded ? 'i-chevron-up' : 'i-chevron-down'"></i>
+          <span class="icon">{{ isExpanded ? '▲' : '▼' }}</span>
         </button>
         <button
           @click="copyCode"
@@ -141,7 +141,7 @@ const copyCode = async () => {
 
 <style scoped>
 .code-block {
-  margin: 1.5rem 0;
+  margin: 0;
   border-radius: 12px;
   overflow: hidden;
   background: #282c34;
@@ -210,7 +210,7 @@ const copyCode = async () => {
 }
 
 .language-tag[data-lang='c'] {
-  background: linear-gradient(135deg, #a8b9cc 0%, #555555 100%);
+  background: linear-gradient(135deg, #87ceeb 0%, #4fb3d9 100%);
   color: white;
 }
 
@@ -332,7 +332,7 @@ const copyCode = async () => {
   margin: 0;
   padding: 16px;
   background: transparent;
-  font-size: 0.9em;
+  font-size: 1em;
   line-height: 1.6;
   color: #abb2bf;
   letter-spacing: 0.3px;
@@ -391,7 +391,7 @@ const copyCode = async () => {
 
   .code-content pre {
     padding: 12px;
-    font-size: 0.85em;
+    font-size: 0.95em;
   }
 
   .expand-hint {

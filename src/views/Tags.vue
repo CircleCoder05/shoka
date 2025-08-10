@@ -53,18 +53,39 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, nextTick } from 'vue'
+import { computed, ref, onMounted, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStatisticsStore } from '@/stores/statistics'
+import { useThemeStore } from '@/stores/theme'
 import PageContainer from '@/components/PageContainer.vue'
 import * as echarts from 'echarts'
 import 'echarts-wordcloud'
 
 const router = useRouter()
 const statisticsStore = useStatisticsStore()
+const themeStore = useThemeStore()
 
 const loading = computed(() => statisticsStore.loading)
 const error = computed(() => statisticsStore.error)
+
+// 主题配置
+const getThemeConfig = computed(() => {
+  if (themeStore.isDark) {
+    return {
+      textColor: '#abb2bf',
+      backgroundColor: '#2c313c',
+      tooltipBg: '#2c313c',
+      tooltipBorder: '#3e4451',
+    }
+  } else {
+    return {
+      textColor: '#666',
+      backgroundColor: '#fff',
+      tooltipBg: '#fff',
+      tooltipBorder: '#ddd',
+    }
+  }
+})
 
 // 处理标签数据，按数量排序
 const sortedTags = computed(() => {
@@ -117,12 +138,19 @@ const initWordCloudChart = () => {
   const isMobile = window.innerWidth <= 768
   const isSmallMobile = window.innerWidth <= 480
 
+  const themeConfig = getThemeConfig.value
+
   // 调整词云参数，让标签更密集
   const option = {
     tooltip: {
       show: true,
       formatter: function (params) {
         return `${params.data.name}: ${params.data.value} 篇文章`
+      },
+      backgroundColor: themeConfig.tooltipBg,
+      borderColor: themeConfig.tooltipBorder,
+      textStyle: {
+        color: themeConfig.textColor,
       },
     },
     series: [
@@ -195,13 +223,24 @@ const updateCharts = () => {
 }
 
 // 监听数据变化
-import { watch } from 'vue'
 watch(
   sortedTags,
   () => {
     updateCharts()
   },
   { deep: true },
+)
+
+// 监听主题变化
+watch(
+  () => themeStore.isDark,
+  () => {
+    // 重新初始化图表以应用新主题
+    if (wordCloudChart) {
+      wordCloudChart.dispose()
+      initWordCloudChart()
+    }
+  },
 )
 
 onMounted(async () => {
@@ -563,5 +602,45 @@ onUnmounted(() => {
   .chart {
     height: 180px;
   }
+}
+
+/* 暗色主题样式 */
+html.dark-theme .page-title {
+  color: #abb2bf;
+}
+
+html.dark-theme .page-subtitle {
+  color: #7f848e;
+}
+
+html.dark-theme .chart-container {
+  background: #2c313c !important;
+  border-color: #3e4451 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark-theme .chart-header h3 {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .chart-header p {
+  color: #7f848e !important;
+}
+
+html.dark-theme .section-header h3 {
+  color: #abb2bf !important;
+}
+
+html.dark-theme .section-header p {
+  color: #7f848e !important;
+}
+
+/* 确保标签文字在任何主题下都是白色 */
+.tag-name {
+  color: #fff !important;
+}
+
+.tag-count {
+  color: #fff !important;
 }
 </style>

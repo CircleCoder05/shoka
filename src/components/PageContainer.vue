@@ -27,6 +27,19 @@
   overflow: visible;
   box-sizing: border-box;
   position: relative;
+  color: #222;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* 暗色主题样式 */
+html.dark-theme .page-container {
+  background: #2c313c;
+  color: #abb2bf;
+  box-shadow:
+    0 8px 48px 0 rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .page-container.with-background {
@@ -48,6 +61,11 @@
   position: relative;
   z-index: 2;
   padding: 2rem;
+}
+
+/* 暗色主题下的内容区域 */
+html.dark-theme .content-slot {
+  color: #abb2bf;
 }
 
 /* 响应式设计 */
