@@ -61,8 +61,29 @@ const animationPhase = ref('idle') // idle, rising, setting, complete
 
 // 计算天空背景类名
 const currentSkyClass = computed(() => {
-  // 直接根据当前主题返回对应的背景类
-  const skyClass = themeStore.isDark ? 'night' : 'day'
+  let skyClass
+
+  if (animationPhase.value === 'idle') {
+    // 静止状态：根据当前主题显示
+    skyClass = themeStore.isDark ? 'night' : 'day'
+  } else if (animationPhase.value === 'rising') {
+    // 动画开始：使用过渡动画类
+    if (targetIsDark.value) {
+      skyClass = 'day-to-night-anim' // 白天到夜晚的动画
+    } else {
+      skyClass = 'night-to-day-anim' // 夜晚到白天的动画
+    }
+  } else if (animationPhase.value === 'setting') {
+    // 动画继续：保持过渡动画类
+    if (targetIsDark.value) {
+      skyClass = 'day-to-night-anim'
+    } else {
+      skyClass = 'night-to-day-anim'
+    }
+  } else {
+    // 动画完成：显示最终主题的背景色
+    skyClass = themeStore.isDark ? 'night' : 'day'
+  }
 
   // 输出天空背景变化
   console.log('🌅 天空背景变化:', {
@@ -70,7 +91,7 @@ const currentSkyClass = computed(() => {
     currentTheme: themeStore.isDark ? 'dark' : 'light',
     targetTheme: targetIsDark.value ? 'dark' : 'light',
     skyClass: skyClass,
-    description: `当前背景: ${themeStore.isDark ? '夜晚深色' : '白天蓝天'}`,
+    description: `背景: ${skyClass === 'night' ? '夜晚深色' : '白天蓝天'}`,
   })
 
   return skyClass
@@ -279,7 +300,6 @@ const handleThemeToggle = async () => {
   left: 0;
   width: 100%;
   height: 100%;
-  transition: background 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sky-background.day {
@@ -302,6 +322,42 @@ const handleThemeToggle = async () => {
     #0f3460 75%,
     #0a1929 100%
   );
+}
+
+/* 白天到夜晚的动画背景 */
+.sky-background.day-to-night-anim {
+  --color1: #87ceeb;
+  --color2: #98d8e8;
+  --color3: #b0e0e6;
+  --color4: #f0e68c;
+  --color5: #ffb347;
+  background: linear-gradient(
+    180deg,
+    var(--color1) 0%,
+    var(--color2) 25%,
+    var(--color3) 50%,
+    var(--color4) 75%,
+    var(--color5) 100%
+  );
+  animation: dayToNightVars 3s ease-in-out forwards;
+}
+
+/* 夜晚到白天的动画背景 */
+.sky-background.night-to-day-anim {
+  --color1: #0c0c1e;
+  --color2: #1a1a2e;
+  --color3: #16213e;
+  --color4: #0f3460;
+  --color5: #0a1929;
+  background: linear-gradient(
+    180deg,
+    var(--color1) 0%,
+    var(--color2) 25%,
+    var(--color3) 50%,
+    var(--color4) 75%,
+    var(--color5) 100%
+  );
+  animation: nightToDayVars 3s ease-in-out forwards;
 }
 
 /* 天体基础样式 */
@@ -723,6 +779,42 @@ const handleThemeToggle = async () => {
   50% {
     opacity: 1;
     transform: scale(1.3);
+  }
+}
+
+/* 白天到夜晚的CSS变量动画 */
+@keyframes dayToNightVars {
+  0% {
+    --color1: #87ceeb;
+    --color2: #98d8e8;
+    --color3: #b0e0e6;
+    --color4: #f0e68c;
+    --color5: #ffb347;
+  }
+  100% {
+    --color1: #0c0c1e;
+    --color2: #1a1a2e;
+    --color3: #16213e;
+    --color4: #0f3460;
+    --color5: #0a1929;
+  }
+}
+
+/* 夜晚到白天的CSS变量动画 */
+@keyframes nightToDayVars {
+  0% {
+    --color1: #0c0c1e;
+    --color2: #1a1a2e;
+    --color3: #16213e;
+    --color4: #0f3460;
+    --color5: #0a1929;
+  }
+  100% {
+    --color1: #87ceeb;
+    --color2: #98d8e8;
+    --color3: #b0e0e6;
+    --color4: #f0e68c;
+    --color5: #ffb347;
   }
 }
 </style>
