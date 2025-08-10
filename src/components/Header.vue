@@ -6,9 +6,9 @@
       'header-in-banner': isInBanner,
     }"
   >
-    <!-- 移动端：显示CircleCoder标题和汉堡菜单 -->
+    <!-- 移动端：显示网站标题和汉堡菜单 -->
     <div class="mobile-header">
-      <div class="mobile-title">CircleCoder</div>
+      <div class="mobile-title">{{ configStore.siteConfig.author || 'CircleCoder' }}</div>
       <div class="mobile-actions">
         <button class="search-btn-mobile" @click="searchStore.openSearchModal" title="搜索文章">
           <i class="ic i-search"></i>
@@ -48,10 +48,12 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useMobileSidebarStore } from '@/stores/mobileSidebar'
 import { useSearchStore } from '@/stores/search'
+import { useConfigStore } from '@/stores/config'
 import ThemeToggle from './ThemeToggle.vue'
 
 const mobileSidebarStore = useMobileSidebarStore()
 const searchStore = useSearchStore()
+const configStore = useConfigStore()
 
 const toggleMobileSidebar = () => {
   mobileSidebarStore.toggleMobileSidebar()

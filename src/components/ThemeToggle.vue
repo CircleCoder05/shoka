@@ -4,8 +4,7 @@
     class="theme-toggle-btn"
     :title="`切换到${themeStore.isDark ? '亮色' : '暗色'}模式`"
   >
-    <i :class="themeStore.isDark ? 'ic i-sun' : 'ic i-moon'"></i>
-    <span class="theme-text">{{ themeStore.isDark ? '亮色' : '暗色' }}</span>
+    <i :class="themeStore.isDark ? 'ic i-moon' : 'ic i-sun'"></i>
   </button>
 
   <!-- 主题切换动画覆盖层 -->
@@ -222,16 +221,18 @@ const handleThemeToggle = async () => {
 .theme-toggle-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   color: rgba(255, 255, 255, 0.9);
   transition: all 0.3s ease;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  min-width: 40px;
+  min-height: 40px;
 }
 
 .theme-toggle-btn:hover {
@@ -264,12 +265,10 @@ const handleThemeToggle = async () => {
 /* 移动端适配 */
 @media (max-width: 768px) {
   .theme-toggle-btn {
-    padding: 6px 10px;
-    font-size: 13px;
-  }
-
-  .theme-text {
-    display: none;
+    padding: 6px;
+    font-size: 14px;
+    min-width: 36px;
+    min-height: 36px;
   }
 }
 
@@ -277,6 +276,7 @@ const handleThemeToggle = async () => {
   .theme-toggle-btn {
     padding: 6px;
     min-width: 32px;
+    min-height: 32px;
     justify-content: center;
   }
 }

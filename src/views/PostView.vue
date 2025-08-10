@@ -438,7 +438,7 @@ onUnmounted(() => {
   width: auto;
   height: auto;
   border-radius: 8px;
-  margin: 1.2em auto;
+  margin: 1.2em 0;
   display: block;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   object-fit: contain;
@@ -636,7 +636,7 @@ onUnmounted(() => {
     line-height: 1.8;
   }
   .post-content img {
-    margin: 1em auto;
+    margin: 1em 0;
     border-radius: 6px;
   }
   .post-content h1 {
@@ -677,7 +677,7 @@ onUnmounted(() => {
     font-size: 0.95em;
   }
   .post-content img {
-    margin: 0.8em auto;
+    margin: 0.8em 0;
     border-radius: 4px;
   }
   .post-content pre {
