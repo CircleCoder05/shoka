@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import CodeBlock from '../components/CodeBlock.vue'
+import CodeBlock from '@/views/articles/CodeBlock.vue'
 
 export const codeBlockDirective = {
   mounted(el) {

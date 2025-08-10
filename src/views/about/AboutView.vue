@@ -43,7 +43,7 @@ import { onMounted, computed } from 'vue'
 import PageContainer from '@/components/PageContainer.vue'
 import ModelViewer from '@/views/about/ModelViewer.vue'
 import ProfileCard from '@/views/about/ProfileCard.vue'
-import InfoBox from '@/components/InfoBox.vue'
+import InfoBox from '@/views/about/InfoBox.vue'
 import { useAboutStore } from '@/stores/about.js'
 
 const aboutStore = useAboutStore()
