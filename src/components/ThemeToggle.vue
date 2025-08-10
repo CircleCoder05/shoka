@@ -181,6 +181,9 @@ const handleThemeToggle = async () => {
   showAnimation.value = true
   animationPhase.value = 'rising'
 
+  // 动画开始时禁用滚动
+  document.body.style.overflow = 'hidden'
+
   console.log('🌅 开始主题切换动画:', {
     currentTheme: themeStore.isDark ? 'dark' : 'light',
     targetTheme: targetIsDark.value ? 'dark' : 'light',
@@ -208,6 +211,9 @@ const handleThemeToggle = async () => {
     })
     animationPhase.value = 'complete'
     showAnimation.value = false
+
+    // 动画结束时开启滚动
+    document.body.style.overflow = ''
   }, 3000)
 }
 </script>
