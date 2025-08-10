@@ -141,7 +141,7 @@ const copyCode = async () => {
 
 <style scoped>
 .code-block {
-  margin: 1.5rem 0;
+  margin: 0;
   border-radius: 12px;
   overflow: hidden;
   background: #282c34;

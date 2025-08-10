@@ -1130,7 +1130,7 @@ html.dark-theme .post-content p {
 
 /* 暗色主题下的预格式化文本（非代码块） */
 html.dark-theme .post-content pre:not(.code-block pre) {
-  background: #3e4451 !important;
+  background: #2c3132 !important;
   color: #abb2bf !important;
   border: 1px solid #5c6370 !important;
 }
