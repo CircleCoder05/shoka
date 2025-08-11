@@ -1,8 +1,8 @@
 ---
 layout: post
 title: 'Vue+Django 前后端分离项目开发指南'
-date: 2025-05-15
-tags: [Web, Vue, Django, 前后端分离]
+date: 2025-05-16
+tags: [Web, Vue, Django]
 comments: true
 categories:
   - [Web]
