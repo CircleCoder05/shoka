@@ -1,8 +1,8 @@
 ---
 layout: post
 title: '有界磁场'
-date: 2024-07-08
-tags: [物理, pdf]
+date: 2023-07-07
+tags: [物理, pdf, 磁场]
 categories: [物理]
 author: CircleCoder
 type: pdf
