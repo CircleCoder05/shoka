@@ -216,6 +216,11 @@ export const useArticlesStore = defineStore('articles', () => {
       console.log('existingArticle:', existingArticle)
       if (existingArticle) {
         console.log('Found existing article, returning with HTML')
+        console.log('Existing article front matter:', {
+          password: existingArticle.password,
+          title: existingArticle.title,
+          date: existingArticle.date,
+        })
         // 确保 content 中没有 Front Matter
         const cleanContent = existingArticle.content.replace(/^---[\s\S]*?---\s*\n?/, '')
         return {
@@ -252,14 +257,16 @@ export const useArticlesStore = defineStore('articles', () => {
       const content = await response.text()
       console.log('Article content loaded, length:', content.length)
 
-      // 简单删除 Front Matter，不解析它
-      const markdownContent = content.replace(/^---[\s\S]*?---\s*\n?/, '')
-      console.log('Markdown content length after removing front matter:', markdownContent.length)
+      // 解析 Front Matter，包括 password 字段
+      const { frontMatter, content: markdownContent } = parseFrontMatter(content)
+      console.log('Front matter parsed:', frontMatter)
+      console.log('Markdown content length after parsing:', markdownContent.length)
       console.log('Original content preview:', content.substring(0, 200))
       console.log('Cleaned content preview:', markdownContent.substring(0, 200))
 
       const result = {
         ...articleInfo,
+        ...frontMatter, // 包含 password 等字段
         content: markdownContent,
         html: md.render(markdownContent),
         slug,
