@@ -11,4 +11,5 @@ abstracts: 高中物理有界磁场相关题型。
 wordCount: 5000
 readTime: 20
 cover: /img/avatar.png
+password: ilovebuaa
 ---
