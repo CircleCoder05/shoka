@@ -1,5 +1,32 @@
 <template>
-  <div v-if="loading" class="loading">
+  <!-- 密码验证界面 -->
+  <div v-if="needsPassword && !passwordVerified" class="password-verification">
+    <div class="password-form">
+      <div class="password-icon">
+        <i class="ic i-lock"></i>
+      </div>
+      <h2>此文章需要密钥才能阅读</h2>
+      <div class="password-input-group">
+        <input
+          v-model="passwordInput"
+          type="password"
+          placeholder="请输入密钥"
+          class="password-input"
+          @keyup.enter="verifyPassword"
+          ref="passwordInputRef"
+        />
+        <button @click="verifyPassword" class="password-submit-btn">
+          <i class="ic i-check"></i>
+        </button>
+      </div>
+      <div v-if="passwordError" class="password-error">
+        {{ passwordError }}
+      </div>
+    </div>
+  </div>
+
+  <!-- 文章内容界面 -->
+  <div v-else-if="loading" class="loading">
     <div class="loading-spinner"></div>
     <p>加载中...</p>
   </div>
@@ -8,6 +35,14 @@
     <p>{{ error }}</p>
   </div>
   <div v-else-if="article" class="post-card-outer">
+    <!-- 加密文章重新验证按钮 -->
+    <div v-if="needsPassword && passwordVerified" class="re-verify-section">
+      <button @click="reVerifyPassword" class="re-verify-btn">
+        <i class="ic i-lock"></i>
+        重新验证密钥
+      </button>
+    </div>
+
     <div class="post-header">
       <h1 class="post-title">{{ article.title }}</h1>
       <div class="post-meta">
@@ -73,6 +108,49 @@ const loading = ref(true)
 const error = ref(null)
 const processedArticleHtml = ref('')
 
+// 密码验证相关
+const needsPassword = ref(false)
+const passwordVerified = ref(false)
+const passwordInput = ref('')
+const passwordError = ref('')
+const passwordInputRef = ref(null)
+
+// 从localStorage恢复密码验证状态
+const restorePasswordState = (slug) => {
+  const storageKey = `article_password_${slug}`
+  const storedPassword = localStorage.getItem(storageKey)
+  if (storedPassword) {
+    passwordVerified.value = true
+    return true
+  }
+  return false
+}
+
+// 保存密码验证状态到localStorage
+const savePasswordState = (slug) => {
+  const storageKey = `article_password_${slug}`
+  localStorage.setItem(storageKey, 'verified')
+}
+
+// 清除密码验证状态
+const clearPasswordState = (slug) => {
+  const storageKey = `article_password_${slug}`
+  localStorage.removeItem(storageKey)
+}
+
+// 重新验证密码
+const reVerifyPassword = () => {
+  clearPasswordState(route.params.slug)
+  passwordVerified.value = false
+  needsPassword.value = true
+  passwordInput.value = ''
+  passwordError.value = ''
+  // 清空文章内容
+  processedArticleHtml.value = ''
+  // 重置侧边栏
+  sidebarStore.reset()
+}
+
 // 获取配置
 const colors = computed(() => configStore.colors)
 const fonts = computed(() => configStore.fonts)
@@ -107,6 +185,75 @@ const getCategoryName = (article) => {
   return null
 }
 
+// 密码验证方法
+const verifyPassword = () => {
+  if (!passwordInput.value.trim()) {
+    passwordError.value = '请输入密钥'
+    return
+  }
+
+  if (article.value && article.value.password === passwordInput.value.trim()) {
+    passwordVerified.value = true
+    passwordError.value = ''
+    // 保存密码验证状态到localStorage
+    savePasswordState(route.params.slug)
+    // 密码验证成功后，开始加载文章内容
+    loadArticleContent()
+  } else {
+    passwordError.value = '密钥错误，请重试'
+    passwordInput.value = ''
+    // 聚焦到密码输入框
+    if (passwordInputRef.value) {
+      passwordInputRef.value.focus()
+    }
+  }
+}
+
+// 检查文章是否需要密码
+const checkPasswordRequirement = (articleData) => {
+  if (articleData && articleData.password) {
+    needsPassword.value = true
+    passwordVerified.value = false
+    return true
+  }
+  needsPassword.value = false
+  passwordVerified.value = true
+  return false
+}
+
+// 加载文章内容（密码验证成功后调用）
+const loadArticleContent = async () => {
+  if (!article.value) return
+
+  try {
+    // 设置文章 banner 信息
+    bannerStore.setArticleBanner(article.value)
+
+    // 设置文章页面标题
+    document.title = article.value.title
+
+    // 根据文章类型处理内容
+    if (article.value.type === 'pdf') {
+      // PDF类型文章，不需要处理HTML内容
+      processedArticleHtml.value = ''
+      // 对于PDF文章，可以设置一个简单的目录
+      sidebarStore.setArticleContent('<h1>PDF文档</h1>')
+      sidebarStore.switchPanel('contents')
+    } else {
+      // MD类型文章，处理HTML内容
+      const processedHtml = addHeadingIds(article.value.html)
+      processedArticleHtml.value = processedHtml
+      // 设置侧边栏文章内容
+      sidebarStore.setArticleContent(processedHtml)
+      // 确保在文章页面显示目录侧边栏
+      sidebarStore.switchPanel('contents')
+    }
+  } catch (err) {
+    error.value = err.message
+    console.error('Failed to load article content:', err)
+  }
+}
+
 // 为标题添加 id
 const addHeadingIds = (html) => {
   const parser = new DOMParser()
@@ -139,28 +286,26 @@ const loadArticle = async (slug) => {
     console.log('Article HTML content:', article.value.html)
     console.log('Article content length:', article.value.content.length)
 
-    // 设置文章 banner 信息
-    bannerStore.setArticleBanner(article.value)
+    // 检查文章是否需要密码
+    checkPasswordRequirement(article.value)
 
-    // 设置文章页面标题
-    document.title = article.value.title
-
-    // 根据文章类型处理内容
-    if (article.value.type === 'pdf') {
-      // PDF类型文章，不需要处理HTML内容
-      processedArticleHtml.value = ''
-      // 对于PDF文章，可以设置一个简单的目录
-      sidebarStore.setArticleContent('<h1>PDF文档</h1>')
-      sidebarStore.switchPanel('contents')
-    } else {
-      // MD类型文章，处理HTML内容
-      const processedHtml = addHeadingIds(article.value.html)
-      processedArticleHtml.value = processedHtml
-      // 设置侧边栏文章内容
-      sidebarStore.setArticleContent(processedHtml)
-      // 确保在文章页面显示目录侧边栏
-      sidebarStore.switchPanel('contents')
+    // 如果需要密码，先尝试恢复已保存的验证状态
+    if (needsPassword.value) {
+      console.log('Password required for article:', slug)
+      const wasVerified = restorePasswordState(slug)
+      if (wasVerified) {
+        console.log('Password was previously verified, loading content')
+        await loadArticleContent()
+        loading.value = false
+        return
+      }
+      console.log('Password not verified, showing password form')
+      loading.value = false
+      return
     }
+
+    // 不需要密码或密码已验证，加载文章内容
+    await loadArticleContent()
   } catch (err) {
     error.value = err.message
     console.error('Failed to load article:', err)
@@ -181,7 +326,17 @@ onMounted(async () => {
 
 watch(
   () => route.params.slug,
-  (newSlug) => {
+  (newSlug, oldSlug) => {
+    // 清除旧文章的密码状态
+    if (oldSlug) {
+      clearPasswordState(oldSlug)
+    }
+    // 重置密码验证状态
+    passwordVerified.value = false
+    needsPassword.value = false
+    passwordInput.value = ''
+    passwordError.value = ''
+    // 加载新文章
     loadArticle(newSlug)
   },
 )
@@ -195,6 +350,149 @@ onUnmounted(() => {
 </script>
 
 <style>
+/* 密码验证界面样式 */
+.password-verification {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 2rem;
+  width: 100%;
+}
+
+.password-form {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, #e1e5e9);
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+}
+
+.password-icon {
+  font-size: 3rem;
+  color: var(--primary-color, #007acc);
+  margin-bottom: 1.5rem;
+}
+
+.password-form h2 {
+  margin: 0 0 2rem 0;
+  color: var(--text-color, #333);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.password-input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.password-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color, #e1e5e9);
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  background: var(--input-bg, #fff);
+  color: var(--text-color, #333);
+}
+
+.password-input:focus {
+  border-color: var(--primary-color, #007acc);
+}
+
+.password-input::placeholder {
+  color: var(--text-secondary, #666);
+}
+
+.password-submit-btn {
+  padding: 0.75rem 1rem;
+  background: var(--primary-color, #007acc);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+}
+
+.password-submit-btn:hover {
+  background: var(--primary-hover, #005a9e);
+}
+
+.password-error {
+  color: var(--error-color, #e74c3c);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* 暗色主题样式 */
+.dark-theme .password-form {
+  background: var(--card-bg, #2c313c);
+  border-color: var(--border-color, #3e4451);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dark-theme .password-form h2 {
+  color: var(--text-color, #abb2bf);
+}
+
+.dark-theme .password-input {
+  background: var(--input-bg, #2c313c);
+  color: var(--text-color, #abb2bf);
+  border-color: var(--border-color, #3e4451);
+}
+
+.dark-theme .password-input::placeholder {
+  color: var(--text-secondary, #5c6370);
+}
+
+.dark-theme .password-input:focus {
+  border-color: var(--primary-color, #007acc);
+}
+
+.password-actions {
+  margin-top: 1rem;
+}
+
+/* 重新验证按钮样式 */
+.re-verify-section {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+}
+
+.re-verify-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary-color, #007acc);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.re-verify-btn:hover {
+  background: var(--primary-hover, #005a9e);
+}
+
+.re-verify-btn i {
+  font-size: 0.8rem;
+}
+
 /* 加载和错误状态 */
 .loading,
 .error {
