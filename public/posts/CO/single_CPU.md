@@ -1,7 +1,7 @@
 ---
 title: 'P3 - 单周期CPU设计文档'
 date: 2024-10-10
-tags: [CO, pdf，CPU, Logisim]
+tags: [CO, pdf, CPU, Logisim]
 categories: [计算机组成原理]
 author: CircleCoder
 type: pdf
