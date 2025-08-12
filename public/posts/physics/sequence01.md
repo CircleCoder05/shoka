@@ -1,8 +1,8 @@
 ---
 layout: post
-title: '动力学中的数列问题（一）'
+title: '动力学中的数列问题（二）'
 date: 2023-07-08
-tags: [物理, 数列, 动力学，pdf]
+tags: [物理, 数列, 动力学, pdf]
 categories: [物理]
 author: CircleCoder
 type: pdf
