@@ -2,8 +2,8 @@
 layout: post
 title: '有界磁场'
 date: 2023-07-07
-tags: [物理, pdf, 磁场]
-categories: [物理]
+tags: [高中物理, pdf, 磁场]
+categories: [高中物理]
 author: CircleCoder
 type: pdf
 path: /posts/physics/youjiecichang.pdf

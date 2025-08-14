@@ -2,8 +2,8 @@
 layout: post
 title: '动力学中的数列问题（二）'
 date: 2023-07-10
-tags: [物理, 数列, 动力学, pdf]
-categories: [物理]
+tags: [高中物理, 数列, 动力学, pdf]
+categories: [高中物理]
 author: CircleCoder
 type: pdf
 path: /posts/physics/sequence02.pdf
