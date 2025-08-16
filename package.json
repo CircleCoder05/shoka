@@ -23,6 +23,7 @@
     "js-yaml": "^4.1.0",
     "markdown-it": "^14.1.0",
     "mmd-parser": "^1.0.4",
+    "node-fetch": "^3.3.2",
     "npm": "^11.5.2",
     "pdfjs-dist": "^5.4.54",
     "pinia": "^3.0.3",
