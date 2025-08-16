@@ -181,15 +181,11 @@ const toggleItem = (itemId) => {
     expandedItems.value.add(itemId)
     manuallyExpandedItems.value.add(itemId) // 记录为手动展开
   }
-
-  console.log('TOC Manual toggle:', itemId, 'expanded:', expandedItems.value.has(itemId))
 }
 
 // 切换自动折叠模式
 const toggleAutoCollapse = () => {
   autoCollapseEnabled.value = !autoCollapseEnabled.value
-
-  console.log('TOC Mode switched to:', autoCollapseEnabled.value ? 'Auto' : 'Manual')
 
   if (autoCollapseEnabled.value) {
     // 开启自动折叠时，清空手动展开记录
@@ -249,7 +245,6 @@ const updateActiveItem = () => {
     })
 
     if (currentId && activeId.value !== currentId) {
-      console.log('TOC Scroll Active changed:', activeId.value, '->', currentId)
       activeId.value = currentId
       // 在自动模式下，滚动时也触发智能折叠
       if (autoCollapseEnabled.value) {
@@ -312,7 +307,6 @@ const createIntersectionObserver = () => {
 
         // 更新活动项
         if (newActiveId && activeId.value !== newActiveId) {
-          console.log('TOC Observer Active changed:', activeId.value, '->', newActiveId)
           activeId.value = newActiveId
           // 智能展开和折叠
           smartExpandCollapse(newActiveId)
@@ -325,7 +319,7 @@ const createIntersectionObserver = () => {
     )
 
     const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6')
-    console.log('TOC Found headings:', headings.length)
+
     headings.forEach((heading) => {
       try {
         observer.observe(heading)
@@ -371,13 +365,6 @@ const smartExpandCollapse = (activeItemId) => {
 
   // 更新展开状态
   expandedItems.value = newExpandedItems
-
-  // 调试信息
-  console.log('TOC Auto-collapse:', {
-    activeItemId,
-    parentIds,
-    newExpanded: Array.from(newExpandedItems),
-  })
 }
 
 // 初始化时展开所有顶级项目
@@ -405,12 +392,6 @@ const initializeExpandedItems = () => {
     }
     expandAll(tocItems.value)
   }
-
-  console.log('TOC Initialized:', {
-    items: tocItems.value.length,
-    expanded: Array.from(expandedItems.value),
-    autoCollapse: autoCollapseEnabled.value,
-  })
 }
 
 // 监听内容变化

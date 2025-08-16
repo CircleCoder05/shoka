@@ -79,6 +79,9 @@
       v-media-block
     ></div>
 
+    <!-- 评论区 -->
+    <GitalkComments :post-slug="route.params.slug" />
+
     <!-- 文章底部：版权信息和上一篇/下一篇导航 -->
     <PostFooter
       :current-slug="route.params.slug"
@@ -95,6 +98,7 @@ import { useArticlesStore } from '@/stores/articles'
 import { useBannerStore } from '@/stores/banner'
 import PostFooter from '@/views/articles/PostFooter.vue'
 import PdfContent from '@/views/articles/PdfContent.vue'
+import GitalkComments from '@/components/GitalkComments.vue'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useConfigStore } from '@/stores/config'
 
@@ -270,36 +274,28 @@ const addHeadingIds = (html) => {
 }
 
 const loadArticle = async (slug) => {
-  console.log('PostView loadArticle called with slug:', slug)
   loading.value = true
   error.value = null
 
   try {
     // 确保文章列表已加载
     if (articlesStore.articles.length === 0) {
-      console.log('Articles not loaded, loading articles first...')
       await articlesStore.loadArticles()
     }
 
     article.value = await articlesStore.getArticleBySlug(slug)
-    console.log('Article loaded successfully:', article.value)
-    console.log('Article HTML content:', article.value.html)
-    console.log('Article content length:', article.value.content.length)
 
     // 检查文章是否需要密码
     checkPasswordRequirement(article.value)
 
     // 如果需要密码，先尝试恢复已保存的验证状态
     if (needsPassword.value) {
-      console.log('Password required for article:', slug)
       const wasVerified = restorePasswordState(slug)
       if (wasVerified) {
-        console.log('Password was previously verified, loading content')
         await loadArticleContent()
         loading.value = false
         return
       }
-      console.log('Password not verified, showing password form')
       loading.value = false
       return
     }
@@ -316,11 +312,6 @@ const loadArticle = async (slug) => {
 
 onMounted(async () => {
   await configStore.loadConfig()
-  console.log('🚨 PostView mounted!')
-  console.log('Route params:', route.params)
-  console.log('Route fullPath:', route.fullPath)
-  console.log('Route path:', route.path)
-  console.log('Slug from route:', route.params.slug)
   loadArticle(route.params.slug)
 })
 

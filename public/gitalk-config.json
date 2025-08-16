@@ -1,0 +1,13 @@
+{
+  "clientID": "Ov23limxrKTsDTPjKE0h",
+  "clientSecret": "4dab7d271e72b37328ba5f6783c3190a4c609695",
+  "repo": "shoka",
+  "owner": "CircleCoder05",
+  "admin": ["CircleCoder05"],
+  "labels": ["gitalk", "comment"],
+  "perPage": 10,
+  "pageSize": 10,
+  "visitor": true,
+  "distractionFreeMode": false,
+  "language": "zh-CN"
+}
