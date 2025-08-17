@@ -30,6 +30,7 @@
     "three": "^0.179.1",
     "three-stdlib": "^2.36.0",
     "typescript": "^5.8.3",
+    "valine": "^1.5.3",
     "vue": "^3.5.18",
     "vue-aplayer": "^1.6.1",
     "vue-pdf-embed": "^2.1.3",
