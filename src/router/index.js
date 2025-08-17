@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Archives from '../views/Archives.vue'
-import Categories from '../views/Categories.vue'
-import Tags from '../views/Tags.vue'
-import ArticleList from '../views/ArticleList.vue'
+import Archives from '@/views/archives/ArchivesView.vue'
+import Categories from '@/views/Categories.vue'
+import Tags from '@/views/Tags.vue'
+import ArticleList from '@/views/ArticleList.vue'
 
-import Friends from '../views/Friends.vue'
-import Home from '../views/HomeView.vue'
-import About from '../views/about/AboutView.vue'
-import PostView from '@/views/PostView.vue'
+import Friends from '@/views/Friends.vue'
+import Home from '@/views/home/HomeView.vue'
+import About from '@/views/about/AboutView.vue'
+import PostView from '@/views/articles/PostView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

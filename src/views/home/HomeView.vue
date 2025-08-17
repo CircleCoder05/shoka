@@ -35,9 +35,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useStatisticsStore } from '@/stores/statistics'
-import CategoryCard from '../components/CategoryCard.vue'
-import PostCard from '../components/PostCard.vue'
-import Pagination from '../components/Pagination.vue'
+import CategoryCard from '@/views/home/CategoryCard.vue'
+import PostCard from '@/views/home/PostCard.vue'
+import Pagination from '@/views/home/Pagination.vue'
 
 const statisticsStore = useStatisticsStore()
 const currentPage = ref(1)
