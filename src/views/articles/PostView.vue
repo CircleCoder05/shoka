@@ -80,7 +80,7 @@
     ></div>
 
     <!-- 评论区 -->
-    <GitalkComments :post-slug="route.params.slug" />
+    <CommentSystem :post-slug="route.params.slug" :article-comment-config="articleCommentConfig" />
 
     <!-- 文章底部：版权信息和上一篇/下一篇导航 -->
     <PostFooter
@@ -96,11 +96,11 @@ import { ref, onMounted, watch, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticlesStore } from '@/stores/articles'
 import { useBannerStore } from '@/stores/banner'
+import { useConfigStore } from '@/stores/config'
 import PostFooter from '@/views/articles/PostFooter.vue'
 import PdfContent from '@/views/articles/PdfContent.vue'
-import GitalkComments from '@/components/GitalkComments.vue'
+import CommentSystem from '@/components/CommentSystem.vue'
 import { useSidebarStore } from '@/stores/sidebar'
-import { useConfigStore } from '@/stores/config'
 
 const route = useRoute()
 const articlesStore = useArticlesStore()
@@ -108,6 +108,15 @@ const bannerStore = useBannerStore()
 const sidebarStore = useSidebarStore()
 const configStore = useConfigStore()
 const article = ref(null)
+
+// 文章级别的评论配置
+const articleCommentConfig = computed(() => {
+  // 从文章数据中获取评论配置
+  if (article.value && article.value.frontmatter) {
+    return article.value.frontmatter.comment || {}
+  }
+  return {}
+})
 const loading = ref(true)
 const error = ref(null)
 const processedArticleHtml = ref('')
