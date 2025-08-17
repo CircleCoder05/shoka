@@ -218,12 +218,12 @@ function generateArticlesIndex() {
 
       // 检查文章类型
       const articleType = frontMatter.type || 'md' // 默认为md类型
-      
+
       // 根据类型处理内容
       let wordCount = 0
       let readTime = 0
       let excerpt = ''
-      
+
       if (articleType === 'pdf') {
         // PDF类型文章
         wordCount = frontMatter.wordCount || 0
@@ -285,6 +285,8 @@ function generateArticlesIndex() {
         type: articleType,
         pdfPath: articleType === 'pdf' ? frontMatter.path : null,
         abstracts: articleType === 'pdf' ? frontMatter.abstracts : null,
+        // 添加密码字段支持
+        password: frontMatter.password || null,
       }
 
       articlesIndex.push(articleInfo)
