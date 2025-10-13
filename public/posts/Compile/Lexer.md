@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Compile-Lab1词法分析'
+title: 'Compile-Lab1-词法分析'
 date: 2025-09-24
 tags: [Compile, 实验]
 comments: true
