@@ -72,13 +72,11 @@ public enum SymbolType {
 }
 ```
 
-函数需要额外记录参数、返回值等信息，所以我给函数符号写了一个子类
+函数需要额外记录参数等信息，所以我给函数符号写了一个子类
 
 ```java
 public class FuncSymbol extends Symbol{
-
-
-    private int retype;             // 0 -> void, 1 -> int
+    
     private int paramNum;
     private ArrayList<SymbolType> paramTypeList;
 
@@ -383,3 +381,251 @@ private void handleCError(Token token) {
 ### DTypeError
 
 ![image-20251017130229938](https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202510171302169.png)
+
+在解析函数定义时，我们就要将参数信息写入函数符号中去
+
+```java
+private  void addParamsToFuncSymbol(ArrayList<Symbol> symbols) {
+    for (Symbol symbol : symbols) {
+        this.funcSymbol.addParam(symbol.getType());
+    }
+}
+```
+
+解析对应文法时，检查参数个数是否匹配即可
+
+```java
+private void handleDError() {
+        Symbol symbol = SymbolManger.getInstance().getCurrentTable().getSymbol(this.ident.getValue());
+    
+    	//先排除其他错误
+        if(!(symbol instanceof FuncSymbol)){
+            return ;
+        }
+        
+        FuncSymbol funcSymbol = (FuncSymbol) symbol;
+        if(this.funcRParams ==  null && funcSymbol.getParamNum() == 0){
+            return ;
+        }
+        
+        if((this.funcRParams == null && funcSymbol.getParamNum() != 0)||
+            this.funcRParams.getSize()!= funcSymbol.getParamNum()){
+
+            int lineNum = this.ident.getLineNum();
+            Error error = new Error(lineNum, ErrorType.MISMATCH_PARAM_NUM);
+            ErrorReporter.addError(error);
+            System.out.println("In FuncUnaryExpParser, At Line"+ lineNum+ ":   MISMATCH PARAM NUM");
+        }
+}
+```
+
+
+
+### ETypeError
+
+![image-20251017143147512](https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202510171432961.png)
+
+笔者认为这个是最复杂的错误处理
+
+只需要考虑整型和数组两种类型即可。实参为数组，当且仅当识别为单独的数组 `Ident`，其余情况均为整型（不考虑实参为指针运算或 `void` 型函数）
+
+```java
+public void handleEError() {
+        Symbol symbol = SymbolManger.getInstance().getCurrentTable().getSymbol(this.ident.getValue());
+        
+        // 先排除其他类型错误
+        // ......
+
+        int len = funcRParams.getSize();
+        for(int i = 0; i < len; i++){
+            SymbolType paramType = funcSymbol.getParamTypeList().get(i);
+            SymbolType expType = this.funcRParams.getExpList().get(i).getType();
+
+            if(paramType != expType){
+                int lineNum = this.ident.getLineNum();
+                Error error = new Error(lineNum, ErrorType.MISMATCH_PARAM_TYPE);
+                ErrorReporter.addError(error);
+                System.out.println("In FuncUnaryExpParser, At Line"+ lineNum+ ":   MISMATCH PARAM TYPE");
+            }
+        }
+}
+```
+
+这里的 `Exp.getType()` 方法需要递归调用子成分的方法，如下图示例路径，返回最后解析到的 `Ident` 类型，其余分支一律返回整型
+
+```
+Exp → AddExp → MulExp → unaryExp → PrimaryExp → LVal → Ident
+```
+
+注意 `Ident` 有 `StaticInt、Int、ConstInt、StaticIntArray、IntArray、ConstIntArray` 六种类型，而函数参数只有`Int`和`IntArray` 两种类型，所以比较时要转化一下
+
+````java
+if(expType.equals(SymbolType.ConstInt)||expType.equals(SymbolType.StaticInt)){
+    expType = SymbolType.Int;
+}
+
+if(expType.equals(SymbolType.ConstIntArray)||expType.equals(SymbolType.StaticIntArray)){
+    expType = SymbolType.IntArray;
+}
+````
+
+
+
+### FTypeError
+
+![image-20251017145248149](https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202510171452262.png)
+
+检查 `void` 型函数中是否出现了 `return Exp` 语句。注意，可能不只有多条错误语句，均需要判断并输出
+
+我们在文法规则 `Stmt → 'return' [Exp] ';'` 解析时进行检查。首先需要判断语句是否出现在 `void` 型函数中，我们在全局管理器中添加标志 `isInFuncDef` 和 `isFuncTypeVoid`，当两个值都为`true` 时才对 `return` 语句进行检查
+
+```java
+private void handleFError() {
+    if(this.exp != null &&
+            SymbolManger.getInstance().isInFuncDef() &&
+            SymbolManger.getInstance().isFuncTypeVoid()){
+
+        int lineNum = this.returnToken.getLineNum();
+        Error error = new Error(lineNum, ErrorType.RETURN_VALUE_VOID);
+        ErrorReporter.addError(error);
+        System.out.println("In ReturnStmtParser, At Line"+ lineNum+ ":   RETURN VALUE VOID");
+    }
+}
+```
+
+```java
+public FuncDef parseFuncDef() {
+    this.funcType = new FuncTypeParser(this.iterator).parseFuncType();
+    this.ident = this.iterator.readNextToken();
+    this.lparent = this.iterator.readNextToken();
+
+    SymbolManger.getInstance().setInFuncDef(true);
+    addFuncSymbol();
+
+   	//....
+
+    SymbolManger.getInstance().popScope();
+    SymbolManger.getInstance().setInFuncDef(false);
+
+    return new FuncDef(this.funcType, this.ident,
+            this.lparent, this.funcFParams, this.rparent, this.block);
+}
+
+private void addFuncSymbol() {
+    SymbolType type;
+    if (this.funcType.getType().equals(TokenType.VOIDTK)) {
+        type = SymbolType.VoidFunc;
+        SymbolManger.getInstance().setFuncTypeVoid(true);
+    } else {
+        type = SymbolType.IntFunc;
+        SymbolManger.getInstance().setFuncTypeVoid(false);
+    }
+    //.......
+}
+```
+
+
+
+### GTypeError
+
+![image-20251017150800752](https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202510171508076.png)
+
+检查 `Int` 型函数的函数体的末尾是否有 `return` 语句，即检查 `Block` 的最后一个 `BlockItem`，是否满足下述解析路径
+
+```
+BlockItem → Stmt → return [Exp] ;
+```
+
+故也需要递归调用 `checkReturn()` 方法
+
+```java
+private void handleGError() {
+    if(this.funcType.getType().equals(TokenType.INTTK)){
+        if(!this.block.checkReturn()){
+            int lineNum = this.block.getRbrace().getLineNum();
+            Error error = new Error(lineNum, ErrorType.MISSING_RETURN);
+            ErrorReporter.addError(error);
+            System.out.println("In FuncDefParser, At Line"+ lineNum+ ":   MISSING_RETURN");
+        }
+    }
+}
+```
+
+```java
+public boolean checkReturn(){
+    if(this.blockItemList == null || this.blockItemList.size() == 0){
+        return false;
+    }
+    int len = this.blockItemList.size();
+    return this.blockItemList.get(len-1).checkReturn();
+}
+```
+
+
+
+### HTypeError
+
+![image-20251017151640828](https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202510171516134.png)
+
+检查 `LVal` 的 `Ident` 类型是否为常量即可。注意文法 `ForStmt → LVal '=' Exp { ',' LVal '=' Exp }` 也要判断
+
+```java
+private void handleHError() {
+    if(this.lVal.getSymbolType()==null){
+        return;
+    }
+    if(this.lVal.getSymbolType().equals(SymbolType.ConstInt)||
+        this.lVal.getSymbolType().equals(SymbolType.ConstIntArray)){
+
+        int lineNum = this.lVal.getIdent().getLineNum();
+        Error error = new Error(lineNum, ErrorType.ALTER_CONST);
+        ErrorReporter.addError(error);
+        System.out.println("In AssignStmtParser, At Line"+ lineNum+ ":   ALTER_CONST");
+    }
+}
+```
+
+这里的 `getint()` 函数，笔者在语法分析时当做普通函数处理的，故在语义分析中会识别为未定义错误。全局管理器初始化时添加序号为 `-1` 的符号表，将该函数加入其中即可，最后不输出
+
+
+
+### LTypeError
+
+![image-20251017152414896](https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202510171524297.png)
+
+```java
+private void handleLError(String formatString) {
+    String target = "%d";
+
+    int cnt1 = (formatString.length() - formatString.replace(target, "").length())
+            / (target.length());
+
+    int cnt2 = this.expList.size();
+    
+    if (cnt1 != cnt2) {
+        Error error = new Error(this.printToken.getLineNum(), ErrorType.MISMATCCH_PRINTF);
+        ErrorReporter.addError(error);
+        System.out.println("In PrintfStmtParser, At Line"+ this.printToken.getLineNum()+ ":   MISMATCH_PRINTF");
+    }
+}
+```
+
+
+
+### MTypeError
+
+![image-20251017152553980](https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202510171525413.png)
+
+方法与 `F` 类错误处理相同，通过全局标志 `isInLoop` 判断是否处在循环块中
+
+```java
+private void handleMError(){
+    if(!SymbolManger.getInstance().isInLoop()){
+        int lineNum = this.breakToken.getLineNum();
+        Error error = new Error(lineNum, ErrorType.MISUSE_END_LOOP);
+        ErrorReporter.addError(error);
+        System.out.println("In BreakStmtParser, At Line"+ lineNum+ ":   MISUSE_END_LOOP");
+    }
+}
+```
+
