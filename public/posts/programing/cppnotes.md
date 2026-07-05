@@ -3,7 +3,7 @@ title: 'C++程序设计笔记'
 date: 2025-08-08
 categories: [程序设计]
 tags: [C++]
-author: Manifold
+author: 谨言
 ---
 
 

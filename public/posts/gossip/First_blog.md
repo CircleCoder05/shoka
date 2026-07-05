@@ -3,7 +3,7 @@ title: '我的第一篇博客'
 date: 2025-08-07
 categories: [杂谈]
 tags: [杂谈]
-author: Manifold
+author: 谨言
 ---
 
 {% media audio %}
