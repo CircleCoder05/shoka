@@ -41,7 +41,7 @@
       },
       {
         "label": "爱好",
-        "value": "数学、物理学、LaTeX",
+        "value": "整体微分几何、广义相对论",
         "icon": "i-gamepad"
       }
     ]
@@ -63,8 +63,8 @@
     "achievements": {
       "title": "主要成果",
       "list": [
-        "Geometric Approach to Light Rings in Rotational Symmetric Spacetimes",
-        "主持国家级凝聚态领域科研项目"
+        "Geometric Approach to Light Rings in Rotational Symmetric Spacetimes(https://arxiv.org/abs/2512.20802)",
+        "主持凝聚态领域国家级本科生科研项目"
       ]
     }
   },
