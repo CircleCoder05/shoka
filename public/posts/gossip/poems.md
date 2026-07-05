@@ -14,7 +14,7 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 和泽德闲诗
 
@@ -22,7 +22,7 @@ author: 谨言
 
 仓惶物理间，心竭不言恹。
 
-</div>
+</center>
 
 <div align="right">
 
@@ -40,11 +40,11 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 缅怀梁灿彬老师
 
-</div>
+</center>
 
 <div align="left" style="text-indent: 2em;">
 
@@ -63,11 +63,11 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 伪诉衷情·鬼
 
-</div>
+</center>
 
 <div align="left" style="text-indent: 2em;">
 
@@ -86,7 +86,7 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 乡宁支教感怀
 
@@ -102,7 +102,7 @@ author: 谨言
 
 三尺讲台，可容天地；一盏明灯，亦照山河。
 
-</div>
+</center>
 
 <div align="right">
 
@@ -113,7 +113,7 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 煎人寿
 
@@ -125,7 +125,7 @@ author: 谨言
 
 凄凉百年事，哀乐系何情？
 
-</div>
+</center>
 
 <div align="right">
 
@@ -136,7 +136,7 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 梦
 
@@ -148,7 +148,7 @@ author: 谨言
 
 西楼寥廓见霜色，君应见我如见秋。
 
-</div>
+</center>
 
 <div align="right">
 
@@ -159,7 +159,7 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 煜鑫生日赠十二韵
 
@@ -175,7 +175,7 @@ author: 谨言
 
 愿展鲲鹏翼，共沐九霄寒。与君同好去，冲天便不还。
 
-</div>
+</center>
 
 <div align="right">
 
@@ -186,7 +186,7 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 感惶恐
 
@@ -198,7 +198,7 @@ author: 谨言
 
 多情不及少情人！
 
-</div>
+</center>
 
 <div align="right">
 
@@ -209,7 +209,7 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 秋日得友惠果以诗为谢
 
@@ -221,7 +221,7 @@ author: 谨言
 
 千里不辞赠果来。
 
-</div>
+</center>
 
 <div align="right">
 
@@ -232,7 +232,7 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 酬栋晖阔别初逢见赠
 
@@ -244,7 +244,7 @@ author: 谨言
 
 从来意气轻千里，共倚苍穹看浪来。
 
-</div>
+</center>
 
 <div align="right">
 
@@ -256,7 +256,7 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 时空赋
 
@@ -268,7 +268,7 @@ author: 谨言
 
 千古牛顿犹局限，独参微广破鸿蒙。
 
-</div>
+</center>
 
 <div align="right">
 
@@ -279,11 +279,11 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 伪唐多令·续昼
 
-</div>
+</center>
 
 <div align="left" style="text-indent: 2em;">
 
@@ -302,7 +302,7 @@ author: 谨言
 
 ---
 
-<div align="center">
+<center>
 
 ## 解世难
 
@@ -314,7 +314,7 @@ author: 谨言
 
 岂堪寄世常期死，惟余嫌身漫厌生。
 
-</div>
+</center>
 
 <div align="right">
 
