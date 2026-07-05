@@ -1,9 +1,9 @@
 {
   "site": {
-    "bannerTitle": "Manifold 的个人博客",
+    "bannerTitle": "谨言的个人博客",
     "bannerSubtitle": "在这弯曲的时空里，有幸与你的世界线交汇",
-    "description": "Manifold的博客",
-    "author": "Manifold",
+    "description": "谨言的博客",
+    "author": "谨言",
     "email": "manifold@example.com",
     "avatar": "/img/avatar.png",
     "motto": "Wit beyond measure is man's greatest treasure",
@@ -61,7 +61,7 @@
     ]
   },
   "footer": {
-    "name": "Manifold 的个人博客",
+    "name": "谨言的个人博客",
     "icp": "京ICP备2025135091号",
     "startDate": "2025-08-07T00:00:00"
   }
