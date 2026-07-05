@@ -8,7 +8,7 @@ author: 谨言
 
 {% media audio %}
 
-- https://music.163.com/#/album?id=123242449
+- https://music.163.com/#/song?id=1821657976
 
 {% endmedia %}
 
