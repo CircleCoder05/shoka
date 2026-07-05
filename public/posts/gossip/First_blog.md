@@ -22,7 +22,7 @@ author: Manifold
 
 ## 致谢
 
-感谢我的好朋友 CircleCoder 不厌其烦的帮助我开通这一博客。
+感谢我的好朋友 CircleCoder 帮助我开通这一博客。
 
 ---
 *注：本站使用vue3框架，详细技术可致信CircleCoder。*
