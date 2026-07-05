@@ -3,7 +3,7 @@ layout: post
 title: '时间旅行简介'
 date: 2026-02-14
 tags: [孪子佯谬, 弑母悖论, 虫洞, 时间机器]
-categories: [狭义与广义相对论]
+categories: [relativity]
 author: 谨言
 password: donghuixie
 type: pdf
