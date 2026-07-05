@@ -3,7 +3,7 @@ layout: post
 title: '对df的三层理解'
 date: 2025-08-19
 tags: [莱布尼茨微积分, 无限小量, 微分, 导数, 极限理论, 微分几何, 对偶矢量场]
-categories: [现代微分几何]
+categories: [微分几何与广义相对论]
 author: 谨言
 password: donghuixie
 type: pdf
