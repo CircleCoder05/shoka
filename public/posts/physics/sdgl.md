@@ -1,7 +1,7 @@
 ---
 layout: post
 title: '速度关联问题'
-date: 2025-08
+date: 2025-08-17
 tags: [速度关联, 微元法, 瞬时速度, 分解速度, 运动学, 物理竞赛]
 categories: [普通物理]
 author: 谨言

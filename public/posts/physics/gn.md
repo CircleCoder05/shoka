@@ -1,7 +1,7 @@
 ---
 layout: post
 title: '功和能'
-date: 2025-08
+date: 2025-08-17
 tags: [动能定理, 保守力, 势能, 机械能守恒, 功, 功率]
 categories: [普通物理]
 author: 谨言
