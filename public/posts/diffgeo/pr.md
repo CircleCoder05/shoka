@@ -2,7 +2,7 @@
 layout: post
 title: '非相对论力学的微分几何表述'
 date: 2026-02-16
-tags: [非相对论物理学；笛卡儿坐标系；平直度规；惯性参考系；质点动力学；微分几何]
+tags: [非相对论物理学, 笛卡儿坐标系, 平直度规, 惯性参考系, 质点动力学, 微分几何]
 categories: [微分几何与广义相对论]
 author: 谨言
 password: donghuixie
