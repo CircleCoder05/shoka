@@ -25,4 +25,4 @@ author: 谨言
 感谢我的好朋友 CircleCoder 帮助我开通这一博客。
 
 ---
-*注：本站使用vue3框架，详细技术可致信CircleCoder。*
+*注：本站使用vue3框架，技术问题可致信CircleCoder。*

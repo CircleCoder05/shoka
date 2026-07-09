@@ -304,4 +304,4 @@ author: 谨言
 
 
 ---
-*注：本站使用vue3框架，详细技术可致信CircleCoder。*
+*注：本站使用vue3框架，技术问题可致信CircleCoder。*
