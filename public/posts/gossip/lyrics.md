@@ -1,5 +1,5 @@
 ---
-title: '宋词选摘'
+title: '宋词选集'
 date: 2026-2-20
 categories: [杂谈]
 tags: [宋词]

@@ -1,8 +1,8 @@
 ---
-title: '唐诗选摘'
+title: '李贺诗选'
 date: 2026-2-20
 categories: [杂谈]
-tags: [唐诗]
+tags: [李贺, 诗鬼, 唐诗]
 author: 谨言
 ---
 
@@ -17,7 +17,7 @@ author: 谨言
 
 <div align="center">
 
-## 感讽五首·其三-李贺
+## 感讽五首·其三
 
 </div>
 
@@ -35,7 +35,7 @@ author: 谨言
 
 <div align="center">
 
-## 苦昼短-李贺
+## 苦昼短
 
 </div>
 
@@ -59,7 +59,7 @@ author: 谨言
 
 <div align="center">
 
-## 秋来-李贺
+## 秋来
 
 </div>
 
@@ -76,7 +76,7 @@ author: 谨言
 
 <div align="center">
 
-## 南山田中行-李贺
+## 南山田中行
 
 </div>
 
@@ -93,7 +93,7 @@ author: 谨言
 
 <div align="center">
 
-## 神弦-李贺
+## 神弦
 
 </div>
 
@@ -112,7 +112,7 @@ author: 谨言
 
 <div align="center">
 
-## 相和歌辞·神弦曲-李贺
+## 相和歌辞·神弦曲
 
 </div>
 
@@ -130,7 +130,7 @@ author: 谨言
 
 <div align="center">
 
-## 老夫采玉歌-李贺
+## 老夫采玉歌
 
 </div>
 
