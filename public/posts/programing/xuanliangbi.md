@@ -1,6 +1,6 @@
 ---
 title: '悬臂梁多目标优化设计'
-date: 2025-02-01
+date: 2026-02-01
 categories: [程序设计]
 tags: [MATLAB, 悬臂梁问题, NSGA-II算法]
 author: 谨言
