@@ -9,7 +9,7 @@
           "url": "https://arxiv.org/abs/2512.20802",
           "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=zhangsan",
           "description": "提出一种新的几何方法研究轴对称黑洞的光环",
-          "tags": ["广义相对论", "轴对称时空", "黑洞", "光环", "微分几何"],
+          "tags": ["广义相对论", "黑洞", "光环", "轴对称时空", "微分几何"],
           "backgroundColor": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
         }
       ]
