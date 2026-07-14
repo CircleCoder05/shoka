@@ -1,6 +1,6 @@
 ---
 title: '我的诗词集'
-date: 2026-1-4
+date: 2026-2-27
 categories: [诗词集]
 tags: [诗词]
 password: donghuixie
@@ -201,6 +201,27 @@ author: 谨言
 
 </div>
 
+---
+
+<div align="center">
+
+## 蝶恋花·客京
+
+</div>
+
+<div align="left" style="text-indent: 2em;">
+
+客羁神京风细细，望极乡愁，黯黯生天际。暮霭不似少年时，等闲独坐销长日。
+
+瞑鸦零落占枝头，迟迟春日，何事浑似秋。海阔山遥孤鸿断，凭高立尽斜阳后。
+
+</div>
+
+<div align="right">
+
+——2026年2月27日于北京师范大学
+
+</div>
 
 ---
 *注：本站使用vue3框架，技术问题可致信CircleCoder。*
