@@ -1,6 +1,20 @@
 {
   "friends": [
     {
+      "category": "论文",
+      "description": "我的论文(含预印本)链接",
+      "items": [
+        {
+          "name": "Geometric Approach to Light Rings in Rotational Symmetric Spacetimes",
+          "url": "https://arxiv.org/abs/2512.20802",
+          "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=zhangsan",
+          "description": "提出一种新的几何方法来研究轴对称黑洞的光环",
+          "tags": ["轴对称", "黑洞", "光环", "微分几何"],
+          "backgroundColor": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
+        }
+      ]
+    },
+    {
       "category": "好友",
       "description": "最珍贵的朋友们",
       "items": [
@@ -11,44 +25,6 @@
           "description": "技术博主，专注于前端开发和Vue.js",
           "tags": ["前端", "Vue", "技术"],
           "backgroundColor": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-        }
-      ]
-    },
-    {
-      "category": "喜欢的博主",
-      "description": "值得关注的优秀博主",
-      "items": [
-        {
-          "name": "周八的生活记录",
-          "url": "https://zhouba.life",
-          "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=zhouba",
-          "description": "生活博主，分享日常和美食",
-          "tags": ["生活", "美食", "日常"],
-          "backgroundColor": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)"
-        },
-        {
-          "name": "吴九的摄影作品",
-          "url": "https://wujiu.photo",
-          "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=wujiu",
-          "description": "摄影师，记录世界的美好瞬间",
-          "tags": ["摄影", "艺术", "旅行"],
-          "backgroundColor": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
-        },
-        {
-          "name": "郑十的读书笔记",
-          "url": "https://zhengshi.read",
-          "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=zhengshi",
-          "description": "读书博主，分享好书和思考",
-          "tags": ["读书", "思考", "文学"],
-          "backgroundColor": "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)"
-        },
-        {
-          "name": "冯十一的旅行日记",
-          "url": "https://fengshiyi.travel",
-          "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=fengshiyi",
-          "description": "旅行博主，记录世界各地的美景",
-          "tags": ["旅行", "风景", "冒险"],
-          "backgroundColor": "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)"
         }
       ]
     }
