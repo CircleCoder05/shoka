@@ -27,22 +27,22 @@
       {
         "label": "学校",
         "value": "北京师范大学",
-        "icon": "i-graduation-cap"
+        "icon": "i-home"
       },
       {
         "label": "专业",
         "value": "物理学",
-        "icon": "i-code"
+        "icon": "i-home"
       },
       {
         "label": "邮箱",
         "value": "3060393280@qq.com",
-        "icon": "i-gamepad"
+        "icon": "i-home"
       },
       {
         "label": "爱好",
         "value": "古诗词，小提琴，吉他，游泳，魔术",
-        "icon": "i-gamepad"
+        "icon": "i-heart"
       }
     ]
   },
