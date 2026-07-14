@@ -2,7 +2,7 @@
   "profile": {
     "avatar": "/img/avatar.png",
     "nickname": "谨言",
-    "title": "物理学在读本科生",
+    "title": "物理系在读本科生",
     "info": [
       {
         "label": "昵称",
@@ -41,7 +41,7 @@
       },
       {
         "label": "爱好",
-        "value": "整体微分几何、广义相对论",
+        "value": "古诗词，小提琴，吉他，游泳，魔术",
         "icon": "i-gamepad"
       }
     ]
@@ -58,7 +58,7 @@
     "title": "学术成果",
     "research": {
       "title": "研究领域",
-      "content": "现代微分几何，引力与广义相对论，凝聚态实验"
+      "content": "Randers-Finsler几何，引力与广义相对论，凝聚态实验"
     },
     "achievements": {
       "title": "主要成果",
