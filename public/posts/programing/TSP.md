@@ -2,7 +2,7 @@
 title: '蚁群优化算法求解TSP旅行商问题'
 date: 2025-12-10
 categories: [程序设计]
-tags: [MATLAB, 蚁群优化算法]
+tags: [MATLAB, TSP旅行商问题, 蚁群优化算法]
 author: 谨言
 ---
 
