@@ -1,7 +1,7 @@
 ---
 title: '宋词选集'
 date: 2026-2-20
-categories: [诗词集]
+categories: [诗词选集]
 tags: [宋词]
 author: 谨言
 ---

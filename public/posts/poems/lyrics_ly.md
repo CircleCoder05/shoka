@@ -1,7 +1,7 @@
 ---
 title: '柳永词选'
 date: 2026-2-28
-categories: [诗词集]
+categories: [诗词选集]
 tags: [宋词, 柳永]
 author: 谨言
 ---

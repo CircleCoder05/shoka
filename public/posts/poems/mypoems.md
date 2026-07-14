@@ -1,7 +1,7 @@
 ---
 title: '我的诗词集'
 date: 2026-2-27
-categories: [诗词集]
+categories: [诗词选集]
 tags: [诗词]
 password: donghuixie
 author: 谨言

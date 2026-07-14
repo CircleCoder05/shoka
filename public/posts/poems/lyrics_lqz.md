@@ -1,7 +1,7 @@
 ---
 title: '李清照词选'
 date: 2026-2-28
-categories: [诗词集]
+categories: [诗词选集]
 tags: [宋词, 李清照]
 author: 谨言
 ---
