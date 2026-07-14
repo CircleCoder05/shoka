@@ -1,7 +1,7 @@
 ---
 title: '遗传优化算法求解背包问题'
 date: 2025-10-15
-categories: [程序设计]
+categories: [算法与程序设计]
 tags: [MATLAB, 0-1背包问题, 遗传优化算法]
 author: 谨言
 ---

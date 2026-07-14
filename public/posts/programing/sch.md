@@ -1,7 +1,7 @@
 ---
 title: '施瓦西时空引力效应的MATLAB可视化'
 date: 2026-02-01
-categories: [程序设计]
+categories: [算法与程序设计]
 tags: [MATLAB, 施瓦西时空, 星光偏折, 引力红移, 施瓦西黑洞, 黑洞阴影, 嵌入图]
 author: 谨言
 ---
