@@ -1,7 +1,7 @@
 ---
 title: '李贺诗选'
 date: 2026-2-20
-categories: [杂谈]
+categories: [诗词集]
 tags: [李贺, 诗鬼, 唐诗]
 author: 谨言
 ---
