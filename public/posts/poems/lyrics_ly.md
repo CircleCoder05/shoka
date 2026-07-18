@@ -30,7 +30,6 @@ author: 谨言
 
 ![竹马子](https://free.picui.cn/free/2026/03/14/69b56eea7e5c3.jpg)
 
-
 ---
 
 <div align="center">
@@ -64,6 +63,8 @@ author: 谨言
 难忘。文期酒会，几孤风月，屡变星霜。海阔山遥，未知何处是潇湘。念双燕，难凭远信，指暮天、空识归航。黯相望，断鸿声里，立尽斜阳。
 
 </div>
+
+![玉蝴蝶](https://free.picui.cn/free/2026/03/14/69b57b051a272.jpg)
 
 ---
 
