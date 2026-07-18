@@ -28,6 +28,9 @@ author: 谨言
 
 </div>
 
+![竹马子](https://free.picui.cn/free/2026/03/14/69b56eea7e5c3.jpg)
+
+
 ---
 
 <div align="center">
