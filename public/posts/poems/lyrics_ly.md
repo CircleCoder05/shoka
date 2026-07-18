@@ -47,6 +47,8 @@ author: 谨言
 
 </div>
 
+![八声甘州](https://free.picui.cn/free/2026/03/14/69b5750584609.jpg)
+
 ---
 
 <div align="center">
