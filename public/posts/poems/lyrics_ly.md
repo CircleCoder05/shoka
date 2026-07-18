@@ -82,6 +82,8 @@ author: 谨言
 
 </div>
 
+![少年游](https://free.picui.cn/free/2026/03/14/69b57e02a2eb7.jpg)
+
 ---
 
 <div align="center">
