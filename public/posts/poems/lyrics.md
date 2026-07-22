@@ -205,4 +205,23 @@ author: 谨言
 </div>
 
 ---
+
+<div align="center">
+
+## 乌夜啼-李煜
+
+</div>
+
+<div align="left" style="text-indent: 2em;">
+
+林花谢了春红，太匆匆。无奈朝来寒雨晚来风。
+
+胭脂泪，留人醉，几时重？自是人生长恨水长东。
+
+</div>
+
+
+![乌夜啼](https://free.picui.cn/free/2026/03/15/69b58e0cf3819.jpg)
+
+---
 *注：本站使用vue3框架，技术问题可致信CircleCoder。*
