@@ -28,6 +28,45 @@ author: 谨言
 
 </div>
 
+![浪淘沙](https://picui.ogmua.cn/s1/2026/03/15/69b62c7b5e63f.webp)
+
+---
+
+
+<div align="center">
+
+## 木兰花
+
+</div>
+
+<div align="left" style="text-indent: 2em;">
+
+别后不知君远近，触目凄凉多少闷。渐行渐远渐无书，水阔鱼沉何处问。
+
+夜深风竹敲秋韵。万叶千声皆是恨。故欹单枕梦中寻，梦又不成灯又烬。
+
+</div>
+
+![木兰花](https://picui.ogmua.cn/s1/2026/03/15/69b62c7b5e63f.webp)
+
+---
+
+<div align="center">
+
+## 踏莎行
+
+</div>
+
+<div align="left" style="text-indent: 2em;">
+
+候馆梅残，溪桥柳细，草薰风暖摇征辔。离愁渐远渐无穷，迢迢不断如春水。
+
+寸寸柔肠，盈盈粉泪，楼高莫近危栏倚。平芜尽处是春山，行人更在春山外。
+
+</div>
+
+![踏莎行](https://picui.ogmua.cn/s1/2026/03/15/69b62c7b5e63f.webp)
+
 ---
 
 <div align="center">
@@ -57,38 +96,6 @@ author: 谨言
 谁道闲情抛弃久，每到春来，惆怅还依旧。日日花前常病酒，不辞镜里朱颜瘦。
 
 河畔青芜堤上柳，为问新愁，何事年年有。独立小桥风满袖，平林新月人归后。
-
-</div>
-
----
-
-<div align="center">
-
-## 木兰花
-
-</div>
-
-<div align="left" style="text-indent: 2em;">
-
-别后不知君远近，触目凄凉多少闷。渐行渐远渐无书，水阔鱼沉何处问。
-
-夜深风竹敲秋韵。万叶千声皆是恨。故欹单枕梦中寻，梦又不成灯又烬。
-
-</div>
-
----
-
-<div align="center">
-
-## 踏莎行
-
-</div>
-
-<div align="left" style="text-indent: 2em;">
-
-候馆梅残，溪桥柳细，草薰风暖摇征辔。离愁渐远渐无穷，迢迢不断如春水。
-
-寸寸柔肠，盈盈粉泪，楼高莫近危栏倚。平芜尽处是春山，行人更在春山外。
 
 </div>
 
