@@ -28,7 +28,7 @@ author: 谨言
 
 </div>
 
-![浪淘沙](https://picui.ogmua.cn/s1/2026/03/15/69b63599054f5.webp)
+![浪淘沙](https://free.picui.cn/free/2026/03/28/69c7c80eaccb9.jpg)
 
 ---
 
@@ -47,7 +47,7 @@ author: 谨言
 
 </div>
 
-![玉楼春](https://picui.ogmua.cn/s1/2026/03/15/69b635818c04e.webp)
+![玉楼春](https://free.picui.cn/free/2026/03/28/69c7c81741fe1.png)
 
 ---
 
@@ -65,7 +65,7 @@ author: 谨言
 
 </div>
 
-![踏莎行](https://picui.ogmua.cn/s1/2026/03/15/69b6389e35532.webp)
+![踏莎行](https://free.picui.cn/free/2026/03/28/69c7c811d57ba.jpg)
 
 ---
 
