@@ -65,7 +65,7 @@ author: 谨言
 
 </div>
 
-![踏莎行](https://picui.ogmua.cn/s1/2026/03/15/69b62c7b5e63f.webp)
+![踏莎行](https://picui.ogmua.cn/s1/2026/03/15/69b6389e35532.webp)
 
 ---
 
