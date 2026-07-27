@@ -3,6 +3,7 @@ title: '我心中的朱元璋'
 date: 2026-4-28
 categories: [杂谈]
 tags: [明史, 朱元璋]
+password: yuanzhangzhu
 author: 谨言
 ---
 
