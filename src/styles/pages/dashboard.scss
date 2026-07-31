@@ -90,6 +90,44 @@ body:has(.studio) { margin: 0; background: #f7f8fc; }
 .profile-snapshots img { width:100%;height:auto;aspect-ratio:9/16;border-radius:.65rem;object-fit:cover; }
 .profile-snapshots .snapshot-remove { position:absolute;top:.85rem;right:.85rem;border-radius:50%;background:rgba(255,255,255,.92)!important;box-shadow:0 4px 12px rgba(30,34,48,.15); }
 
+// Article editor has a bounded writing surface and a dedicated PDF upload mode.
+.editor-layout { align-items:stretch; }
+.editor-main { min-height:calc(100vh - 116px);display:flex;flex-direction:column; }
+.editor-main .writing-surface { flex:1;min-height:0;height:auto; }
+.editor-main .source-editor,.editor-main .live-preview { min-height:0;height:100%;max-height:none;resize:none;overflow:auto; }
+.editor-mode>.el-select { margin-left:auto; }
+.editor-actions { grid-template-columns:1fr 1fr; }
+.editor-actions .el-button:first-child { grid-column:auto; }
+.pdf-article-upload { flex:1;min-height:480px;display:grid; }
+.pdf-article-upload .el-upload,.pdf-article-upload .el-upload-dragger { width:100%;height:100%;box-sizing:border-box; }
+.pdf-article-upload .el-upload-dragger { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;border-radius:0 0 .75rem .75rem;background:linear-gradient(145deg,#fff,#fff8fa); }
+.pdf-upload-icon { width:78px;height:78px;display:grid;place-items:center;border-radius:20px;color:#fff;background:linear-gradient(135deg,#f15480,#ff8863);box-shadow:0 12px 28px rgba(241,84,128,.23);font-weight:800;letter-spacing:.08em; }
+.pdf-article-upload strong { color:#4e5360;font-size:1rem; }
+.pdf-article-upload span { color:#969ba7;font-size:.8rem; }
+.pdf-article-upload small { max-width:70%;overflow:hidden;color:#ef668a;text-overflow:ellipsis;white-space:nowrap; }
+
+// Profile modes and asymmetric content columns.
+.profile-admin { grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr); }
+.profile-mode-switch { grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:1rem; }
+.profile-mode-switch h2,.profile-mode-switch p { margin:0; }
+.profile-mode-switch p { margin-top:.25rem;color:#989da8;font-size:.8rem; }
+.profile-mode-switch .el-radio-button__inner { color:#686d79;background:#fff;border-color:#e3e6ed;box-shadow:none !important; }
+.profile-mode-switch .el-radio-button:not(.is-active) .el-radio-button__inner:hover { color:var(--theme-color); }
+.profile-mode-switch .el-radio-button.is-active .el-radio-button__inner { color:#fff;background:linear-gradient(135deg,var(--theme-color),#ff8b68);border-color:transparent;box-shadow:none !important; }
+.profile-markdown-editor { grid-column:1/-1;display:grid;gap:1rem; }
+.profile-markdown-toolbar { display:flex;align-items:center;justify-content:space-between;gap:1rem; }
+.profile-markdown-toolbar h2,.profile-markdown-toolbar p { margin:0; }
+.profile-markdown-toolbar p,.profile-markdown-toolbar span { color:#989da8;font-size:.8rem; }
+.profile-markdown-editor textarea { min-height:620px;box-sizing:border-box;padding:1.25rem;border:1px solid #e1e5ed;border-radius:.75rem;resize:none;outline:0;font:15px/1.8 'JetBrains Mono',Consolas,monospace; }
+.profile-markdown-editor textarea:focus { border-color:#f18aa5;box-shadow:0 0 0 3px rgba(244,95,135,.1); }
+.profile-snapshots img { aspect-ratio:3/4; }
+.trash-action { font-family:'Segoe UI Symbol','Apple Symbols',sans-serif;line-height:1; }
+
+// Keep the native color picker compact and pair it with an editable hex value.
+.tag-color-editor { position:relative;display:grid;grid-template-columns:52px 1fr;gap:.65rem;align-items:center; }
+.dialog-form .tag-color-editor input[type='color'] { width:52px;height:44px;padding:4px;border-radius:10px;cursor:pointer; }
+.tag-color-editor>span { position:absolute;right:12px;width:18px;height:18px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px #d9dde5;pointer-events:none; }
+
 html.dark-theme .studio { color:var(--theme-text);background:var(--theme-page); }.dark-theme .studio-sidebar,.dark-theme .studio-topbar,.dark-theme .studio-card,.dark-theme .metric-grid article,.dark-theme .taxonomy-metrics span { border-color:var(--theme-border);background:var(--theme-surface); }.dark-theme .studio input,.dark-theme .studio textarea,.dark-theme .studio select,.dark-theme .source-editor,.dark-theme .live-preview { border-color:var(--theme-border);color:var(--theme-text);background:var(--theme-surface); }
 @include mixins.respond-below(1100px) { .studio { grid-template-columns:82px minmax(0,1fr); }.studio-sidebar { width:82px; }.studio-profile strong,.studio-profile span,.studio-sidebar nav span,.studio-sidebar nav b,.studio-sidebar blockquote,.studio-sidebar-actions { display:none; }.studio-profile img { width:46px;height:46px; }.studio-sidebar nav button { justify-content:center; }.metric-grid { grid-template-columns:repeat(2,1fr); }.overview-columns,.editor-layout,.settings-layout,.settings-dashboard,.profile-admin,.site-admin { grid-template-columns:1fr; }.editor-settings { grid-template-columns:1fr 1fr; }.taxonomy-table { overflow:hidden; }.social-settings,.site-admin .banner-settings,.site-admin .theme-settings,.site-admin>.settings-save { grid-column:auto;grid-row:auto; }.portrait-editor { grid-template-columns:1fr; }.profile-snapshots>div { grid-template-columns:repeat(3,minmax(0,1fr)); } }
 @include mixins.respond-below(700px) { .studio { display:block; }.studio-sidebar { position:fixed;inset:auto 0 0;z-index:40;width:100%;height:auto;padding:.35rem;border:0;border-top:1px solid #e6e8ee; }.studio-profile,.studio-sidebar blockquote,.studio-sidebar-actions { display:none; }.studio-sidebar nav { display:flex;justify-content:space-around; }.studio-sidebar nav button { width:auto;display:grid;justify-items:center;gap:.1rem;padding:.35rem .5rem; }.studio-sidebar nav span { display:block;font-size:.62rem; }.studio-topbar { padding:0 1rem; }.topbar-actions button,.topbar-actions span { display:none; }.studio-main { width:calc(100% - 1.2rem);padding-bottom:5rem; }.welcome-banner { min-height:190px;padding:2rem 1.4rem; }.metric-grid { gap:.6rem; }.metric-grid article { padding:.8rem; }.metric-grid i { width:38px;height:38px; }.metric-grid strong { font-size:1.3rem; }.overview-columns { display:block; }.overview-side { margin-top:1rem; }.filter-bar { grid-template-columns:1fr; }.post-manager { overflow:auto; }.writing-surface.mode-split { grid-template-columns:1fr; }.writing-surface.mode-split .live-preview { border-left:0;border-top:1px solid #eceef3; }.editor-topline { align-items:flex-start; }.editor-settings { grid-template-columns:1fr; }.taxonomy-heading { align-items:flex-start;gap:1rem; }.taxonomy-metrics { display:none; }.taxonomy-scroll>article { grid-template-columns:30px 1fr auto; }.taxonomy-scroll>article button { grid-row:2; }.manager-pagination { align-items:flex-start;gap:.8rem;overflow:auto; }.tag-choice-grid { grid-template-columns:1fr 1fr; }.friend-editor>div { grid-template-columns:1fr; }.friend-editor label { grid-column:auto!important; } }

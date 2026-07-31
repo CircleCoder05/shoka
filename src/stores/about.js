@@ -4,6 +4,8 @@ import { apiGet } from '@/services/api'
 import { useBlogStore } from './blog'
 
 const defaults = {
+  display_mode: 'default',
+  markdown_content: '',
   portrait_url: null,
   introduction: '',
   traits: [],

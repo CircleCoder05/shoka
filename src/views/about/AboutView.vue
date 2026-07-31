@@ -1,6 +1,7 @@
 <template>
   <PageContainer>
-    <main class="profile-page">
+    <main v-if="profile.display_mode === 'markdown'" class="profile-markdown-page post-content" v-html="markdownHtml"></main>
+    <main v-else class="profile-page">
       <section class="profile-card portrait-card">
         <header><span>♙</span><h2>人格画像</h2></header>
         <div class="trait-grid">
@@ -45,12 +46,30 @@
 
 <script setup>
 import { computed, onMounted } from 'vue'
+import MarkdownIt from 'markdown-it'
+import texmath from 'markdown-it-texmath'
+import katex from 'katex'
+import hljs from 'highlight.js'
+import 'katex/dist/katex.min.css'
 import PageContainer from '@/components/PageContainer.vue'
 import { useAboutStore } from '@/stores/about'
 
 const aboutStore = useAboutStore()
 const profile = computed(() => aboutStore.profile)
 const introductionParagraphs = computed(() => (profile.value.introduction || '').split(/\n+/).filter(Boolean))
+const markdownUtils = new MarkdownIt().utils
+const markdown = new MarkdownIt({
+  html: false,
+  linkify: true,
+  breaks: true,
+  highlight(code, language) {
+    const value = language && hljs.getLanguage(language)
+      ? hljs.highlight(code, { language }).value
+      : markdownUtils.escapeHtml(code)
+    return `<pre><code class="hljs${language ? ` language-${language}` : ''}">${value}</code></pre>`
+  },
+}).use(texmath, { engine: katex, delimiters: 'dollars' })
+const markdownHtml = computed(() => markdown.render(profile.value.markdown_content || ''))
 onMounted(aboutStore.loadAboutData)
 </script>
 
