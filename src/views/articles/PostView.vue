@@ -80,7 +80,7 @@
     ></div>
 
     <!-- 评论区 -->
-    <CommentSystem :post-slug="route.params.slug" :article-comment-config="articleCommentConfig" />
+    <CommentSystem :post-slug="route.params.slug" />
 
     <!-- 文章底部：版权信息和上一篇/下一篇导航 -->
     <PostFooter

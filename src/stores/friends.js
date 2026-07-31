@@ -32,7 +32,24 @@ export const useFriendsStore = defineStore('friends', () => {
     try {
       const blogStore = useBlogStore()
       const data = await blogStore.load()
-      friends.value = data.blog.settings?.friends || []
+      const rows = data.friends || []
+      friends.value = rows.reduce((groups, item) => {
+        let group = groups.find((entry) => entry.category === item.category)
+        if (!group) {
+          group = { category: item.category, description: '', items: [] }
+          groups.push(group)
+        }
+        group.items.push({
+          id: item.id,
+          name: item.name,
+          url: item.url,
+          avatar: item.avatar_url,
+          description: item.description,
+          tags: item.tags || [],
+          backgroundColor: item.background,
+        })
+        return groups
+      }, [])
     } catch (err) {
       error.value = err.message
       console.error('Failed to load friends:', err)

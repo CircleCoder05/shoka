@@ -1,80 +1,136 @@
 <template>
-  <div class="comment-system">
-    <!-- 根据配置显示对应的评论系统 -->
-    <GitalkComments
-      v-if="commentConfig.type === 'gitalk' && commentConfig.enabled !== false"
-      :post-slug="postSlug"
-    />
+  <section class="comment-system">
+    <header class="comment-heading">
+      <div>
+        <span class="eyebrow">DISCUSSION</span>
+        <h2>评论与交流</h2>
+        <p>{{ total }} 条评论 · 欢迎留下你的想法</p>
+      </div>
+      <button class="like-button" :class="{ liked }" :disabled="busyLike" @click="toggleLike">
+        <span aria-hidden="true">♥</span>
+        {{ liked ? '已点赞' : '点赞' }} {{ likeCount }}
+      </button>
+    </header>
 
-    <ValineComments
-      v-else-if="commentConfig.type === 'valine' && commentConfig.enabled !== false"
-      :post-slug="postSlug"
-    />
+    <form class="comment-form" @submit.prevent="submitComment">
+      <div class="identity-fields">
+        <label>昵称<input v-model.trim="form.author_name" maxlength="80" required /></label>
+        <label>邮箱（不会公开）<input v-model.trim="form.author_email" type="email" /></label>
+      </div>
+      <label>评论<textarea v-model.trim="form.content" maxlength="5000" rows="4" required placeholder="认真交流，友善表达。"></textarea></label>
+      <div class="form-actions">
+        <span>{{ form.content.length }}/5000</span>
+        <button class="submit-button" :disabled="submitting">{{ submitting ? '发送中…' : '发表评论' }}</button>
+      </div>
+    </form>
 
-    <!-- 评论关闭提示 -->
-    <div v-else-if="commentConfig.enabled === false" class="comment-disabled">
-      <p>评论功能已关闭</p>
+    <p v-if="error" class="comment-error">{{ error }}</p>
+    <div v-if="loading" class="comment-empty">正在加载评论…</div>
+    <div v-else-if="!comments.length" class="comment-empty">还没有评论，来坐第一排吧。</div>
+    <div v-else class="comment-list">
+      <article v-for="comment in comments" :key="comment.id" class="comment-card">
+        <div class="comment-avatar">{{ comment.author_name.slice(0, 1).toUpperCase() }}</div>
+        <div class="comment-body">
+          <div class="comment-meta">
+            <strong>{{ comment.author_name }}</strong>
+            <span v-if="comment.is_owner_reply" class="owner-badge">博主</span>
+            <time>{{ formatDate(comment.created_at) }}</time>
+          </div>
+          <p>{{ comment.content }}</p>
+          <div v-if="comment.replies?.length" class="reply-list">
+            <div v-for="reply in comment.replies" :key="reply.id" class="reply-item">
+              <strong>{{ reply.author_name }} <span v-if="reply.is_owner_reply">· 博主</span></strong>
+              <p>{{ reply.content }}</p>
+              <time>{{ formatDate(reply.created_at) }}</time>
+            </div>
+          </div>
+        </div>
+      </article>
     </div>
-
-    <!-- 默认显示Gitalk -->
-    <GitalkComments v-else :post-slug="postSlug" :gitalk-config="commentConfig.gitalk" />
-  </div>
+  </section>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { useCommentsStore } from '../stores/comments.js'
-import GitalkComments from './GitalkComments.vue'
-import ValineComments from './ValineComments.vue'
+import { onMounted, reactive, ref, watch } from 'vue'
+import { apiGet, apiPost } from '@/services/api'
+import { useBlogStore } from '@/stores/blog'
 
-const props = defineProps({
-  postSlug: {
-    type: String,
-    required: true,
-  },
-  // 文章级别的评论配置，会覆盖全局配置
-  articleCommentConfig: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = defineProps({ postSlug: { type: String, required: true } })
+const blogStore = useBlogStore()
+const comments = ref([])
+const total = ref(0)
+const likeCount = ref(0)
+const liked = ref(false)
+const loading = ref(false)
+const submitting = ref(false)
+const busyLike = ref(false)
+const error = ref('')
+const form = reactive({
+  author_name: localStorage.getItem('shoka_comment_name') || '',
+  author_email: localStorage.getItem('shoka_comment_email') || '',
+  content: '',
 })
 
-const commentStore = useCommentsStore()
-const commentConfig = ref({})
-
-// 合并全局配置和文章配置
-const mergeConfig = () => {
-  const globalConfig = commentStore.getCommentConfig()
-  const config = { ...globalConfig }
-
-  // 文章级别配置覆盖全局配置
-  if (props.articleCommentConfig.type) {
-    config.type = props.articleCommentConfig.type
+function visitorKey() {
+  let key = localStorage.getItem('shoka_visitor_key')
+  if (!key) {
+    key = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`
+    localStorage.setItem('shoka_visitor_key', key)
   }
-  if (props.articleCommentConfig.enabled !== undefined) {
-    config.enabled = props.articleCommentConfig.enabled
-  }
-  if (props.articleCommentConfig.valine) {
-    config.valine = { ...config.valine, ...props.articleCommentConfig.valine }
-  }
-
-  commentConfig.value = config
+  return key
 }
+const basePath = () =>
+  `/api/blogs/${encodeURIComponent(blogStore.selectedSlug)}/posts/${props.postSlug}`
 
-onMounted(async () => {
-  // 加载评论配置
-  await commentStore.loadCommentConfig()
-  mergeConfig()
-})
+async function load() {
+  loading.value = true
+  error.value = ''
+  try {
+    const [thread, likes] = await Promise.all([
+      apiGet(`${basePath()}/comments`),
+      apiGet(`${basePath()}/likes?client_key=${encodeURIComponent(visitorKey())}`),
+    ])
+    comments.value = thread.comments
+    total.value = thread.total
+    likeCount.value = likes.count
+    liked.value = likes.liked
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    loading.value = false
+  }
+}
+async function submitComment() {
+  submitting.value = true
+  error.value = ''
+  try {
+    await apiPost(`${basePath()}/comments`, form)
+    localStorage.setItem('shoka_comment_name', form.author_name)
+    localStorage.setItem('shoka_comment_email', form.author_email)
+    form.content = ''
+    await load()
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    submitting.value = false
+  }
+}
+async function toggleLike() {
+  busyLike.value = true
+  try {
+    const result = await apiPost(`${basePath()}/likes`, { client_key: visitorKey() })
+    likeCount.value = result.count
+    liked.value = result.liked
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    busyLike.value = false
+  }
+}
+const formatDate = (value) => new Date(value).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' })
 
-// 监听store中评论配置的变化
-watch(
-  () => commentStore.commentConfig.value,
-  () => {
-    mergeConfig()
-  },
-  { deep: true },
-)
+onMounted(load)
+watch(() => props.postSlug, load)
 </script>
 
 <style scoped lang="scss" src="@/styles/sfc/components/CommentSystem.scss"></style>
