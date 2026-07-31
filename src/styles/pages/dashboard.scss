@@ -1,0 +1,211 @@
+@use '../foundation/tokens' as *;
+@use '../foundation/mixins' as mixins;
+
+.dashboard-page {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  min-height: 100vh;
+  color: #333;
+  background: #f7f7fa;
+}
+
+.dashboard-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 32px 20px;
+  background: #252936;
+
+  button,
+  a {
+    padding: 12px;
+    border: 0;
+    border-radius: $radius-sm;
+    color: #bbc0cc;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    background: transparent;
+
+    &:hover {
+      color: white;
+      background: rgba($color-pink, 0.16);
+    }
+  }
+
+  button.active {
+    color: white;
+    background: rgba($color-pink, 0.16);
+  }
+
+  a {
+    margin-top: auto;
+  }
+}
+
+.dashboard-brand {
+  padding: 0 12px 20px;
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.dashboard-main {
+  padding: 42px clamp(22px, 5vw, 72px);
+  overflow: auto;
+}
+
+.dashboard-title {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+
+  p {
+    margin: 0;
+    color: $color-red;
+    font-weight: 700;
+  }
+
+  h1 {
+    margin: 4px 0 0;
+  }
+}
+
+.panel {
+  @include mixins.card-surface(14px, 0 6px 24px rgba(38, 42, 54, 0.06));
+  padding: 26px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  label {
+    display: grid;
+    gap: 8px;
+    color: #555;
+    font-weight: 600;
+  }
+
+  .wide {
+    grid-column: 1 / -1;
+  }
+
+  input,
+  textarea,
+  select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #dddfe5;
+    border-radius: $radius-sm;
+    font: inherit;
+  }
+}
+
+.editor {
+  font-family: 'JetBrains Mono', monospace !important;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.primary {
+  padding: 11px 18px;
+  border: 0 !important;
+  border-radius: $radius-sm;
+  color: white !important;
+  cursor: pointer;
+  background: linear-gradient(135deg, $color-blue, $color-pink) !important;
+}
+
+.data-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 17px 4px;
+  border-bottom: 1px solid $color-divider;
+
+  small {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+  }
+
+  button {
+    margin-left: 8px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    cursor: pointer;
+    background: white;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    margin-left: 8px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    cursor: pointer;
+    background: white;
+  }
+}
+
+.danger {
+  color: #c62828;
+}
+
+.notice {
+  position: fixed;
+  z-index: 3000;
+  top: 20px;
+  right: 28px;
+  padding: 12px 18px;
+  border-radius: $radius-sm;
+  color: white;
+  background: #2e7d32;
+}
+
+.empty {
+  padding: 40px;
+  color: #999;
+  text-align: center;
+}
+
+@include mixins.respond-below(760px) {
+  .dashboard-page {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-nav {
+    flex-direction: row;
+    overflow: auto;
+    padding: 12px;
+
+    a {
+      margin: 0;
+    }
+  }
+
+  .dashboard-brand {
+    display: none;
+  }
+
+  .dashboard-main {
+    padding: 24px 14px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+
+    .wide {
+      grid-column: auto;
+    }
+  }
+}

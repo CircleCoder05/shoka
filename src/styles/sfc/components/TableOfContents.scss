@@ -1,0 +1,400 @@
+.toc-container {
+  width: 100%;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+/* 控制按钮样式 */
+.toc-controls {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* 滑钮样式 */
+.toggle-switch {
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-slider {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 32px;
+  background: #f0f0f0;
+  border: 2px solid #ddd;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  font-size: 0.85em;
+  font-weight: 500;
+  color: #666;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-slider.active {
+  background: #e9546b;
+  border-color: #e9546b;
+  color: #fff;
+}
+
+.toggle-slider.active::before {
+  transform: translateX(88px);
+}
+
+.toggle-text {
+  z-index: 1;
+  font-weight: 500;
+}
+
+.toc-content {
+  padding: 0;
+}
+
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc-item {
+  margin: 0.2rem 0;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+/* 多级标题样式 - 减小缩进 */
+.toc-level-1 {
+  padding-left: 0;
+}
+
+.toc-level-2 {
+  padding-left: 0.6rem;
+}
+
+.toc-level-3 {
+  padding-left: 1.2rem;
+}
+
+.toc-level-4 {
+  padding-left: 1.8rem;
+}
+
+.toc-level-5 {
+  padding-left: 2.4rem;
+}
+
+.toc-level-6 {
+  padding-left: 3rem;
+}
+
+.toc-item-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.toc-toggle {
+  cursor: pointer;
+  font-size: 0.7em;
+  color: #999;
+  transition: transform 0.3s ease;
+  user-select: none;
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: auto; /* 推到右边 */
+}
+
+.toc-toggle:hover {
+  color: #e9546b;
+}
+
+.toc-toggle.expanded {
+  transform: rotate(90deg);
+}
+
+.toc-link {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  color: #666666;
+  text-decoration: none;
+  border-radius: 4px;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  font-weight: 600 !important; /* 中等粗细 */
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important; /* 中英文混合字体 */
+}
+
+/* 更强的选择器确保字体生效 */
+.toc-container .toc-link,
+.toc-container .toc-item .toc-link,
+.toc-container .toc-level-1 .toc-link,
+.toc-container .toc-level-2 .toc-link,
+.toc-container .toc-level-3 .toc-link,
+.toc-container .toc-level-4 .toc-link,
+.toc-container .toc-level-5 .toc-link,
+.toc-container .toc-level-6 .toc-link {
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
+  font-weight: 600 !important;
+  color: #666666 !important;
+}
+
+/* 不同级别标题的字体大小 - 现代字体 */
+.toc-level-1 .toc-link {
+  font-size: 1em;
+  font-weight: 700 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
+}
+
+.toc-level-2 .toc-link {
+  font-size: 0.95em;
+  font-weight: 600 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
+}
+
+.toc-level-3 .toc-link {
+  font-size: 0.9em;
+  font-weight: 600 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
+}
+
+.toc-level-4 .toc-link {
+  font-size: 0.85em;
+  font-weight: 600 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
+}
+
+.toc-level-5 .toc-link {
+  font-size: 0.8em;
+  font-weight: 600 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
+}
+
+.toc-level-6 .toc-link {
+  font-size: 0.75em;
+  font-weight: 600 !important;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif !important;
+}
+
+.toc-link:hover {
+  color: #e9546b;
+  background-color: #f8f9fa;
+}
+
+.toc-item.active .toc-link,
+.toc-item.current .toc-link {
+  color: #e9546b;
+  background-color: #f3c1d1;
+  font-weight: 700 !important; /* 保持黑体 */
+}
+
+/* 手动展开的项目样式 */
+.toc-item.manually-expanded .toc-toggle {
+  color: #e9546b;
+}
+
+.toc-item.manually-expanded .toc-link {
+  color: #e9546b;
+  font-weight: 700 !important; /* 保持黑体 */
+}
+
+.toc-children {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-left: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease;
+  opacity: 0;
+}
+
+.toc-children.expanded {
+  max-height: 1000px;
+  opacity: 1;
+}
+
+.toc-empty {
+  text-align: center;
+  padding: 2rem 0;
+  color: #999;
+  font-size: 0.9em;
+}
+
+/* 滚动条样式 */
+.toc-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.toc-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.toc-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 2px;
+}
+
+.toc-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 暗色模式样式 */
+html.dark-theme .toc-controls {
+  border-bottom-color: #3e4451;
+}
+
+html.dark-theme .toggle-slider {
+  background: #3e4451;
+  border-color: #3e4451;
+  color: #abb2bf;
+}
+
+html.dark-theme .toggle-slider::before {
+  background: #21252b;
+}
+
+html.dark-theme .toggle-slider.active {
+  background: #ed6ea0;
+  border-color: #ed6ea0;
+  color: #ffffff !important;
+}
+
+html.dark-theme .toggle-slider.active .toggle-text {
+  color: #ffffff !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .toc-container {
+    max-height: calc(100vh - 150px);
+  }
+
+  .toc-link {
+    font-size: 0.85em;
+    padding: 0.4rem 0.6rem;
+  }
+}

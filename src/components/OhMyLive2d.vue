@@ -22,10 +22,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.oml2d-container {
-  /* 容器样式，OhMyLive2d 会自己定位 */
-  position: relative;
-  z-index: 1000;
-}
-</style>
+<style scoped lang="scss" src="@/styles/sfc/components/OhMyLive2d.scss"></style>

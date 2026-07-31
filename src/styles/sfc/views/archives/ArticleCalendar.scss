@@ -1,0 +1,150 @@
+.article-calendar {
+  margin-bottom: 3rem;
+}
+
+.calendar-container {
+  position: relative;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.calendar-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+/* 暗色主题下的标题 */
+html.dark-theme .calendar-title {
+  color: #abb2bf;
+}
+
+.year-selector {
+  display: flex;
+  align-items: center;
+}
+
+.year-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.year-btn {
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.year-btn:hover {
+  background: #ed6ea0;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3);
+}
+
+.year-btn.active {
+  background: #ed6ea0;
+  color: #fff;
+  border-color: #ed6ea0;
+  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3);
+}
+
+/* 暗色主题下的年份按钮 */
+html.dark-theme .year-btn {
+  background: #3e4451;
+  color: #abb2bf;
+  border-color: #3e4451;
+}
+
+html.dark-theme .year-btn:hover {
+  background: #ed6ea0;
+  color: #fff;
+  border-color: #ed6ea0;
+}
+
+html.dark-theme .year-btn.active {
+  background: #ed6ea0 !important;
+  color: #fff !important;
+  border-color: #ed6ea0 !important;
+  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3) !important;
+}
+
+.calendar-title i {
+  color: #ed6ea0;
+  font-size: 1.3rem;
+}
+
+.calendar-chart {
+  width: 100%;
+  height: 240px;
+  margin: 0 auto;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 1.5rem;
+  }
+
+  .calendar-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .calendar-title {
+    font-size: 1.3rem;
+    justify-content: center;
+  }
+
+  .year-selector {
+    justify-content: center;
+  }
+
+  .year-buttons {
+    justify-content: center;
+  }
+
+  .calendar-chart {
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-container {
+    padding: 1rem;
+  }
+
+  .calendar-title {
+    font-size: 1.2rem;
+  }
+
+  .year-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .calendar-chart {
+    height: 180px;
+  }
+}

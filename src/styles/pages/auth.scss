@@ -1,0 +1,99 @@
+@use '../foundation/tokens' as *;
+
+.auth-page {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  padding: 20px;
+  background: linear-gradient(145deg, #fff 0%, #fff4f8 50%, #eef8ff 100%);
+}
+
+.auth-card {
+  box-sizing: border-box;
+  width: min(440px, 100%);
+  padding: 42px;
+  background: rgba(#fff, 0.92);
+  border-radius: 18px;
+  box-shadow: 0 18px 60px rgba($color-pink, 0.18);
+
+  h1 {
+    margin: 6px 0 8px;
+    font-size: 2rem;
+  }
+
+  form,
+  label {
+    display: grid;
+  }
+
+  form {
+    gap: 18px;
+  }
+
+  label {
+    gap: 8px;
+    color: #555;
+    font-weight: 600;
+  }
+
+  input {
+    padding: 12px 14px;
+    border: 1px solid #e5dce0;
+    border-radius: 10px;
+    outline: none;
+    font: inherit;
+
+    &:focus {
+      border-color: $color-pink;
+      box-shadow: 0 0 0 3px rgba($color-pink, 0.12);
+    }
+  }
+
+  button {
+    padding: 13px;
+    border: 0;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, $color-blue, $color-pink);
+  }
+
+  > a {
+    display: block;
+    margin-top: 22px;
+    color: $color-red;
+    text-align: center;
+  }
+}
+
+.auth-eyebrow {
+  color: $color-red;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.auth-intro {
+  margin-bottom: 28px;
+  color: #777;
+}
+
+.form-error {
+  margin: 0;
+  color: #c62828;
+}
+
+@media (max-width: 480px) {
+  .auth-page {
+    padding-inline: 16px;
+  }
+
+  .auth-card {
+    padding: 32px 24px;
+  }
+}

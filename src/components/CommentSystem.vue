@@ -77,22 +77,4 @@ watch(
 )
 </script>
 
-<style scoped>
-.comment-system {
-  margin-top: 2rem;
-}
-
-.comment-disabled {
-  text-align: center;
-  padding: 2rem;
-  color: var(--text-light-color, #666);
-  font-style: italic;
-  background: var(--bg-light-color, #f8f9fa);
-  border-radius: 8px;
-  border: 1px dashed var(--border-color, #dee2e6);
-}
-
-.comment-disabled p {
-  margin: 0;
-}
-</style>
+<style scoped lang="scss" src="@/styles/sfc/components/CommentSystem.scss"></style>

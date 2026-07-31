@@ -23,7 +23,7 @@
 import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import '@/styles/auth.scss'
+import '@/styles/pages/auth.scss'
 
 const route = useRoute()
 const router = useRouter()

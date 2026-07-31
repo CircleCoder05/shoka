@@ -1,0 +1,68 @@
+.footer {
+  background: transparent;
+  border-top: 1px solid var(--color-divider);
+  text-align: center;
+  padding: 18px 0;
+  color: var(--color-grey);
+  font-size: 15px;
+  margin-top: 32px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-content p {
+  margin: 4px 0;
+}
+
+.icp {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.icp a {
+  color: var(--color-grey);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.icp a:hover {
+  color: #ed6ea0;
+}
+
+.runtime {
+  font-size: 14px;
+  color: #999;
+}
+
+/* 平板端适配 */
+@media (max-width: 1024px) {
+  .footer {
+    padding: 16px 0;
+    margin-top: 24px;
+  }
+
+  .footer-content {
+    padding: 0 16px;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .footer {
+    display: none;
+  }
+}
+
+/* 小屏手机适配 */
+@media (max-width: 480px) {
+  .footer {
+    display: none;
+  }
+}

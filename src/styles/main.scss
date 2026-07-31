@@ -1,13 +1,15 @@
+@use './foundation/tokens' as *;
+
 /* 主题色与变量 */
 :root {
-  --color-pink: #ed6ea0;
-  --color-orange: #ec8c69;
-  --color-blue: #38a1db;
-  --color-grey: #869194;
-  --color-bg: #f7f7f7;
-  --color-card: #fff;
-  --color-divider: #eee;
-  --color-shadow: 0 2px 16px rgba(237, 110, 160, 0.08);
+  --color-pink: #{$color-pink};
+  --color-orange: #{$color-orange};
+  --color-blue: #{$color-blue};
+  --color-grey: #{$color-grey};
+  --color-bg: #{$color-background};
+  --color-card: #{$color-surface};
+  --color-divider: #{$color-divider};
+  --color-shadow: #{$shadow-card};
   --primary-color: var(--color-pink);
 }
 

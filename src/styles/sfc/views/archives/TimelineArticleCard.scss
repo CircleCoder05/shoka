@@ -1,0 +1,389 @@
+/* 文章卡片 */
+.article-card {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.article-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ed6ea0 0%, #ec8c69 100%);
+}
+
+.article-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-color: #d1d5db;
+}
+
+/* 封面图片 */
+.article-cover {
+  width: 280px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  align-self: stretch;
+}
+
+.article-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.article-card:hover .article-cover img {
+  transform: scale(1.05);
+}
+
+/* 文章信息 */
+.article-info {
+  flex: 1;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.article-title {
+  margin: 0 0 0.8rem 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.article-title a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.article-title a:hover {
+  color: #ed6ea0;
+}
+
+.article-meta {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  color: #666;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+  min-height: 16px;
+  /* line-height: 1.2; */
+}
+
+.article-meta span {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.3rem;
+  /* line-height: 1.2; */
+  margin-bottom: 0%;
+}
+
+.article-meta i {
+  font-size: 0.75rem;
+  color: #ed6ea0;
+}
+
+.article-excerpt {
+  color: #666;
+  line-height: 1.6;
+  font-size: 0.85rem;
+  margin-bottom: 0.8rem;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  min-height: 30px;
+}
+
+.article-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.article-stats {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  color: #999;
+  flex-wrap: wrap;
+}
+
+.article-stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.article-stats i {
+  font-size: 0.7rem;
+  color: #ed6ea0;
+}
+
+.article-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  padding: 0.15rem 0.5rem;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  transition: transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.tag:hover {
+  transform: translateY(-2px);
+}
+
+.read-more-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.7rem;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(237, 110, 160, 0.25);
+}
+
+.read-more-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.35);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .article-card {
+    flex-direction: column;
+    min-height: auto;
+    padding: 0.8rem;
+  }
+
+  .article-cover {
+    display: none;
+  }
+
+  .article-info {
+    padding: 0;
+    flex: 1;
+  }
+
+  .article-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .article-meta {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .article-excerpt {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .article-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .article-stats {
+    font-size: 0.75rem;
+  }
+
+  .article-tags {
+    display: none;
+  }
+
+  .read-more-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .article-card {
+    flex-direction: column;
+    min-height: auto;
+    padding: 0.8rem;
+  }
+
+  .article-cover {
+    display: none;
+  }
+
+  .article-info {
+    padding: 0;
+    flex: 1;
+  }
+
+  .article-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .article-meta {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .article-excerpt {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .article-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .article-stats {
+    font-size: 0.75rem;
+  }
+
+  .article-tags {
+    display: none;
+  }
+
+  .read-more-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-card {
+    padding: 0.6rem;
+  }
+
+  .article-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .article-meta {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .article-excerpt {
+    font-size: 0.75rem;
+    margin-bottom: 0.3rem;
+    -webkit-line-clamp: 1;
+  }
+
+  .article-stats {
+    font-size: 0.65rem;
+  }
+
+  .read-more-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.65rem;
+  }
+}
+
+/* 宽屏但较窄时也隐藏图片 */
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .article-card {
+    flex-direction: column;
+    min-height: auto;
+    padding: 0.8rem;
+  }
+
+  .article-cover {
+    display: none;
+  }
+
+  .article-info {
+    padding: 0;
+    flex: 1;
+  }
+
+  .article-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .article-meta {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .article-excerpt {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .article-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .article-stats {
+    font-size: 0.75rem;
+  }
+
+  .article-tags {
+    display: none;
+  }
+
+  .read-more-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+  }
+}

@@ -1,0 +1,49 @@
+@mixin flex-center($direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin card-surface($radius: 0.75rem, $shadow: 0 2px 8px rgba(0, 0, 0, 0.08)) {
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: $radius;
+  box-shadow: $shadow;
+}
+
+@mixin truncate-lines($lines: 3) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines;
+  text-overflow: ellipsis;
+}
+
+@mixin loading-spinner($size: 40px, $border-width: 4px, $track: #f3f3f3, $accent: #e9546b) {
+  width: $size;
+  height: $size;
+  border: $border-width solid $track;
+  border-top-color: $accent;
+  border-radius: 50%;
+  animation: shoka-spin 1s linear infinite;
+}
+
+@mixin shoka-spin-keyframes {
+  @keyframes shoka-spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+@mixin respond-below($width) {
+  @media (max-width: $width) {
+    @content;
+  }
+}
+
