@@ -4,7 +4,7 @@
       <section class="profile-card portrait-card">
         <header><span>♙</span><h2>人格画像</h2></header>
         <div class="trait-grid">
-          <article v-for="item in profile.traits" :key="item.title"><strong>{{ item.title }}</strong><small>{{ item.subtitle }}</small></article>
+          <article v-for="item in profile.traits" :key="item.title"><strong>{{ item.title }}</strong></article>
         </div>
         <img v-if="profile.portrait_url" :src="profile.portrait_url" alt="人物画像" />
       </section>
@@ -29,7 +29,7 @@
       <section class="profile-card snapshots-card">
         <header><span>▧</span><h2>理想生活碎片</h2></header>
         <div>
-          <article v-for="item in profile.snapshots" :key="item.url"><img :src="item.url" alt="" /><strong>{{ item.title }}</strong><small>{{ item.description }}</small></article>
+          <article v-for="item in profile.snapshots" :key="item.url"><img :src="item.url" alt="" /><strong>{{ item.title }}</strong></article>
         </div>
       </section>
 

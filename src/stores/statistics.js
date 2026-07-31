@@ -8,6 +8,7 @@ import {
 } from '@/utils/articlePresentation'
 
 export const useStatisticsStore = defineStore('statistics', () => {
+  const blogStore = useBlogStore()
   // 状态
   const archives = ref([])
   const categories = ref([])
@@ -77,11 +78,15 @@ export const useStatisticsStore = defineStore('statistics', () => {
       }
     })
 
-    return Object.entries(categoryCounts).map(([name, count]) => ({
-      name,
-      count,
-      slug: name.toLowerCase().replace(/\s+/g, '-'),
-    }))
+    return Object.entries(categoryCounts).map(([name, count]) => {
+      const category = blogStore.categories.find((item) => item.name === name)
+      return {
+        name,
+        count,
+        slug: category?.slug || name.toLowerCase().replace(/\s+/g, '-'),
+        cover_url: category?.cover_url || '',
+      }
+    })
   })
 
   const tagsWithCount = computed(() => {
@@ -110,7 +115,6 @@ export const useStatisticsStore = defineStore('statistics', () => {
     error.value = null
 
     try {
-      const blogStore = useBlogStore()
       const [data, bannerPool] = await Promise.all([blogStore.load(), loadBannerPool()])
       const articlesIndex = data.posts.map((post) => ({
         ...post,

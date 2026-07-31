@@ -15,6 +15,7 @@
           :category="{
             name: category.name,
             title: category.name,
+            cover_url: category.cover_url,
             posts: statisticsStore.getArticlesByCategory(category.name),
           }"
         />
