@@ -21,7 +21,12 @@ onMounted(async () => {
   const site = config?.site || {}
   bannerStore.siteTitle = site.bannerTitle || bannerStore.siteTitle
   bannerStore.siteSubtitle = site.bannerSubtitle || bannerStore.siteSubtitle
-  bannerStore.bannerImage = site.appearance?.banner_url || bannerStore.bannerImage
+  const appearance = site.appearance || {}
+  const systemBanners = ['/default-cover.jpg','/posts/Web/cover.jpg','/posts/OS/cover.jpg','/posts/OO/cover.jpg','/posts/CO/cover.jpg']
+  const candidates = appearance.use_system_banners === false && appearance.banners?.length
+    ? appearance.banners
+    : systemBanners
+  bannerStore.bannerImage = candidates[Math.floor(Math.random() * candidates.length)] || appearance.banner_url || bannerStore.bannerImage
 })
 </script>
 
