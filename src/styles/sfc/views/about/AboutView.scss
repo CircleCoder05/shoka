@@ -1,126 +1,29 @@
 @use '@/styles/foundation/mixins' as mixins;
 
-.about-background {
-  width: 100%;
-  height: 100%;
-  background-image: url('@/assets/images/selfback2.png');
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  position: relative;
+.profile-page {
+  --profile-accent: var(--theme-accent, #ed6ea0);
+  display:grid;
+  grid-template-columns:1.35fr .9fr;
+  gap:1rem;
+  width:min(1180px,calc(100% - 2rem));
+  margin:2rem auto 4rem;
+  color:#554943;
 }
-
-.about-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.2); /* 白色半透明覆盖层，让背景更浅 */
-  z-index: 1;
-}
-
-.about-content {
-  max-width: 100%;
-  min-height: 100vh;
-}
-
-/* 标题图片区域 */
-.title-section {
-  text-align: center;
-  margin-bottom: 2rem;
-  padding: 1rem 0;
-}
-
-.title-image {
-  max-width: 100%;
-  height: auto;
-  max-height: 120px; /* 限制最大高度 */
-  object-fit: contain;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1)); /* 添加阴影      效果 */
-}
-
-/* 主区域：左右分栏 */
-.main-section {
-  display: flex;
-  gap: 3rem;
-  margin-bottom: 4rem;
-  height: 600px;
-  margin-top: 2rem; /* 添加一些顶部间距 */
-}
-
-/* 右侧：3D模型区域 */
-.model-section {
-  flex: 1.5;
-  height: 100%;
-}
-
-.model-container {
-  width: 100%;
-  height: 100%; /* 填满父区域 */
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.model-title-container {
-  background-image: url('@/assets/images/3dtitle.png');
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
-  display: inline-block;
-}
-
-.model-container h3 {
-  font-size: 1.5rem;
-  color: #8b4513; /* 棕色文字 */
-  margin: 0;
-  font-weight: bold;
-}
-
-/* 信息盒子容器 */
-.info-boxes-container {
-  margin-bottom: 4rem; /* 给最后一个盒子添加底部间距 */
-}
-
-/* 暗色模式样式 */
-html.dark-theme .about-background::before {
-  background: rgba(33, 37, 43, 0.85); /* 深色半透明覆盖层 */
-}
-
-/* 暗色模式下的3D标题区域 */
-html.dark-theme .model-title-container h3 {
-  color: #ffffff; /* 暗色模式下使用纯白文字 */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* 增强文字阴影 */
-}
-
-/* 响应式设计 */
-@include mixins.respond-below(1024px) {
-  .main-section {
-    flex-direction: column;
-    gap: 2rem;
-    height: auto;
-  }
-}
-
-@include mixins.respond-below(768px) {
-  .title-section {
-    margin-bottom: 1.5rem;
-    padding: 0.5rem 0;
-  }
-
-  .title-image {
-    max-height: 80px; /* 移动端稍微缩小 */
-  }
-
-  .main-section {
-    flex-direction: column;
-    height: auto;
-  }
-}
+.profile-card { position:relative;padding:1.25rem;border:1px solid rgba(189,151,129,.25);border-radius:14px;background:rgba(255,252,248,.92);box-shadow:0 10px 35px rgba(112,78,61,.08);overflow:hidden; }
+.profile-card header { display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;color:#6d554a; }
+.profile-card header h2 { margin:0;font-family:'Noto Serif SC',serif;font-size:1.1rem;letter-spacing:.08em; }
+.profile-card header span { color:#db9d82; }
+.portrait-card { min-height:280px; }
+.portrait-card>img { position:absolute;right:0;bottom:0;width:42%;height:90%;object-fit:contain;object-position:bottom; }
+.trait-grid { position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(76px,1fr));gap:.8rem;width:58%; }
+.trait-grid article { display:grid;place-items:center;gap:.35rem;min-height:68px;padding:.5rem;border-radius:10px;background:rgba(249,237,229,.86);text-align:center; }
+.trait-grid small { color:#9e877c;font-size:.72rem; }
+.narrative-card p { color:#75645c;line-height:1.9;white-space:pre-line; }
+.skills-card article { display:grid;grid-template-columns:90px 1fr 42px;align-items:center;gap:.7rem;margin:.75rem 0;font-size:.82rem; }
+.skills-card i { height:8px;border-radius:99px;background:#f1e2dc;overflow:hidden; }.skills-card i b { display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#efa4b4,#e9899e); }
+.timeline-card>div { display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding-top:1rem;border-top:1px dashed #eab5b0; }
+.timeline-card article { display:grid;gap:.35rem;text-align:center; }.timeline-card article i { width:16px;height:16px;margin:-25px auto .45rem;border:4px solid #fff;border-radius:50%;background:#ee8da2;box-shadow:0 0 0 1px #edafba; }
+.timeline-card small,.snapshots-card small { color:#9a877e;font-size:.72rem; }
+.snapshots-card { grid-column:1/2; }.snapshots-card>div { display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem; }.snapshots-card article { display:grid;gap:.35rem;text-align:center; }.snapshots-card img { width:100%;aspect-ratio:1.25;border-radius:8px;object-fit:cover; }
+.contact-card { display:grid;align-content:start;gap:.8rem; }.contact-card a { color:#765f55; }.contact-card p { color:#8e786e;line-height:1.7; }.contact-card .router-link-active,.contact-card a:last-child { padding:.75rem;border-radius:99px;color:#fff;background:linear-gradient(90deg,#ee5e91,#f28a67);text-align:center; }
+@include mixins.respond-below(780px) { .profile-page { grid-template-columns:1fr; }.snapshots-card { grid-column:auto; }.trait-grid { width:65%;grid-template-columns:repeat(2,1fr); }.timeline-card>div { grid-template-columns:1fr 1fr;row-gap:2rem; } }

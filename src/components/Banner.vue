@@ -79,8 +79,8 @@ const props = defineProps({
     default: 'CircleCoder',
   },
   siteSubtitle: {
-    type: String,
-    default: '= 仰望星空 =',
+    type: [String, Array],
+    default: () => ['= 仰望星空 ='],
   },
   bannerImage: {
     type: String,
@@ -213,20 +213,26 @@ const getCategoryName = (category) => {
 }
 
 const bannerTitle = computed(() => configStore.siteConfig.bannerTitle || 'CircleCoder')
-const bannerSubtitle = computed(() => configStore.siteConfig.bannerSubtitle || '仰望星空')
+const bannerSubtitles = computed(() => {
+  const configured = configStore.siteConfig.typewriter_text
+  if (Array.isArray(configured) && configured.length) return configured
+  const fallback = configStore.siteConfig.bannerSubtitle || props.siteSubtitle || '仰望星空'
+  return Array.isArray(fallback) ? fallback : [fallback]
+})
 
 // 打字机特效
 const typedSubtitle = ref('')
 let typingTimer = null
 let deleting = false
 let charIndex = 0
+let subtitleIndex = 0
 const typingSpeed = 90
 const pauseAfterTyping = 2000 // 打完字后停留2秒
 const pauseAfterDeleting = 600
 const extraSpace = '\u00A0' // 不断行的空格
 
 function startTyping() {
-  const text = bannerSubtitle.value + extraSpace
+  const text = (bannerSubtitles.value[subtitleIndex % bannerSubtitles.value.length] || '') + extraSpace
   if (!deleting) {
     if (charIndex < text.length) {
       typedSubtitle.value += text[charIndex]
@@ -246,6 +252,7 @@ function startTyping() {
       typingTimer = setTimeout(startTyping, typingSpeed)
     } else {
       deleting = false
+      subtitleIndex = (subtitleIndex + 1) % bannerSubtitles.value.length
       typingTimer = setTimeout(startTyping, pauseAfterDeleting)
     }
   }

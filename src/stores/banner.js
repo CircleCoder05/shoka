@@ -4,7 +4,7 @@ import { ref, computed } from 'vue'
 export const useBannerStore = defineStore('banner', () => {
   // 默认网站信息
   const siteTitle = ref('CircleCoder')
-  const siteSubtitle = ref('= 仰望星空 =')
+  const siteSubtitle = ref(['= 仰望星空 ='])
   const bannerImage = ref('https://circlecoder05.oss-cn-beijing.aliyuncs.com/test/202503311943773.jpg')
   const bannerAlt = ref('banner')
   

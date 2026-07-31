@@ -38,35 +38,7 @@ export const useOml2dStore = defineStore('oml2d', () => {
   })
 
   // 加载配置文件
-  const loadConfig = async () => {
-    try {
-      const response = await fetch('/oml2d-config.json')
-      const jsonConfig = await response.json()
-
-      // 合并配置
-      Object.assign(config, jsonConfig)
-
-      // 处理parentElement
-      if (config.option.parentElement === 'document.body') {
-        config.option.parentElement = document.body
-      }
-
-      // 处理提示消息配置
-      if (config.option.tips && config.option.tips.idleTips) {
-        if (config.option.tips.idleTips.enable === false) {
-          // 如果禁用提示，清空消息数组
-          config.option.tips.idleTips.message = []
-          console.log('Tips disabled by config')
-        }
-      }
-
-      console.log('OML2D config loaded:', config)
-      return config
-    } catch (error) {
-      console.error('Failed to load OML2D config:', error)
-      return config
-    }
-  }
+  const loadConfig = async () => config
 
   // 初始化OhMyLive2d
   const initOml2d = async () => {

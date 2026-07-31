@@ -32,11 +32,19 @@ export const useConfigStore = defineStore('config', () => {
       const blogStore = useBlogStore()
       const data = await blogStore.load()
       const blog = data.blog
+      const links = blog.settings?.social_links || {}
+      const social = [
+        { name: 'github', icon: 'i-github', url: links.github },
+        { name: 'weibo', icon: 'i-weibo', url: links.weibo },
+        { name: 'bilibili', icon: 'i-tv', url: links.bilibili },
+        { name: 'email', icon: 'i-envelope', url: links.email },
+      ].filter(item => item.url)
       config.value = {
         site: {
           bannerTitle: blog.title, bannerSubtitle: blog.subtitle, description: blog.description,
           author: blog.author, avatar: blog.avatar_url, motto: blog.motto,
           ...(blog.settings || {}),
+          social,
         },
         footer: blog.footer || {},
       }
