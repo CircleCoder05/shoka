@@ -28,6 +28,10 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
+import * as pdfjsLib from 'pdfjs-dist'
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
 
 const props = defineProps({
   pdfPath: {
@@ -41,33 +45,12 @@ const error = ref('')
 const pdfPages = ref([])
 const loadedPages = ref(0)
 
-// 加载PDF.js
-const loadPdfJs = () => {
-  return new Promise((resolve, reject) => {
-    if (window.pdfjsLib) {
-      resolve(window.pdfjsLib)
-      return
-    }
-
-    const script = document.createElement('script')
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
-    script.onload = () => {
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
-      resolve(window.pdfjsLib)
-    }
-    script.onerror = reject
-    document.head.appendChild(script)
-  })
-}
-
 // 渲染PDF页面
 const renderPdfPages = async () => {
   try {
-    const pdfjsLib = await loadPdfJs()
-
     // 加载PDF文档
-    const loadingTask = pdfjsLib.getDocument(props.pdfPath)
+    const source = `/api/assets/pdf?url=${encodeURIComponent(props.pdfPath)}`
+    const loadingTask = pdfjsLib.getDocument(source)
     const pdf = await loadingTask.promise
 
     console.log('PDF加载成功，总页数:', pdf.numPages)

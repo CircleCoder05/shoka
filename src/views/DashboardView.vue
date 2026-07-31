@@ -55,7 +55,7 @@
               <div class="editor-mode"><template v-if="postForm.kind === 'markdown'"><button :class="{ active: editorMode === 'write' }" @click="editorMode = 'write'">编辑</button><button :class="{ active: editorMode === 'preview' }" @click="editorMode = 'preview'">预览</button></template><el-select v-model="postForm.kind"><el-option label="Markdown" value="markdown" /><el-option label="PDF" value="pdf" /></el-select></div>
               <div v-if="postForm.kind === 'markdown'" :class="['writing-surface', `mode-${editorMode}`]">
                 <textarea v-if="editorMode !== 'preview'" ref="sourceEditor" v-model="postForm.content" class="source-editor" spellcheck="false" placeholder="开始写下你的想法…&#10;&#10;支持 Markdown 与 LaTeX 语法。需要插入图片时可直接粘贴或拖入编辑区，文件会立即上传 OSS。" @paste="handleEditorPaste" @drop.prevent="handleEditorDrop"></textarea>
-                <article v-if="editorMode !== 'write'" class="live-preview post-content" v-html="previewHtml"></article>
+                <ArticleContent v-if="editorMode !== 'write'" class="live-preview" :html="previewHtml" />
               </div>
               <el-upload v-else class="pdf-article-upload" drag :show-file-list="false" accept="application/pdf" :http-request="uploadPdfArticle"><div class="pdf-upload-icon">PDF</div><strong>{{ postForm.attachment_url ? 'PDF 已上传，点击可重新选择' : '点击或拖入 PDF 文件' }}</strong><span>文件选择后立即上传阿里云 OSS，不提供站内预览。</span><small v-if="postForm.attachment_url">{{ postForm.attachment_url }}</small></el-upload>
             </section>
@@ -100,6 +100,7 @@
           <form class="site-admin" @submit.prevent="saveSiteSettings">
             <section class="studio-card site-identity"><div class="site-fields"><h2>侧边栏资料</h2><label>昵称<input v-model="blog.author" /></label><label>个性签名<input v-model="blog.motto" /></label><label>站点标题（Banner 标题）<input v-model="blog.title" /></label><label>打字机副标题<textarea v-model="typewriterText" rows="4" placeholder="输入 Banner 标题下方循环显示的文字"></textarea></label></div><aside class="avatar-settings"><h2>头像实时预览</h2><img :src="blog.avatar_url || fallbackAvatar" alt="" /><el-upload :show-file-list="false" accept="image/*" :http-request="uploadAvatar"><el-button type="primary">更换头像</el-button></el-upload></aside></section>
             <section class="studio-card social-settings"><h2>社交链接</h2><label v-for="network in socialNetworks" :key="network.key"><span class="social-label"><i :class="['ic',network.icon]"></i>{{ network.label }}</span><input v-model="socialLinks[network.key]" :placeholder="network.placeholder" /></label></section>
+            <section class="studio-card feature-settings"><h2>页面功能</h2><label class="switch-line"><span><strong>启用看板娘</strong><small>在前台左下角显示原有 Live2D 看板娘</small></span><input v-model="live2dEnabled" type="checkbox" /></label></section>
             <section class="studio-card banner-settings"><header><div><h2>Banner 图片列表</h2><p>未配置时自动使用系统现有随机图。</p></div><el-upload :show-file-list="false" accept="image/*" :http-request="uploadBanner"><el-button>＋ 上传 Banner</el-button></el-upload></header><div class="banner-list"><article v-for="(banner,index) in appearance.banners" :key="banner"><img :src="banner" alt="" /><span>Banner {{ index+1 }}</span><button type="button" class="danger" @click="removeBanner(index)">删除</button></article><p v-if="!appearance.banners.length">当前使用系统随机图片。</p></div></section>
             <el-button class="settings-save" type="primary" native-type="submit">保存站点设置</el-button>
           </form>
@@ -133,12 +134,13 @@ import 'element-plus/es/components/upload/style/css'
 import { api, apiDelete, apiGet, apiPatch, apiPost, apiPut } from '@/services/api'
 import { useAuthStore } from '@/stores/auth'
 import { renderMarkdown } from '@/utils/markdownRenderer'
+import ArticleContent from '@/components/ArticleContent.vue'
 import '@/styles/pages/dashboard.scss'
 
 const router = useRouter(), auth = useAuthStore()
 const section = ref('posts'), editorMode = ref('write')
 const blog = ref(null), profile = ref(null), posts = ref([]), categories = ref([]), tags = ref([]), friends = ref([])
-const notice = ref(''), postQuery = ref(''), postStatus = ref(''), postCategory = ref(''), tagsText = ref(''), friendTagsText = ref(''), typewriterText = ref('')
+const notice = ref(''), postQuery = ref(''), postStatus = ref(''), postCategory = ref(''), tagsText = ref(''), friendTagsText = ref(''), typewriterText = ref(''), live2dEnabled = ref(true)
 const editingPostId = ref(null), editingCategoryId = ref(null), editingFriendId = ref(null)
 const currentPage = ref(1), pageSize = ref(10), tagDialogVisible = ref(false), selectedPostTags = ref([]), sourceEditor = ref(null)
 const categoryDialogVisible = ref(false), tagEditDialogVisible = ref(false), friendDialogVisible = ref(false), editingTagName = ref('')
@@ -153,8 +155,8 @@ const postForm = reactive(postDefaults()), categoryForm = reactive(categoryDefau
 const appearance = reactive({ accent:'#ed6ea0', banner_url:'', banners:[], use_system_banners:true, background_url:'', show_archives:true, show_friends:true })
 const profileDefaults = () => ({display_mode:'default',markdown_content:'',portrait_url:null,introduction:'',traits:Array.from({length:6},()=>({title:''})),skills:[],timeline:[],snapshots:[],contact_email:'',contact_message:''})
 const profileForm = reactive(profileDefaults())
-const socialLinks = reactive({github:'',weibo:'',bilibili:'',email:''})
-const socialNetworks = [{key:'github',label:'GitHub',icon:'i-github',placeholder:'https://github.com/...'},{key:'weibo',label:'微博',icon:'i-weibo',placeholder:'https://weibo.com/...'},{key:'bilibili',label:'B站',icon:'i-tv',placeholder:'https://space.bilibili.com/...'},{key:'email',label:'邮箱',icon:'i-envelope',placeholder:'mailto:hello@example.com'}]
+const socialLinks = reactive({github:'',music:'',email:'',twitter:'',facebook:'',youtube:'',weibo:'',bilibili:''})
+const socialNetworks = [{key:'github',label:'GitHub',icon:'i-github',placeholder:'https://github.com/...'},{key:'music',label:'网易云音乐',icon:'i-cloud-music',placeholder:'https://music.163.com/...'},{key:'email',label:'邮箱',icon:'i-envelope',placeholder:'mailto:hello@example.com'},{key:'twitter',label:'Twitter',icon:'i-twitter',placeholder:'https://twitter.com/...'},{key:'facebook',label:'Facebook',icon:'i-facebook',placeholder:'https://facebook.com/...'},{key:'youtube',label:'YouTube',icon:'i-youtube',placeholder:'https://youtube.com/...'},{key:'weibo',label:'微博',icon:'i-weibo',placeholder:'https://weibo.com/...'},{key:'bilibili',label:'B站',icon:'i-tv',placeholder:'https://space.bilibili.com/...'}]
 const systemBanners = ['/default-cover.jpg','/system-banners/web.jpg','/system-banners/os.jpg','/system-banners/oo.jpg','/system-banners/co.jpg']
 const navigation = computed(() => [{key:'posts',label:'文章管理',icon:'▤',count:posts.value.length},{key:'taxonomy',label:'分类 / 标签',icon:'▦'},{key:'profile',label:'个人档案',icon:'♙'},{key:'friends',label:'友链',icon:'♡'},{key:'site',label:'站点设置',icon:'⚙'}])
 const pageTitle = computed(() => navigation.value.find(item => item.key === section.value)?.label || '写文章')
@@ -185,6 +187,7 @@ async function load(){
   Object.assign(appearance,{...appearance,...(blog.value.settings?.appearance||{})})
   Object.assign(socialLinks,blog.value.settings?.social_links||{})
   typewriterText.value=(blog.value.settings?.typewriter_text||[]).join(' · ')
+  live2dEnabled.value=blog.value.settings?.live2d_enabled!==false
 }
 function flash(text){notice.value=text;setTimeout(()=>notice.value='',2400)}
 function openSection(key){ if(key==='editor') newPost(); else section.value=key }
@@ -246,7 +249,7 @@ async function saveProfile(){
   Object.assign(profileForm,profile.value)
   flash('个人档案已保存')
 }
-async function saveSiteSettings(){blog.value.settings={...(blog.value.settings||{}),appearance:{...appearance,use_system_banners:!appearance.banners.length},social_links:{...socialLinks},typewriter_text:typewriterText.value.trim()?[typewriterText.value.trim()]:[]};blog.value.subtitle=typewriterText.value.trim();blog.value=await apiPatch('/api/dashboard/blog',blog.value);flash('站点设置已保存')}
+async function saveSiteSettings(){blog.value.settings={...(blog.value.settings||{}),appearance:{...appearance,use_system_banners:!appearance.banners.length},social_links:{...socialLinks},typewriter_text:typewriterText.value.trim()?[typewriterText.value.trim()]:[],live2d_enabled:live2dEnabled.value};blog.value.subtitle=typewriterText.value.trim();blog.value=await apiPatch('/api/dashboard/blog',blog.value);flash('站点设置已保存')}
 async function uploadSettingImage(file,folder='covers'){const body=new FormData();body.append('file',file);return api(`/api/dashboard/uploads?folder=${folder}`,{method:'POST',body})}
 async function uploadAvatar({file}){const result=await uploadSettingImage(file,'avatars');blog.value.avatar_url=result.url;flash('头像已上传，保存设置后生效')}
 async function uploadBanner({file}){const result=await uploadSettingImage(file,'covers');appearance.banners.push(result.url);appearance.use_system_banners=false;flash('横幅已上传并加入列表')}

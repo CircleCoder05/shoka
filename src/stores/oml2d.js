@@ -38,7 +38,14 @@ export const useOml2dStore = defineStore('oml2d', () => {
   })
 
   // 加载配置文件
-  const loadConfig = async () => config
+  const loadConfig = async () => {
+    const response = await fetch('/oml2d-config.json')
+    if (!response.ok) throw new Error('看板娘配置加载失败')
+    const loaded = await response.json()
+    Object.assign(config, loaded)
+    if (config.option.parentElement === 'document.body') config.option.parentElement = document.body
+    return config
+  }
 
   // 初始化OhMyLive2d
   const initOml2d = async () => {

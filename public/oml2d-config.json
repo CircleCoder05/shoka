@@ -1,0 +1,37 @@
+{
+  "enable": true,
+  "option": {
+    "dockedPosition": "left",
+    "mobileDisplay": true,
+    "models": [
+      {
+        "path": "https://unpkg.com/cc-tia@1.0.0/model.json",
+        "scale": 0.3,
+        "position": [0, -120],
+        "mobileScale": 0.08,
+        "mobilePosition": [0, 0],
+        "mobileStageStyle": { "width": 180 },
+        "stageStyle": { "width": 320 }
+      },
+      {
+        "path": "https://unpkg.com/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json",
+        "scale": 0.18,
+        "position": [0, 30],
+        "mobileScale": 0.1,
+        "mobilePosition": [0, 23],
+        "mobileStageStyle": { "width": 180, "height": 250 },
+        "stageStyle": { "width": 250, "height": 250 }
+      }
+    ],
+    "parentElement": "document.body",
+    "primaryColor": "#ed6ea0",
+    "sayHello": false,
+    "tips": {
+      "idleTips": {
+        "enable": false,
+        "interval": 15000,
+        "message": ["你好呀~", "欢迎来到我的小站~", "今天也要加油哦！"]
+      }
+    }
+  }
+}

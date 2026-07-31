@@ -70,14 +70,7 @@
     <div v-if="article.type === 'pdf'" class="post-content">
       <PdfContent :pdf-path="article.pdfPath" />
     </div>
-    <div
-      v-else
-      class="post-content"
-      v-html="processedArticleHtml"
-      v-code-block
-      v-image-optimize
-      v-media-block
-    ></div>
+    <ArticleContent v-else :html="processedArticleHtml" />
 
     <!-- 评论区 -->
     <CommentSystem :post-slug="route.params.slug" />
@@ -100,6 +93,7 @@ import { useConfigStore } from '@/stores/config'
 import PostFooter from '@/views/articles/PostFooter.vue'
 import PdfContent from '@/views/articles/PdfContent.vue'
 import CommentSystem from '@/components/CommentSystem.vue'
+import ArticleContent from '@/components/ArticleContent.vue'
 import { useSidebarStore } from '@/stores/sidebar'
 
 const route = useRoute()

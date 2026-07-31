@@ -33,11 +33,24 @@ export const useConfigStore = defineStore('config', () => {
       const data = await blogStore.load()
       const blog = data.blog
       const links = blog.settings?.social_links || {}
+      const legacyLinks = blog.slug === 'circlecoder' ? {
+        github: 'https://github.com/CircleCoder05',
+        music: 'https://music.163.com/#/user/home?id=yourid',
+        email: 'mailto:3196932484@qq.com',
+        twitter: 'https://twitter.com/yourname',
+        facebook: 'https://facebook.com/yourname',
+        youtube: 'https://youtube.com/yourname',
+      } : {}
+      const resolvedLinks = Object.keys(links).some(key => links[key]) ? links : legacyLinks
       const social = [
-        { name: 'github', icon: 'i-github', url: links.github },
-        { name: 'weibo', icon: 'i-weibo', url: links.weibo },
-        { name: 'bilibili', icon: 'i-tv', url: links.bilibili },
-        { name: 'email', icon: 'i-envelope', url: links.email && !links.email.startsWith('mailto:') ? `mailto:${links.email}` : links.email },
+        { name: 'github', icon: 'i-github', url: resolvedLinks.github },
+        { name: 'music', icon: 'i-cloud-music', url: resolvedLinks.music },
+        { name: 'email', icon: 'i-envelope', url: resolvedLinks.email && !resolvedLinks.email.startsWith('mailto:') ? `mailto:${resolvedLinks.email}` : resolvedLinks.email },
+        { name: 'twitter', icon: 'i-twitter', url: resolvedLinks.twitter },
+        { name: 'facebook', icon: 'i-facebook', url: resolvedLinks.facebook },
+        { name: 'youtube', icon: 'i-youtube', url: resolvedLinks.youtube },
+        { name: 'weibo', icon: 'i-weibo', url: resolvedLinks.weibo },
+        { name: 'bilibili', icon: 'i-tv', url: resolvedLinks.bilibili },
       ].filter(item => item.url)
       config.value = {
         site: {

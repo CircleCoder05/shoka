@@ -7,10 +7,14 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useOml2dStore } from '../stores/oml2d'
+import { useConfigStore } from '../stores/config'
 
 const oml2dStore = useOml2dStore()
+const configStore = useConfigStore()
 
-onMounted(() => {
+onMounted(async () => {
+  await configStore.loadConfig()
+  if (configStore.siteConfig.live2d_enabled === false) return
   // 等待页面完全加载后再初始化
   if (document.readyState === 'complete') {
     oml2dStore.initOml2d()
