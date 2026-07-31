@@ -157,6 +157,18 @@ const loadImageUrls = async () => {
 
 // 初始化轮播图片
 const initBannerImages = () => {
+  // 优先使用站点设置中上传的自定义横幅
+  const appearance = configStore.siteConfig?.appearance || {}
+  const customBanners = appearance.banners || []
+  const useSystemBanners = appearance.use_system_banners !== false
+
+  if (!useSystemBanners && customBanners.length > 0) {
+    // 使用站点设置中上传的横幅图片
+    bannerImages.value = customBanners.slice(0, 6)
+    return
+  }
+
+  // 否则使用 images.yml 中的随机图片
   if (randomImageUrls.value.length === 0) return
 
   // 随机选择6张图片进行轮播（按照hexo的实现）
@@ -226,6 +238,7 @@ let typingTimer = null
 let deleting = false
 let charIndex = 0
 let subtitleIndex = 0
+let typingStarted = false
 const typingSpeed = 90
 const pauseAfterTyping = 2000 // 打完字后停留2秒
 const pauseAfterDeleting = 600
@@ -258,6 +271,21 @@ function startTyping() {
   }
 }
 
+function resetTyping() {
+  if (typingTimer) clearTimeout(typingTimer)
+  typedSubtitle.value = extraSpace
+  charIndex = 1
+  subtitleIndex = 0
+  deleting = false
+  if (typingStarted) startTyping()
+}
+
+watch(
+  bannerSubtitles,
+  () => resetTyping(),
+  { deep: true },
+)
+
 // 监听文章页面变化
 watch(
   () => props.isArticlePage,
@@ -269,19 +297,19 @@ watch(
 )
 
 onMounted(async () => {
+  // 先加载站点配置（包含自定义横幅），再加载 images.yml 作为后备
+  await configStore.loadConfig()
   await loadImageUrls()
-  configStore.loadConfig()
 
   // 所有页面都使用轮播
   initBannerImages()
   startCarousel()
-  typedSubtitle.value = extraSpace
-  charIndex = 1
-  deleting = false
-  startTyping()
+  typingStarted = true
+  resetTyping()
 })
 
 onUnmounted(() => {
+  typingStarted = false
   stopCarousel()
   if (typingTimer) clearTimeout(typingTimer)
 })

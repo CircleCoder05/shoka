@@ -1,28 +1,28 @@
 <template>
-  <div class="oml2d-container">
-    <!-- OhMyLive2d 会在这里渲染 -->
-  </div>
+  <div class="oml2d-container" aria-hidden="true"></div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onBeforeUnmount, onMounted, watch } from 'vue'
 import { useOml2dStore } from '../stores/oml2d'
 import { useConfigStore } from '../stores/config'
 
 const oml2dStore = useOml2dStore()
 const configStore = useConfigStore()
+let stopLive2dWatch = null
 
 onMounted(async () => {
   await configStore.loadConfig()
-  if (configStore.siteConfig.live2d_enabled === false) return
-  // 等待页面完全加载后再初始化
-  if (document.readyState === 'complete') {
-    oml2dStore.initOml2d()
-  } else {
-    window.addEventListener('load', () => {
-      oml2dStore.initOml2d()
-    })
-  }
+  stopLive2dWatch = watch(
+    () => configStore.siteConfig.live2d_enabled,
+    (enabled) => oml2dStore.setEnabled(enabled !== false),
+    { immediate: true },
+  )
+})
+
+onBeforeUnmount(() => {
+  stopLive2dWatch?.()
+  oml2dStore.suspend()
 })
 </script>
 

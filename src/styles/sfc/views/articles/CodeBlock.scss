@@ -2,9 +2,9 @@
 
 .code-block {
   margin: 0;
-  border-radius: 12px;
+  border-radius: 6px;
   overflow: hidden;
-  background: #282c34;
+  background: var(--theme-code-surface);
   border: 1px solid var(--theme-code-border);
   transition: all 0.3s ease;
 }

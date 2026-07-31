@@ -1,5 +1,46 @@
 .oml2d-container {
-  /* 容器样式，OhMyLive2d 会自己定位 */
   position: relative;
   z-index: 1000;
+}
+
+:global(#oml2d-tips) {
+  top: -168px !important;
+  width: 240px !important;
+  min-height: 84px !important;
+  padding: 10px 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.92) !important;
+  border-radius: 6px !important;
+  color: #fff !important;
+  background: rgba(237, 110, 160, 0.96) !important;
+  box-shadow: 0 10px 28px rgba(117, 53, 79, 0.2) !important;
+  filter: none !important;
+  font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+}
+
+:global(#oml2d-statusBar) {
+  background-color: #ed6ea0 !important;
+  border-radius: 5px !important;
+}
+
+:global(#oml2d-menus > *) {
+  color: #ed6ea0 !important;
+}
+
+:global(html.oml2d-suspended #oml2d-stage) {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateX(-110%) !important;
+}
+
+@media (max-width: 700px) {
+  :global(#oml2d-tips) {
+    top: -142px !important;
+    width: 190px !important;
+    min-height: 72px !important;
+    padding: 8px 11px !important;
+    font-size: 13px !important;
+  }
 }

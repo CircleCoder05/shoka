@@ -27,6 +27,18 @@
     "primaryColor": "#ed6ea0",
     "sayHello": false,
     "tips": {
+      "style": {
+        "width": 240,
+        "minHeight": 84,
+        "left": "50%",
+        "top": "-168px"
+      },
+      "mobileStyle": {
+        "width": 190,
+        "minHeight": 72,
+        "left": "50%",
+        "top": "-142px"
+      },
       "idleTips": {
         "enable": false,
         "interval": 15000,

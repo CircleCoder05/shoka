@@ -3,7 +3,6 @@
 .home-content {
   @include mixins.card-surface(0, var(--theme-shadow-page));
   width: 100%;
-  max-width: 1050px;
   padding: 2rem;
   margin: 0;
   overflow: visible;
@@ -184,7 +183,6 @@
 /* 大屏幕适配 (1200px+) */
 @media (min-width: 1200px) {
   .home-content {
-    max-width: 1200px;
     padding: 2.5rem;
   }
 

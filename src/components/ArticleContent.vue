@@ -17,4 +17,4 @@ defineProps({
 })
 </script>
 
-<style scoped lang="scss" src="@/styles/sfc/views/articles/PostView.scss"></style>
+<style lang="scss" src="@/styles/sfc/views/articles/PostView.scss"></style>

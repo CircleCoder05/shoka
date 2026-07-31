@@ -26,6 +26,7 @@
     "mmd-parser": "^1.0.4",
     "node-fetch": "^3.3.2",
     "npm": "^11.5.2",
+    "oh-my-live2d": "0.19.3",
     "pdfjs-dist": "^5.4.54",
     "pinia": "^3.0.3",
     "typescript": "^5.8.3",

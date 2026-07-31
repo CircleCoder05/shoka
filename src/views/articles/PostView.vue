@@ -153,10 +153,6 @@ const reVerifyPassword = () => {
   sidebarStore.reset()
 }
 
-// 获取配置
-const colors = computed(() => configStore.colors)
-const fonts = computed(() => configStore.fonts)
-
 const formatDate = (dateStr) => {
   if (!dateStr) return ''
   const date = new Date(dateStr)
@@ -335,5 +331,3 @@ onUnmounted(() => {
   sidebarStore.reset()
 })
 </script>
-
-<style lang="scss" src="@/styles/sfc/views/articles/PostView.scss"></style>

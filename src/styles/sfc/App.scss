@@ -23,9 +23,9 @@
 }
 
 .app-sidebar-wrapper {
-  flex: 0 0 400px;
+  flex: 0 0 380px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: flex-start;
 }
 
@@ -38,7 +38,7 @@
 .app-content-wrapper {
   flex: 1 1 0;
   min-width: 0;
-  width: 100%;
+  max-width: 960px;
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 66vh - 56px);

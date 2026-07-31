@@ -68,7 +68,13 @@ const router = createRouter({
     },
     { path: '/login', name: 'login', component: AuthView, meta: { plainLayout: true } },
     { path: '/register', name: 'register', component: AuthView, meta: { plainLayout: true } },
-    { path: '/dashboard', name: 'dashboard', component: DashboardView, meta: { requiresAuth: true, plainLayout: true } },
+    { path: '/dashboard', redirect: '/dashboard/posts' },
+    {
+      path: '/dashboard/:section(posts|editor|taxonomy|profile|friends|site)',
+      name: 'dashboard',
+      component: DashboardView,
+      meta: { requiresAuth: true, plainLayout: true },
+    },
   ],
 })
 

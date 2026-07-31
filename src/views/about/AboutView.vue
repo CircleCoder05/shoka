@@ -7,7 +7,7 @@
         <div class="trait-grid">
           <article v-for="item in profile.traits" :key="item.title"><strong>{{ item.title }}</strong></article>
         </div>
-        <img v-if="profile.portrait_url" :src="profile.portrait_url" alt="人物画像" />
+        <div v-if="profile.portrait_url" class="portrait-image"><img :src="profile.portrait_url" alt="人物画像" /></div>
       </section>
 
       <section class="profile-card narrative-card">
@@ -30,7 +30,7 @@
       </div>
 
       <section class="profile-card snapshots-card">
-        <header><span>▧</span><h2>理想生活碎片</h2></header>
+        <header><span>▧</span><h2>精彩瞬间</h2></header>
         <div>
           <article v-for="item in profile.snapshots" :key="item.url"><img :src="item.url" alt="" /><strong>{{ item.title }}</strong></article>
         </div>

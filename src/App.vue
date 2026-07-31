@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import Sidebar from './components/Sidebar.vue'
@@ -14,19 +14,29 @@ const bannerStore = useBannerStore()
 const themeStore = useThemeStore()
 const configStore = useConfigStore()
 
-// 初始化主题系统
-onMounted(async () => {
-  themeStore.init()
-  const config = await configStore.loadConfig()
+const systemBanners = ['/default-cover.jpg','/system-banners/web.jpg','/system-banners/os.jpg','/system-banners/oo.jpg','/system-banners/co.jpg']
+
+function applyBannerConfig(config) {
   const site = config?.site || {}
   bannerStore.siteTitle = site.bannerTitle || bannerStore.siteTitle
   bannerStore.siteSubtitle = site.typewriter_text?.length ? site.typewriter_text : (site.bannerSubtitle || bannerStore.siteSubtitle)
   const appearance = site.appearance || {}
-  const systemBanners = ['/default-cover.jpg','/system-banners/web.jpg','/system-banners/os.jpg','/system-banners/oo.jpg','/system-banners/co.jpg']
-  const candidates = appearance.use_system_banners === false && appearance.banners?.length
-    ? appearance.banners
-    : systemBanners
-  bannerStore.bannerImage = candidates[Math.floor(Math.random() * candidates.length)] || appearance.banner_url || bannerStore.bannerImage
+  const configuredBanners = Array.isArray(appearance.banners)
+    ? appearance.banners.filter(Boolean)
+    : []
+  const legacyBanner = appearance.banner_url || appearance.background_url
+  const candidates = configuredBanners.length
+    ? configuredBanners
+    : (legacyBanner ? [legacyBanner] : systemBanners)
+  bannerStore.bannerImage = candidates[Math.floor(Math.random() * candidates.length)] || legacyBanner || bannerStore.bannerImage
+}
+
+watch(() => configStore.config, applyBannerConfig)
+
+// 初始化主题系统
+onMounted(async () => {
+  themeStore.init()
+  applyBannerConfig(await configStore.loadConfig())
 })
 </script>
 

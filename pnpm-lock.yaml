@@ -44,6 +44,9 @@ importers:
       npm:
         specifier: ^11.5.2
         version: 11.5.2
+      oh-my-live2d:
+        specifier: 0.19.3
+        version: 0.19.3
       pdfjs-dist:
         specifier: ^5.4.54
         version: 5.4.54
