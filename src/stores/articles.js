@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import MarkdownIt from 'markdown-it'
+import texmath from 'markdown-it-texmath'
+import katex from 'katex'
+import 'katex/dist/katex.min.css'
 import { useBlogStore } from './blog'
 import { apiGet } from '@/services/api'
 
@@ -23,7 +26,7 @@ export const useArticlesStore = defineStore('articles', () => {
       const escapedCode = md.utils.escapeHtml(str)
       return `<div class="custom-code-block" data-lang="${lang || ''}" data-code="${escapedCode}"></div>`
     },
-  })
+  }).use(texmath, { engine: katex, delimiters: 'dollars' })
 
   // 计算属性
   const articlesByCategory = computed(() => {

@@ -8,13 +8,20 @@ import OhMyLive2d from './components/OhMyLive2d.vue'
 import SearchModal from './components/SearchModal.vue'
 import { useBannerStore } from './stores/banner'
 import { useThemeStore } from './stores/theme'
+import { useConfigStore } from './stores/config'
 
 const bannerStore = useBannerStore()
 const themeStore = useThemeStore()
+const configStore = useConfigStore()
 
 // 初始化主题系统
-onMounted(() => {
+onMounted(async () => {
   themeStore.init()
+  const config = await configStore.loadConfig()
+  const site = config?.site || {}
+  bannerStore.siteTitle = site.bannerTitle || bannerStore.siteTitle
+  bannerStore.siteSubtitle = site.bannerSubtitle || bannerStore.siteSubtitle
+  bannerStore.bannerImage = site.appearance?.banner_url || bannerStore.bannerImage
 })
 </script>
 

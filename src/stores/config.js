@@ -7,6 +7,20 @@ export const useConfigStore = defineStore('config', () => {
   const loading = ref(false)
   const error = ref(null)
 
+  const applyAppearance = (appearance = {}) => {
+    if (typeof document === 'undefined') return
+    const root = document.documentElement
+    if (appearance.accent) {
+      root.style.setProperty('--color-pink', appearance.accent)
+      root.style.setProperty('--primary-color', appearance.accent)
+    }
+    document.body.style.backgroundImage = appearance.background_url
+      ? `url("${appearance.background_url}")`
+      : ''
+    document.body.style.backgroundSize = appearance.background_url ? 'cover' : ''
+    document.body.style.backgroundAttachment = appearance.background_url ? 'fixed' : ''
+  }
+
   // 加载配置
   const loadConfig = async () => {
     if (config.value) return config.value
@@ -26,6 +40,7 @@ export const useConfigStore = defineStore('config', () => {
         },
         footer: blog.footer || {},
       }
+      applyAppearance(blog.settings?.appearance)
     } catch (err) {
       error.value = err.message
       console.error('Failed to load config:', err)
@@ -49,5 +64,6 @@ export const useConfigStore = defineStore('config', () => {
     fonts,
     footer,
     loadConfig,
+    applyAppearance,
   }
 })
