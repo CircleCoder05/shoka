@@ -2,6 +2,7 @@
   <button
     @click="handleThemeToggle"
     class="theme-toggle-btn"
+    :class="{ simple }"
     :title="`切换到${themeStore.isDark ? '亮色' : '暗色'}模式`"
   >
     <i :class="themeStore.isDark ? 'ic i-moon' : 'ic i-sun'"></i>
@@ -52,6 +53,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useThemeStore } from '@/stores/theme'
+
+defineProps({
+  simple: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const themeStore = useThemeStore()
 const showAnimation = ref(false)

@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import MarkdownIt from 'markdown-it'
+import { useBlogStore } from './blog'
+import { apiGet } from '@/services/api'
 
 export const useArticlesStore = defineStore('articles', () => {
   // 状态
@@ -98,48 +100,6 @@ export const useArticlesStore = defineStore('articles', () => {
   })
 
   // 方法
-  const parseFrontMatter = (content) => {
-    const frontMatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/
-    const match = content.match(frontMatterRegex)
-
-    if (!match) {
-      return {
-        frontMatter: {},
-        content: content,
-      }
-    }
-
-    const frontMatterText = match[1]
-    const markdownContent = match[2]
-
-    const frontMatter = {}
-    frontMatterText.split('\n').forEach((line) => {
-      const colonIndex = line.indexOf(':')
-      if (colonIndex > 0) {
-        const key = line.substring(0, colonIndex).trim()
-        let value = line.substring(colonIndex + 1).trim()
-
-        // 处理数组和对象
-        if (value.startsWith('[') && value.endsWith(']')) {
-          value = value
-            .slice(1, -1)
-            .split(',')
-            .map((item) => item.trim().replace(/['"]/g, ''))
-        } else {
-          // 去除单引号或双引号包裹
-          value = value.replace(/^(['"])(.*)\1$/, '$2').trim()
-        }
-
-        frontMatter[key] = value
-      }
-    })
-
-    return {
-      frontMatter,
-      content: markdownContent,
-    }
-  }
-
   const loadArticles = async () => {
     loading.value = true
     error.value = null
@@ -148,51 +108,23 @@ export const useArticlesStore = defineStore('articles', () => {
       const allCategories = new Set()
       const allTags = new Set()
 
-      // 加载文章索引文件
-      const indexResponse = await fetch('/posts/articles-index.json')
-      if (!indexResponse.ok) {
-        throw new Error('Failed to load articles index')
-      }
-
-      const articlesIndex = await indexResponse.json()
-      console.log(`Loaded ${articlesIndex.length} articles from index`)
-
-      // 并行加载所有文章内容
-      const articlePromises = articlesIndex.map(async (articleInfo) => {
-        try {
-          const response = await fetch(`/posts/${articleInfo.path}`)
-          if (response.ok) {
-            const content = await response.text()
-            const { frontMatter, content: markdownContent } = parseFrontMatter(content)
-
-            const article = {
-              ...articleInfo,
-              ...frontMatter,
-              content: markdownContent,
-              // 使用 JSON 中的 excerpt，如果没有则生成
-              excerpt: articleInfo.excerpt || markdownContent.substring(0, 200) + '...',
-              // 保留 JSON 中的分类映射信息，不被 Front Matter 覆盖
-              categories: articleInfo.categories || frontMatter.categories,
-            }
-
-            // 收集分类和标签
-            if (article.categories) {
-              article.categories.forEach((cat) => allCategories.add(cat))
-            }
-            if (article.tags) {
-              article.tags.forEach((tag) => allTags.add(tag))
-            }
-
-            return article
-          }
-        } catch (err) {
-          console.warn(`Failed to load article ${articleInfo.path}:`, err)
-          return null
+      const blogStore = useBlogStore()
+      const data = await blogStore.load()
+      const validArticles = data.posts.map((post) => {
+        const category = post.category ? { key: post.category.slug, name: post.category.name } : null
+        if (category) allCategories.add(category.name)
+        post.tags?.forEach((tag) => allTags.add(tag))
+        return {
+          ...post,
+          date: post.published_at || post.created_at,
+          cover: post.cover_url,
+          type: post.kind === 'markdown' ? 'md' : post.kind,
+          pdfPath: post.attachment_url,
+          categories: category ? [category] : [],
+          wordCount: post.content?.length || 0,
+          readTime: Math.max(1, Math.ceil((post.content?.length || 0) / 250)),
         }
       })
-
-      const results = await Promise.all(articlePromises)
-      const validArticles = results.filter((article) => article !== null)
 
       // 按日期排序
       validArticles.sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -230,48 +162,17 @@ export const useArticlesStore = defineStore('articles', () => {
         }
       }
 
-      console.log('Article not found in loaded articles, fetching from index...')
-      // 如果没找到，尝试从索引中获取路径信息
-      const indexResponse = await fetch('/posts/articles-index.json')
-      if (!indexResponse.ok) {
-        throw new Error('Failed to load articles index')
-      }
-
-      const articlesIndex = await indexResponse.json()
-      console.log('Loaded articles index, length:', articlesIndex.length)
-      const articleInfo = articlesIndex.find((article) => article.slug === slug)
-      console.log('Found articleInfo:', articleInfo)
-
-      if (!articleInfo) {
-        throw new Error(`Article not found: ${slug}`)
-      }
-
-      // 使用正确的文件路径加载文章
-      const fileUrl = `/posts/${articleInfo.path}`
-      console.log('Fetching article from:', fileUrl)
-      const response = await fetch(fileUrl)
-      if (!response.ok) {
-        throw new Error(`Failed to load article file: ${articleInfo.path}`)
-      }
-
-      const content = await response.text()
-      console.log('Article content loaded, length:', content.length)
-
-      // 解析 Front Matter，包括 password 字段
-      const { frontMatter, content: markdownContent } = parseFrontMatter(content)
-      console.log('Front matter parsed:', frontMatter)
-      console.log('Markdown content length after parsing:', markdownContent.length)
-      console.log('Original content preview:', content.substring(0, 200))
-      console.log('Cleaned content preview:', markdownContent.substring(0, 200))
-
+      const blogStore = useBlogStore()
+      const post = await apiGet(`/api/blogs/${encodeURIComponent(blogStore.selectedSlug)}/posts/${slug}`)
       const result = {
-        ...articleInfo,
-        ...frontMatter, // 包含 password 等字段
-        content: markdownContent,
-        html: md.render(markdownContent),
-        slug,
+        ...post,
+        date: post.published_at || post.created_at,
+        cover: post.cover_url,
+        type: post.kind === 'markdown' ? 'md' : post.kind,
+        pdfPath: post.attachment_url,
+        categories: post.category ? [{ key: post.category.slug, name: post.category.name }] : [],
+        html: md.render(post.content || ''),
       }
-      console.log('Returning article with HTML length:', result.html.length)
       return result
     } catch (err) {
       console.error('Failed to load article:', err)

@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useBlogStore } from './blog'
 
 export const useCommentsStore = defineStore('comments', () => {
   // 评论配置状态
@@ -12,12 +13,9 @@ export const useCommentsStore = defineStore('comments', () => {
     try {
       loading.value = true
       error.value = null
-      const response = await fetch('/comment-config.json')
-      if (response.ok) {
-        commentConfig.value = await response.json()
-      } else {
-        throw new Error('评论配置加载失败')
-      }
+      const blogStore = useBlogStore()
+      const data = await blogStore.load()
+      commentConfig.value = data.blog.settings?.comments || { type: 'gitalk', enabled: false }
     } catch (err) {
       error.value = err.message
       console.error('加载评论配置失败:', err)

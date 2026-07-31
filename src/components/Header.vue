@@ -30,6 +30,7 @@
       <router-link to="/tags"> <i class="ic i-tags"></i>标签 </router-link>
       <router-link to="/about"> <i class="ic i-user"></i>关于 </router-link>
       <router-link to="/friends"> <i class="ic i-heart"></i>友链 </router-link>
+      <router-link v-if="authStore.authenticated" to="/dashboard"><i class="ic i-edit"></i>管理</router-link>
 
       <!-- 搜索按钮 -->
       <button class="search-btn" @click="searchStore.openSearchModal" title="搜索文章 (Ctrl+K)">
@@ -50,10 +51,12 @@ import { useMobileSidebarStore } from '@/stores/mobileSidebar'
 import { useSearchStore } from '@/stores/search'
 import { useConfigStore } from '@/stores/config'
 import ThemeToggle from './ThemeToggle.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const mobileSidebarStore = useMobileSidebarStore()
 const searchStore = useSearchStore()
 const configStore = useConfigStore()
+const authStore = useAuthStore()
 
 const toggleMobileSidebar = () => {
   mobileSidebarStore.toggleMobileSidebar()
@@ -90,6 +93,7 @@ function updateHeader() {
 
 onMounted(() => {
   window.addEventListener('scroll', updateHeader, { passive: true })
+  authStore.restore()
 })
 onUnmounted(() => {
   window.removeEventListener('scroll', updateHeader)

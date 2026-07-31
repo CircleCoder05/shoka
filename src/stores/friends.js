@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { useBlogStore } from './blog'
 
 export const useFriendsStore = defineStore('friends', () => {
   const friends = ref([])
@@ -29,13 +30,9 @@ export const useFriendsStore = defineStore('friends', () => {
     error.value = null
 
     try {
-      const response = await fetch('/friends.json')
-      if (!response.ok) {
-        throw new Error('Failed to load friends data')
-      }
-
-      const data = await response.json()
-      friends.value = data.friends || []
+      const blogStore = useBlogStore()
+      const data = await blogStore.load()
+      friends.value = data.blog.settings?.friends || []
     } catch (err) {
       error.value = err.message
       console.error('Failed to load friends:', err)

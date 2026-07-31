@@ -90,6 +90,9 @@ importers:
       prettier:
         specifier: 3.6.2
         version: 3.6.2
+      sass:
+        specifier: ^1.89.2
+        version: 1.90.0
       vite:
         specifier: ^7.0.6
         version: 7.0.6(@types/node@24.3.0)(sass@1.90.0)

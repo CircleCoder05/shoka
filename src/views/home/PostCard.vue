@@ -2,7 +2,7 @@
   <article class="post-card">
     <div class="cover">
       <a :href="post.url" :title="post.title">
-        <img :src="post.cover" :alt="post.title" />
+        <img :src="coverSrc" :alt="post.title" @error="useFallbackCover" />
       </a>
     </div>
     <div class="info">
@@ -38,13 +38,23 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
-defineProps({
+const props = defineProps({
   post: {
     type: Object,
     required: true,
   },
 })
+
+const fallbackCover = '/default-cover.jpg'
+const coverSrc = computed(() => props.post.cover || fallbackCover)
+
+function useFallbackCover(event) {
+  if (event.target.getAttribute('src') !== fallbackCover) {
+    event.target.src = fallbackCover
+  }
+}
 </script>
 
 <style scoped>

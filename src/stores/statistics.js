@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { useBlogStore } from './blog'
+import {
+  createArticleExcerpt,
+  loadBannerPool,
+  selectArticleCover,
+} from '@/utils/articlePresentation'
 
 export const useStatisticsStore = defineStore('statistics', () => {
   // 状态
@@ -104,13 +110,19 @@ export const useStatisticsStore = defineStore('statistics', () => {
     error.value = null
 
     try {
-      // 加载文章索引文件
-      const response = await fetch('/posts/articles-index.json')
-      if (!response.ok) {
-        throw new Error('Failed to load articles index')
-      }
-
-      const articlesIndex = await response.json()
+      const blogStore = useBlogStore()
+      const [data, bannerPool] = await Promise.all([blogStore.load(), loadBannerPool()])
+      const articlesIndex = data.posts.map((post) => ({
+        ...post,
+        date: post.published_at || post.created_at,
+        cover: selectArticleCover(post, bannerPool),
+        excerpt: post.excerpt?.trim() || createArticleExcerpt(post.content),
+        type: post.kind === 'markdown' ? 'md' : post.kind,
+        pdfPath: post.attachment_url,
+        wordCount: post.content?.length || 0,
+        readTime: Math.max(1, Math.ceil((post.content?.length || 0) / 250)),
+        categories: post.category ? [{ key: post.category.slug, name: post.category.name }] : [],
+      }))
 
       // 按日期排序（最新的在前面）
       const sortedArticles = articlesIndex.sort((a, b) => {

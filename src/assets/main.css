@@ -514,3 +514,34 @@ html.dark-theme .divider {
   background: transparent !important;
   background-color: transparent !important;
 }
+body:has(.auth-page) #oml2d-stage,
+body:has(.auth-page) #oml2d-statusBar,
+body:has(.dashboard-page) #oml2d-stage,
+body:has(.dashboard-page) #oml2d-statusBar {
+  display: none !important;
+}
+
+body:has(.auth-page) {
+  overflow: hidden;
+}
+
+/* Dynamic navigation keeps the original Shoka rhythm at laptop widths. */
+@media (max-width: 1180px) and (min-width: 769px) {
+  .header .nav {
+    gap: 10px;
+    margin-left: 20px;
+  }
+
+  .header .nav a {
+    padding-inline: 8px;
+  }
+
+  .header .search-btn {
+    margin-left: 0;
+  }
+
+  .header .search-text,
+  .header .search-shortcut {
+    display: none;
+  }
+}

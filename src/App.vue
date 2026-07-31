@@ -20,6 +20,8 @@ onMounted(() => {
 
 <template>
   <div id="app">
+    <router-view v-if="$route.meta.plainLayout" />
+    <template v-else>
     <!-- 导航栏 -->
     <Header class="floating-header" />
 
@@ -31,7 +33,7 @@ onMounted(() => {
       <!-- 侧边栏父盒子 -->
       <div class="app-sidebar-wrapper">
         <!-- 侧边栏 -->
-        <Sidebar class="app-sidebar" />
+        <Sidebar />
       </div>
       <!-- 主内容父盒子 -->
       <div class="app-content-wrapper">
@@ -50,6 +52,7 @@ onMounted(() => {
 
     <!-- 搜索模态框 -->
     <SearchModal />
+    </template>
   </div>
 </template>
 

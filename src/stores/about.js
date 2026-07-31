@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useBlogStore } from './blog'
 
 export const useAboutStore = defineStore('about', () => {
   // 状态
@@ -13,11 +14,9 @@ export const useAboutStore = defineStore('about', () => {
     error.value = null
 
     try {
-      const response = await fetch('/about.json')
-      if (!response.ok) {
-        throw new Error('Failed to load about data')
-      }
-      aboutData.value = await response.json()
+      const blogStore = useBlogStore()
+      const data = await blogStore.load()
+      aboutData.value = data.blog.profile || {}
     } catch (err) {
       error.value = err.message
       console.error('Failed to load about data:', err)

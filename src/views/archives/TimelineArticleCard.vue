@@ -73,12 +73,13 @@ const statisticsStore = useStatisticsStore()
 
 // 工具函数
 const getCoverImage = (article) => {
-  return article.cover
+  return article.cover || '/default-cover.jpg'
 }
 
 const handleImageError = (event) => {
-  // 如果图片加载失败，隐藏图片
-  event.target.style.display = 'none'
+  if (event.target.getAttribute('src') !== '/default-cover.jpg') {
+    event.target.src = '/default-cover.jpg'
+  }
 }
 
 const formatDate = (dateString) => {

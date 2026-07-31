@@ -8,6 +8,7 @@
         :alt="bannerAlt"
         class="banner-image"
         @load="onImageLoad(index)"
+        @error="onImageError(index)"
       />
     </div>
 
@@ -166,6 +167,12 @@ const initBannerImages = () => {
 // 图片加载完成
 const onImageLoad = (index) => {
   loadedImages.value.add(index)
+}
+
+const onImageError = (index) => {
+  if (bannerImages.value[index] !== '/default-cover.jpg') {
+    bannerImages.value[index] = '/default-cover.jpg'
+  }
 }
 
 // 开始轮播 - 现在由CSS动画控制

@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useBlogStore } from './blog'
 
 export const useConfigStore = defineStore('config', () => {
   const config = ref(null)
@@ -14,11 +15,17 @@ export const useConfigStore = defineStore('config', () => {
     error.value = null
 
     try {
-      const response = await fetch('/config.json')
-      if (!response.ok) {
-        throw new Error('Failed to load config')
+      const blogStore = useBlogStore()
+      const data = await blogStore.load()
+      const blog = data.blog
+      config.value = {
+        site: {
+          bannerTitle: blog.title, bannerSubtitle: blog.subtitle, description: blog.description,
+          author: blog.author, avatar: blog.avatar_url, motto: blog.motto,
+          ...(blog.settings || {}),
+        },
+        footer: blog.footer || {},
       }
-      config.value = await response.json()
     } catch (err) {
       error.value = err.message
       console.error('Failed to load config:', err)
