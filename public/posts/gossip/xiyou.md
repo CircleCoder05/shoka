@@ -3,7 +3,7 @@ title: '西游'
 date: 2026-3-29
 categories: [杂谈]
 tags: [诗词]
-author: 谨言
+author: 汪汪
 ---
 
 1. 求不得，放不下。梧桐化成杖，孤走枯苍道。
