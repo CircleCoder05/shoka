@@ -37,13 +37,13 @@ export const useConfigStore = defineStore('config', () => {
         { name: 'github', icon: 'i-github', url: links.github },
         { name: 'weibo', icon: 'i-weibo', url: links.weibo },
         { name: 'bilibili', icon: 'i-tv', url: links.bilibili },
-        { name: 'email', icon: 'i-envelope', url: links.email },
+        { name: 'email', icon: 'i-envelope', url: links.email && !links.email.startsWith('mailto:') ? `mailto:${links.email}` : links.email },
       ].filter(item => item.url)
       config.value = {
         site: {
+          ...(blog.settings || {}),
           bannerTitle: blog.title, bannerSubtitle: blog.subtitle, description: blog.description,
           author: blog.author, avatar: blog.avatar_url, motto: blog.motto,
-          ...(blog.settings || {}),
           social,
         },
         footer: blog.footer || {},

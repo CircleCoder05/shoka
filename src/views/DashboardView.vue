@@ -63,7 +63,7 @@
               <section class="editor-actions"><el-button @click="savePost('draft')">保存草稿</el-button><el-button type="primary" @click="savePost('published')">立即发布</el-button></section>
               <section class="studio-card"><h2>封面图</h2><label class="cover-uploader"><input type="file" accept="image/*" @change="uploadCover" /><img v-if="postForm.cover_url" :src="postForm.cover_url" alt="" /><span v-else>▧<b>点击上传封面图</b><small>支持 JPG、PNG、WebP</small></span></label></section>
               <section class="studio-card"><h2>文章摘要</h2><label class="excerpt-field"><textarea v-model="postForm.excerpt" rows="5" maxlength="300" placeholder="可选，将显示在文章列表中"></textarea><small>{{ postForm.excerpt.length }}/300</small></label></section>
-              <section class="studio-card"><h2>发布设置</h2><label>分类<el-select v-model="postForm.category_id" placeholder="未分类" clearable><el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" /></el-select></label><label>标签<div class="tag-picker" @click="openTagPicker"><span v-if="!selectedPostTags.length">点击选择标签</span><b v-for="tag in selectedPostTags" :key="tag" :class="tagTone(tag)">{{ tag }}</b></div></label></section>
+              <section class="studio-card"><h2>发布设置</h2><label>分类<el-select v-model="postForm.category_id" placeholder="未分类" clearable><el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" /></el-select></label><label>标签<div class="tag-picker" @click="openTagPicker"><span v-if="!selectedPostTags.length">点击选择标签</span><b v-for="tag in selectedPostTags" :key="tag" :class="tagTone(tag)">{{ tag }}</b></div></label><div class="encryption-setting"><label class="switch-line"><span><strong>加密访问</strong><small>访客输入访问密钥后才能阅读</small></span><input v-model="postForm.password_enabled" type="checkbox" /></label><label v-if="postForm.password_enabled">访问密钥<input v-model="postForm.password" type="password" :placeholder="editingPostId && postForm.is_encrypted ? '留空则保持原密钥' : '设置访问密钥'" /></label></div></section>
               <section class="studio-card editor-stat"><h2>字数统计</h2><div><strong>{{ editorStats.characters }}</strong><span>字符</span><strong>{{ editorStats.minutes }}</strong><span>分钟</span></div><small>{{ editorStats.paragraphs }} 个段落 · {{ editorStats.images }} 张图片</small></section>
             </aside>
           </div>
@@ -98,10 +98,9 @@
 
         <template v-else-if="section === 'site' && blog">
           <form class="site-admin" @submit.prevent="saveSiteSettings">
-            <section class="studio-card site-identity"><div class="site-fields"><h2>侧边栏资料</h2><label>昵称<input v-model="blog.author" /></label><label>个性签名<input v-model="blog.motto" /></label><label>站点标题<input v-model="blog.title" /></label><label>Banner 标题<input v-model="blog.subtitle" /></label><label>打字机文字（每行一条）<textarea v-model="typewriterText" rows="5"></textarea></label></div><aside class="avatar-settings"><h2>头像实时预览</h2><img :src="blog.avatar_url || fallbackAvatar" alt="" /><el-upload :show-file-list="false" accept="image/*" :http-request="uploadAvatar"><el-button type="primary">更换头像</el-button></el-upload></aside></section>
-            <section class="studio-card social-settings"><h2>社交链接</h2><label v-for="network in socialNetworks" :key="network.key">{{ network.label }}<input v-model="socialLinks[network.key]" :placeholder="network.placeholder" /></label></section>
+            <section class="studio-card site-identity"><div class="site-fields"><h2>侧边栏资料</h2><label>昵称<input v-model="blog.author" /></label><label>个性签名<input v-model="blog.motto" /></label><label>站点标题（Banner 标题）<input v-model="blog.title" /></label><label>打字机副标题<textarea v-model="typewriterText" rows="4" placeholder="输入 Banner 标题下方循环显示的文字"></textarea></label></div><aside class="avatar-settings"><h2>头像实时预览</h2><img :src="blog.avatar_url || fallbackAvatar" alt="" /><el-upload :show-file-list="false" accept="image/*" :http-request="uploadAvatar"><el-button type="primary">更换头像</el-button></el-upload></aside></section>
+            <section class="studio-card social-settings"><h2>社交链接</h2><label v-for="network in socialNetworks" :key="network.key"><span class="social-label"><i :class="['ic',network.icon]"></i>{{ network.label }}</span><input v-model="socialLinks[network.key]" :placeholder="network.placeholder" /></label></section>
             <section class="studio-card banner-settings"><header><div><h2>Banner 图片列表</h2><p>未配置时自动使用系统现有随机图。</p></div><el-upload :show-file-list="false" accept="image/*" :http-request="uploadBanner"><el-button>＋ 上传 Banner</el-button></el-upload></header><div class="banner-list"><article v-for="(banner,index) in appearance.banners" :key="banner"><img :src="banner" alt="" /><span>Banner {{ index+1 }}</span><button type="button" class="danger" @click="removeBanner(index)">删除</button></article><p v-if="!appearance.banners.length">当前使用系统随机图片。</p></div></section>
-            <section class="studio-card theme-settings"><h2>全站主题色</h2><p>统一应用到按钮、链接、标签与强调元素。</p><div class="color-options"><button v-for="color in accentColors" :key="color" type="button" :style="{background:color}" :class="{ selected: appearance.accent === color }" @click="appearance.accent = color"></button><input v-model="appearance.accent" type="color" /></div></section>
             <el-button class="settings-save" type="primary" native-type="submit">保存站点设置</el-button>
           </form>
         </template>
@@ -117,11 +116,6 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import MarkdownIt from 'markdown-it'
-import texmath from 'markdown-it-texmath'
-import katex from 'katex'
-import hljs from 'highlight.js'
-import 'katex/dist/katex.min.css'
 import {
   ElButton, ElCheckbox, ElCheckboxGroup, ElDialog, ElOption,
   ElPagination, ElRadioButton, ElRadioGroup, ElSelect, ElUpload,
@@ -138,20 +132,9 @@ import 'element-plus/es/components/select/style/css'
 import 'element-plus/es/components/upload/style/css'
 import { api, apiDelete, apiGet, apiPatch, apiPost, apiPut } from '@/services/api'
 import { useAuthStore } from '@/stores/auth'
+import { renderMarkdown } from '@/utils/markdownRenderer'
 import '@/styles/pages/dashboard.scss'
 
-const markdownUtils = new MarkdownIt().utils
-const md = new MarkdownIt({
-  html: false,
-  linkify: true,
-  breaks: true,
-  highlight(code, language) {
-    const value = language && hljs.getLanguage(language)
-      ? hljs.highlight(code, { language }).value
-      : markdownUtils.escapeHtml(code)
-    return `<pre><code class="hljs${language ? ` language-${language}` : ''}">${value}</code></pre>`
-  },
-}).use(texmath, { engine: katex, delimiters: 'dollars' })
 const router = useRouter(), auth = useAuthStore()
 const section = ref('posts'), editorMode = ref('write')
 const blog = ref(null), profile = ref(null), posts = ref([]), categories = ref([]), tags = ref([]), friends = ref([])
@@ -162,7 +145,7 @@ const categoryDialogVisible = ref(false), tagEditDialogVisible = ref(false), fri
 const categoryPage = ref(1), tagPage = ref(1), taxonomyPageSize = ref(5)
 const selectedCategoryIds = ref([]), selectedTagNames = ref([])
 const fallbackAvatar = '/img/avatar.png'
-const postDefaults = () => ({ title:'', excerpt:'', content:'', content_url:null, cover_url:null, attachment_url:null, kind:'markdown', tags:[], category_id:null, status:'draft', password:null, published_at:null })
+const postDefaults = () => ({ title:'', excerpt:'', content:'', content_url:null, cover_url:null, attachment_url:null, kind:'markdown', tags:[], category_id:null, status:'draft', password_enabled:false, password:'', published_at:null })
 const categoryDefaults = () => ({ name:'', slug:'', description:'', cover_url:null, sort_order:0 })
 const tagDefaults = () => ({ name:'', color:'#a78bfa', description:'' })
 const friendDefaults = () => ({ category:'朋友们', name:'', url:'', avatar_url:null, description:'', tags:[], background:null, sort_order:0, is_visible:true })
@@ -171,8 +154,7 @@ const appearance = reactive({ accent:'#ed6ea0', banner_url:'', banners:[], use_s
 const profileDefaults = () => ({display_mode:'default',markdown_content:'',portrait_url:null,introduction:'',traits:Array.from({length:6},()=>({title:''})),skills:[],timeline:[],snapshots:[],contact_email:'',contact_message:''})
 const profileForm = reactive(profileDefaults())
 const socialLinks = reactive({github:'',weibo:'',bilibili:'',email:''})
-const socialNetworks = [{key:'github',label:'GitHub',placeholder:'https://github.com/...'},{key:'weibo',label:'微博',placeholder:'https://weibo.com/...'},{key:'bilibili',label:'B站',placeholder:'https://space.bilibili.com/...'},{key:'email',label:'邮箱',placeholder:'mailto:hello@example.com'}]
-const accentColors = ['#ed6ea0','#ff9f43','#f7c948','#42b883','#22b8cf','#5b7cfa','#9b6df5']
+const socialNetworks = [{key:'github',label:'GitHub',icon:'i-github',placeholder:'https://github.com/...'},{key:'weibo',label:'微博',icon:'i-weibo',placeholder:'https://weibo.com/...'},{key:'bilibili',label:'B站',icon:'i-tv',placeholder:'https://space.bilibili.com/...'},{key:'email',label:'邮箱',icon:'i-envelope',placeholder:'mailto:hello@example.com'}]
 const systemBanners = ['/default-cover.jpg','/system-banners/web.jpg','/system-banners/os.jpg','/system-banners/oo.jpg','/system-banners/co.jpg']
 const navigation = computed(() => [{key:'posts',label:'文章管理',icon:'▤',count:posts.value.length},{key:'taxonomy',label:'分类 / 标签',icon:'▦'},{key:'profile',label:'个人档案',icon:'♙'},{key:'friends',label:'友链',icon:'♡'},{key:'site',label:'站点设置',icon:'⚙'}])
 const pageTitle = computed(() => navigation.value.find(item => item.key === section.value)?.label || '写文章')
@@ -187,7 +169,7 @@ function togglePageCategories(event){const ids=pagedCategories.value.map(item=>i
 function togglePageTags(event){const names=pagedTags.value.map(tag=>tag.name);selectedTagNames.value=event.target.checked?[...new Set([...selectedTagNames.value,...names])]:selectedTagNames.value.filter(name=>!names.includes(name))}
 const previewHtml = computed(() => {
   try {
-    return md.render(postForm.content || '*预览会显示在这里…*')
+    return renderMarkdown(postForm.content || '*预览会显示在这里…*')
   } catch {
     return '<p class="preview-error">公式语法有误，请检查 LaTeX 内容。</p>'
   }
@@ -202,13 +184,13 @@ async function load(){
   profileForm.snapshots=[...(profile.value.snapshots||[])].map(item=>({url:item.url,title:item.title||item.description||''}))
   Object.assign(appearance,{...appearance,...(blog.value.settings?.appearance||{})})
   Object.assign(socialLinks,blog.value.settings?.social_links||{})
-  typewriterText.value=(blog.value.settings?.typewriter_text||[]).join('\n')
+  typewriterText.value=(blog.value.settings?.typewriter_text||[]).join(' · ')
 }
 function flash(text){notice.value=text;setTimeout(()=>notice.value='',2400)}
 function openSection(key){ if(key==='editor') newPost(); else section.value=key }
 function newPost(){editingPostId.value=null;Object.assign(postForm,postDefaults());tagsText.value='';selectedPostTags.value=[];section.value='editor'}
-function editPost(post){editingPostId.value=post.id;Object.assign(postForm,post);postForm.category_id=post.category?.id||null;selectedPostTags.value=[...(post.tags||[])];tagsText.value=selectedPostTags.value.join(', ');section.value='editor'}
-async function savePost(status=postForm.status){if(postForm.kind==='pdf'&&!postForm.attachment_url){flash('请先上传 PDF 文件');return}postForm.status=status;const payload={...postForm,tags:tagsText.value.split(',').map(x=>x.trim()).filter(Boolean)};await (editingPostId.value?apiPut(`/api/dashboard/posts/${editingPostId.value}`,payload):apiPost('/api/dashboard/posts',payload));posts.value=await apiGet('/api/dashboard/posts');tags.value=await apiGet('/api/dashboard/tags');section.value='posts';flash(status==='published'?'文章已发布':'草稿已保存')}
+function editPost(post){editingPostId.value=post.id;Object.assign(postForm,post,{password_enabled:!!post.is_encrypted,password:''});postForm.category_id=post.category?.id||null;selectedPostTags.value=[...(post.tags||[])];tagsText.value=selectedPostTags.value.join(', ');section.value='editor'}
+async function savePost(status=postForm.status){if(postForm.kind==='pdf'&&!postForm.attachment_url){flash('请先上传 PDF 文件');return}if(postForm.password_enabled&&!postForm.password&&!postForm.is_encrypted){flash('请设置文章访问密钥');return}postForm.status=status;const payload={...postForm,tags:tagsText.value.split(',').map(x=>x.trim()).filter(Boolean)};await (editingPostId.value?apiPut(`/api/dashboard/posts/${editingPostId.value}`,payload):apiPost('/api/dashboard/posts',payload));posts.value=await apiGet('/api/dashboard/posts');tags.value=await apiGet('/api/dashboard/tags');section.value='posts';flash(status==='published'?'文章已发布':'草稿已保存')}
 async function publishPost(post){await apiPost(`/api/dashboard/posts/${post.id}/publish`,{});posts.value=await apiGet('/api/dashboard/posts');flash('文章已发布')}
 async function removePost(post){if(confirm(`删除文章“${post.title}”？`)){await apiDelete(`/api/dashboard/posts/${post.id}`);posts.value=posts.value.filter(x=>x.id!==post.id)}}
 async function uploadCover(event){const file=event.target.files?.[0];if(!file)return;const body=new FormData();body.append('file',file);const result=await api('/api/dashboard/uploads?folder=covers',{method:'POST',body});postForm.cover_url=result.url;flash('封面已上传')}
@@ -264,7 +246,7 @@ async function saveProfile(){
   Object.assign(profileForm,profile.value)
   flash('个人档案已保存')
 }
-async function saveSiteSettings(){blog.value.settings={...(blog.value.settings||{}),appearance:{...appearance,use_system_banners:!appearance.banners.length},social_links:{...socialLinks},typewriter_text:typewriterText.value.split('\n').map(item=>item.trim()).filter(Boolean)};blog.value=await apiPatch('/api/dashboard/blog',blog.value);flash('站点设置已保存')}
+async function saveSiteSettings(){blog.value.settings={...(blog.value.settings||{}),appearance:{...appearance,use_system_banners:!appearance.banners.length},social_links:{...socialLinks},typewriter_text:typewriterText.value.trim()?[typewriterText.value.trim()]:[]};blog.value.subtitle=typewriterText.value.trim();blog.value=await apiPatch('/api/dashboard/blog',blog.value);flash('站点设置已保存')}
 async function uploadSettingImage(file,folder='covers'){const body=new FormData();body.append('file',file);return api(`/api/dashboard/uploads?folder=${folder}`,{method:'POST',body})}
 async function uploadAvatar({file}){const result=await uploadSettingImage(file,'avatars');blog.value.avatar_url=result.url;flash('头像已上传，保存设置后生效')}
 async function uploadBanner({file}){const result=await uploadSettingImage(file,'covers');appearance.banners.push(result.url);appearance.use_system_banners=false;flash('横幅已上传并加入列表')}

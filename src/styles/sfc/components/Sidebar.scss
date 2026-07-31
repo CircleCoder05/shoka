@@ -336,6 +336,12 @@
 .social .item.weibo {
   color: #ea716e;
 }
+.social .item.bilibili i::before {
+  content: 'B';
+  font-family: Arial, sans-serif;
+  font-size: .72em;
+  font-weight: 800;
+}
 .social .item.google {
   color: #4285f4;
 }

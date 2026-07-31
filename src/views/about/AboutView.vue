@@ -15,17 +15,19 @@
         <p v-for="paragraph in introductionParagraphs" :key="paragraph">{{ paragraph }}</p>
       </section>
 
-      <section class="profile-card skills-card">
-        <header><span>▥</span><h2>能力偏好</h2></header>
-        <article v-for="item in profile.skills" :key="item.name"><span>{{ item.name }}</span><i><b :style="{width:`${item.value}%`}"></b></i><strong>{{ item.value }}%</strong></article>
-      </section>
+      <div class="profile-middle-row">
+        <section class="profile-card skills-card">
+          <header><span>▥</span><h2>能力偏好</h2></header>
+          <article v-for="item in profile.skills" :key="item.name"><span>{{ item.name }}</span><i><b :style="{width:`${item.value}%`}"></b></i><strong>{{ item.value }}%</strong></article>
+        </section>
 
-      <section class="profile-card timeline-card">
-        <header><span>♙</span><h2>人生时间线</h2></header>
-        <div>
-          <article v-for="item in profile.timeline" :key="item.title"><i></i><strong>{{ item.title }}</strong><small>{{ item.description }}</small></article>
-        </div>
-      </section>
+        <section class="profile-card timeline-card">
+          <header><span>♙</span><h2>人生时间线</h2></header>
+          <div>
+            <article v-for="item in profile.timeline" :key="item.title"><i></i><strong>{{ item.title }}</strong><small>{{ item.description }}</small></article>
+          </div>
+        </section>
+      </div>
 
       <section class="profile-card snapshots-card">
         <header><span>▧</span><h2>理想生活碎片</h2></header>

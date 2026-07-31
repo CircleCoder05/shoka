@@ -131,18 +131,13 @@ const passwordInputRef = ref(null)
 // 从localStorage恢复密码验证状态
 const restorePasswordState = (slug) => {
   const storageKey = `article_password_${slug}`
-  const storedPassword = localStorage.getItem(storageKey)
-  if (storedPassword) {
-    passwordVerified.value = true
-    return true
-  }
-  return false
+  return localStorage.getItem(storageKey) || ''
 }
 
 // 保存密码验证状态到localStorage
-const savePasswordState = (slug) => {
+const savePasswordState = (slug, password) => {
   const storageKey = `article_password_${slug}`
-  localStorage.setItem(storageKey, 'verified')
+  localStorage.setItem(storageKey, password)
 }
 
 // 清除密码验证状态
@@ -199,32 +194,28 @@ const getCategoryName = (article) => {
 }
 
 // 密码验证方法
-const verifyPassword = () => {
+const verifyPassword = async () => {
   if (!passwordInput.value.trim()) {
-    passwordError.value = '请输入密钥'
+    passwordError.value = '请输入访问密钥'
     return
   }
 
-  if (article.value && article.value.password === passwordInput.value.trim()) {
+  try {
+    article.value = await articlesStore.unlockArticle(route.params.slug, passwordInput.value.trim())
     passwordVerified.value = true
     passwordError.value = ''
-    // 保存密码验证状态到localStorage
-    savePasswordState(route.params.slug)
-    // 密码验证成功后，开始加载文章内容
-    loadArticleContent()
-  } else {
-    passwordError.value = '密钥错误，请重试'
+    savePasswordState(route.params.slug, passwordInput.value.trim())
+    await loadArticleContent()
+  } catch {
+    passwordError.value = '访问密钥错误，请重试'
     passwordInput.value = ''
-    // 聚焦到密码输入框
-    if (passwordInputRef.value) {
-      passwordInputRef.value.focus()
-    }
+    passwordInputRef.value?.focus()
   }
 }
 
 // 检查文章是否需要密码
 const checkPasswordRequirement = (articleData) => {
-  if (articleData && articleData.password) {
+  if (articleData && articleData.is_encrypted) {
     needsPassword.value = true
     passwordVerified.value = false
     return true
@@ -299,11 +290,17 @@ const loadArticle = async (slug) => {
 
     // 如果需要密码，先尝试恢复已保存的验证状态
     if (needsPassword.value) {
-      const wasVerified = restorePasswordState(slug)
-      if (wasVerified) {
-        await loadArticleContent()
-        loading.value = false
-        return
+      const storedPassword = restorePasswordState(slug)
+      if (storedPassword) {
+        try {
+          article.value = await articlesStore.unlockArticle(slug, storedPassword)
+          passwordVerified.value = true
+          await loadArticleContent()
+          loading.value = false
+          return
+        } catch {
+          clearPasswordState(slug)
+        }
       }
       loading.value = false
       return
@@ -326,11 +323,7 @@ onMounted(async () => {
 
 watch(
   () => route.params.slug,
-  (newSlug, oldSlug) => {
-    // 清除旧文章的密码状态
-    if (oldSlug) {
-      clearPasswordState(oldSlug)
-    }
+  (newSlug) => {
     // 重置密码验证状态
     passwordVerified.value = false
     needsPassword.value = false

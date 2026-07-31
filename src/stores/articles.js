@@ -1,11 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import MarkdownIt from 'markdown-it'
-import texmath from 'markdown-it-texmath'
-import katex from 'katex'
-import 'katex/dist/katex.min.css'
 import { useBlogStore } from './blog'
-import { apiGet } from '@/services/api'
+import { apiGet, apiPost } from '@/services/api'
+import { renderMarkdown } from '@/utils/markdownRenderer'
 
 export const useArticlesStore = defineStore('articles', () => {
   // 状态
@@ -14,19 +11,6 @@ export const useArticlesStore = defineStore('articles', () => {
   const tags = ref([])
   const loading = ref(false)
   const error = ref(null)
-
-  // Markdown 解析器
-  const md = new MarkdownIt({
-    html: true,
-    linkify: true,
-    typographer: true,
-    breaks: true,
-    highlight: (str, lang) => {
-      // 返回一个特殊的标记，稍后会被替换为自定义组件
-      const escapedCode = md.utils.escapeHtml(str)
-      return `<div class="custom-code-block" data-lang="${lang || ''}" data-code="${escapedCode}"></div>`
-    },
-  }).use(texmath, { engine: katex, delimiters: 'dollars' })
 
   // 计算属性
   const articlesByCategory = computed(() => {
@@ -161,7 +145,7 @@ export const useArticlesStore = defineStore('articles', () => {
         return {
           ...existingArticle,
           content: cleanContent,
-          html: md.render(cleanContent),
+          html: renderMarkdown(cleanContent),
         }
       }
 
@@ -174,12 +158,29 @@ export const useArticlesStore = defineStore('articles', () => {
         type: post.kind === 'markdown' ? 'md' : post.kind,
         pdfPath: post.attachment_url,
         categories: post.category ? [{ key: post.category.slug, name: post.category.name }] : [],
-        html: md.render(post.content || ''),
+        html: renderMarkdown(post.content || ''),
       }
       return result
     } catch (err) {
       console.error('Failed to load article:', err)
       throw err
+    }
+  }
+
+  const unlockArticle = async (slug, password) => {
+    const blogStore = useBlogStore()
+    const post = await apiPost(
+      `/api/blogs/${encodeURIComponent(blogStore.selectedSlug)}/posts/${encodeURIComponent(slug)}/unlock`,
+      { password },
+    )
+    return {
+      ...post,
+      date: post.published_at || post.created_at,
+      cover: post.cover_url,
+      type: post.kind === 'markdown' ? 'md' : post.kind,
+      pdfPath: post.attachment_url,
+      categories: post.category ? [{ key: post.category.slug, name: post.category.name }] : [],
+      html: renderMarkdown(post.content || ''),
     }
   }
 
@@ -208,6 +209,7 @@ export const useArticlesStore = defineStore('articles', () => {
     // 方法
     loadArticles,
     getArticleBySlug,
+    unlockArticle,
     getArticlesByCategory,
     getArticlesByTag,
   }
