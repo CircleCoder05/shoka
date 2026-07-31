@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 .footer {
   background: transparent;
   border-top: 1px solid var(--color-divider);
@@ -33,16 +35,16 @@
 }
 
 .icp a:hover {
-  color: #ed6ea0;
+  color: var(--color-pink);
 }
 
 .runtime {
   font-size: 14px;
-  color: #999;
+  color: var(--theme-text-muted);
 }
 
 /* 平板端适配 */
-@media (max-width: 1024px) {
+@include mixins.respond-below(1024px) {
   .footer {
     padding: 16px 0;
     margin-top: 24px;
@@ -54,14 +56,14 @@
 }
 
 /* 移动端适配 */
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .footer {
     display: none;
   }
 }
 
 /* 小屏手机适配 */
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .footer {
     display: none;
   }

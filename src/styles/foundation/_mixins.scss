@@ -7,7 +7,7 @@
 
 @mixin card-surface($radius: 0.75rem, $shadow: 0 2px 8px rgba(0, 0, 0, 0.08)) {
   box-sizing: border-box;
-  background: #fff;
+  background: var(--theme-surface);
   border-radius: $radius;
   box-shadow: $shadow;
 }
@@ -46,4 +46,3 @@
     @content;
   }
 }
-

@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 .valine-comments-section {
   margin-top: 2rem;
   padding: 1.5rem;
@@ -216,7 +218,7 @@ html.dark-theme .v .vlist .vcard .vhead .vtag {
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .valine-comments-section {
     padding: 1rem;
     margin-top: 1.5rem;

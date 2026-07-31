@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 .header {
   background: linear-gradient(135deg, rgba(56, 161, 219, 0.6) 0%, rgba(237, 110, 160, 0.55) 100%);
   backdrop-filter: blur(15px);
@@ -33,31 +35,31 @@ html.dark-theme .header-in-banner {
 
 /* 暗色模式下强制Header导航链接保持白色 */
 html.dark-theme .header .nav a {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 html.dark-theme .header .nav a:hover {
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
 html.dark-theme .header .nav a.router-link-active {
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
 html.dark-theme .header .mobile-title {
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
 html.dark-theme .header .search-btn {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 html.dark-theme .header .search-btn:hover {
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
 html.dark-theme .header .search-btn-mobile {
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
 /* 导航栏隐藏状态 */
@@ -111,7 +113,7 @@ html.dark-theme .header .search-btn-mobile {
 .hamburger-line {
   width: 24px;
   height: 3px;
-  background: #ffffff;
+  background: var(--theme-surface);
   border-radius: 2px;
   transition: all 0.3s ease;
   box-shadow:
@@ -259,7 +261,7 @@ html.dark-theme .header .search-btn-mobile {
 }
 
 /* 平板端适配 */
-@media (max-width: 1024px) {
+@include mixins.respond-below(1024px) {
   .header {
     padding: 0 24px;
     background: linear-gradient(135deg, rgba(56, 161, 219, 0.65) 0%, rgba(237, 110, 160, 0.6) 100%);
@@ -281,7 +283,7 @@ html.dark-theme .header .search-btn-mobile {
 }
 
 /* 移动端适配 */
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .header {
     padding: 0 16px;
     height: 48px;
@@ -307,7 +309,7 @@ html.dark-theme .header .search-btn-mobile {
 }
 
 /* 小屏手机适配 */
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .header {
     padding: 0 12px;
     height: 44px;

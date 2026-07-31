@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 .article-calendar {
   margin-bottom: 3rem;
 }
@@ -19,7 +21,7 @@
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -28,7 +30,7 @@
 
 /* 暗色主题下的标题 */
 html.dark-theme .calendar-title {
-  color: #abb2bf;
+  color: var(--theme-text);
 }
 
 .year-selector {
@@ -44,10 +46,10 @@ html.dark-theme .calendar-title {
 
 .year-btn {
   padding: 0.5rem 1rem;
-  background: #f8f9fa;
+  background: var(--theme-surface-muted);
   border: 2px solid transparent;
   border-radius: 20px;
-  color: #666;
+  color: var(--theme-text-secondary);
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -56,41 +58,41 @@ html.dark-theme .calendar-title {
 }
 
 .year-btn:hover {
-  background: #ed6ea0;
+  background: var(--color-pink);
   color: #fff;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3);
 }
 
 .year-btn.active {
-  background: #ed6ea0;
+  background: var(--color-pink);
   color: #fff;
-  border-color: #ed6ea0;
+  border-color: var(--color-pink);
   box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3);
 }
 
 /* 暗色主题下的年份按钮 */
 html.dark-theme .year-btn {
-  background: #3e4451;
-  color: #abb2bf;
-  border-color: #3e4451;
+  background: var(--theme-surface-active);
+  color: var(--theme-text);
+  border-color: var(--theme-border);
 }
 
 html.dark-theme .year-btn:hover {
-  background: #ed6ea0;
+  background: var(--color-pink);
   color: #fff;
-  border-color: #ed6ea0;
+  border-color: var(--color-pink);
 }
 
 html.dark-theme .year-btn.active {
-  background: #ed6ea0 !important;
-  color: #fff !important;
-  border-color: #ed6ea0 !important;
-  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3) !important;
+  background: var(--color-pink);
+  color: #fff;
+  border-color: var(--color-pink);
+  box-shadow: 0 4px 12px rgba(237, 110, 160, 0.3);
 }
 
 .calendar-title i {
-  color: #ed6ea0;
+  color: var(--color-pink);
   font-size: 1.3rem;
 }
 
@@ -101,7 +103,7 @@ html.dark-theme .year-btn.active {
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .calendar-container {
     padding: 1.5rem;
   }
@@ -130,7 +132,7 @@ html.dark-theme .year-btn.active {
   }
 }
 
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .calendar-container {
     padding: 1rem;
   }

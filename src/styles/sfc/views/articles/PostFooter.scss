@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 .post-footer {
   margin-top: 3rem;
   padding-top: 2rem;
@@ -6,7 +8,7 @@
 
 /* 版权信息样式 */
 .copyright-info {
-  background: #f8f9fa;
+  background: var(--theme-surface-muted);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -41,7 +43,7 @@
 }
 
 .value.link {
-  color: #e9546b;
+  color: var(--color-pink);
   text-decoration: none;
   word-break: break-all;
 }
@@ -57,7 +59,7 @@
   margin-top: 2rem;
   margin-left: -2.5rem;
   margin-right: -2.5rem;
-  background: #fff;
+  background: var(--theme-surface);
   border-top: 1px solid #e9ecef;
   border-bottom: 1px solid #e9ecef;
 }
@@ -141,7 +143,7 @@
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .post-navigation {
     margin-left: -1.5rem;
     margin-right: -1.5rem;
@@ -174,7 +176,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .post-navigation {
     margin-left: -1rem;
     margin-right: -1rem;

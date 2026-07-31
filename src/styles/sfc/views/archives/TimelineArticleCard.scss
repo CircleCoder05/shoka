@@ -1,16 +1,15 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 /* 文章卡片 */
 .article-card {
+  @include mixins.card-surface(12px);
   display: flex;
   width: 100%;
   max-width: 100%;
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--theme-border-soft);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  box-sizing: border-box;
 }
 
 .article-card::before {
@@ -70,20 +69,20 @@
 }
 
 .article-title a {
-  color: #333;
+  color: var(--theme-text);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .article-title a:hover {
-  color: #ed6ea0;
+  color: var(--color-pink);
 }
 
 .article-meta {
   display: flex;
   gap: 0.6rem;
   font-size: 0.7rem;
-  color: #666;
+  color: var(--theme-text-secondary);
   flex-wrap: wrap;
   margin-bottom: 0.6rem;
   min-height: 16px;
@@ -100,11 +99,11 @@
 
 .article-meta i {
   font-size: 0.75rem;
-  color: #ed6ea0;
+  color: var(--color-pink);
 }
 
 .article-excerpt {
-  color: #666;
+  color: var(--theme-text-secondary);
   line-height: 1.6;
   font-size: 0.85rem;
   margin-bottom: 0.8rem;
@@ -129,7 +128,7 @@
   display: flex;
   gap: 0.6rem;
   font-size: 0.7rem;
-  color: #999;
+  color: var(--theme-text-muted);
   flex-wrap: wrap;
 }
 
@@ -141,7 +140,7 @@
 
 .article-stats i {
   font-size: 0.7rem;
-  color: #ed6ea0;
+  color: var(--color-pink);
 }
 
 .article-tags {
@@ -153,7 +152,7 @@
 .tag {
   padding: 0.15rem 0.5rem;
   background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
-  color: #fff;
+  color: var(--theme-text-on-accent);
   border-radius: 10px;
   font-size: 0.7rem;
   font-weight: 500;
@@ -171,7 +170,7 @@
   gap: 0.3rem;
   padding: 0.35rem 0.7rem;
   background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
-  color: #fff;
+  color: var(--theme-text-on-accent);
   text-decoration: none;
   border-radius: 16px;
   font-size: 0.75rem;
@@ -188,7 +187,7 @@
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .article-card {
     flex-direction: column;
     min-height: auto;
@@ -300,7 +299,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .article-card {
     padding: 0.6rem;
   }

@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 .profile-card {
   position: relative;
   border-radius: 20px;
@@ -209,7 +211,7 @@ html.dark-theme .info-item-background::after {
   padding: 0.5rem 0.8rem; /* 添加内边距 */
   background: #dbbd87; /* 土黄色背景 */
   border-radius: 8px; /* 圆角 */
-  color: #8b4513 !important; /* 棕色文字，亮色模式 */
+  color: #8b4513; /* 棕色文字，亮色模式 */
   font-weight: bold; /* 加粗 */
 }
 
@@ -223,7 +225,7 @@ html.dark-theme .info-item-background::after {
 
 /* 暗色模式样式 */
 html.dark-theme .profile-card {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 /* ProfileCard背景处理 - 添加暗色遮罩 */
@@ -239,37 +241,37 @@ html.dark-theme .profile-background::after {
 }
 
 html.dark-theme .profile-content {
-  z-index: 3 !important;
+  z-index: 3;
 }
 
 /* 暗色模式文字颜色 */
 html.dark-theme .nickname {
-  color: #abb2bf !important;
+  color: var(--theme-text);
 }
 
 html.dark-theme .title {
-  color: #7f848e !important;
+  color: var(--theme-text-muted);
 }
 
 html.dark-theme .info-item {
-  background: rgba(44, 49, 60, 0.9) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+  background: rgba(44, 49, 60, 0.9);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 html.dark-theme .info-content label {
-  color: #000000 !important;
+  color: #000000;
 }
 
 html.dark-theme .info-content span {
-  color: #000000 !important;
+  color: #000000;
 }
 
 html.dark-theme .info-icon i {
-  color: #ed6ea0 !important;
+  color: var(--color-pink);
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .profile-card {
     padding: 1rem;
     flex: 1;

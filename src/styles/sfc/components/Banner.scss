@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 /* Banner样式 */
 .app-banner {
   width: 100%;
@@ -10,7 +12,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: var(--theme-surface);
   z-index: 1;
   margin-top: 0; /* 移除margin-top，让banner直接顶到导航栏下面 */
 }
@@ -289,7 +291,7 @@ html.dark-theme .wave4 {
 }
 
 /* 响应式设计 */
-@media (max-width: 1024px) {
+@include mixins.respond-below(1024px) {
   .banner-title h1 {
     font-size: 2.4rem;
   }
@@ -307,7 +309,7 @@ html.dark-theme .wave4 {
   }
 }
 
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .app-banner {
     height: 60vh;
     min-height: 60vh;
@@ -349,7 +351,7 @@ html.dark-theme .wave4 {
   }
 }
 
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .app-banner {
     height: 60vh;
     min-height: 60vh;
@@ -394,5 +396,5 @@ html.dark-theme .wave4 {
 
 /* 暗色模式下的Banner图片暗化 */
 html.dark-theme .banner-image {
-  filter: brightness(0.6) contrast(1.2) blur(0.5px) !important;
+  filter: brightness(0.6) contrast(1.2) blur(0.5px);
 }

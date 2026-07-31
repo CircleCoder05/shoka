@@ -37,7 +37,7 @@
 
   label {
     gap: 8px;
-    color: #555;
+    color: var(--theme-text-soft);
     font-weight: 600;
   }
 
@@ -80,7 +80,7 @@
 
 .auth-intro {
   margin-bottom: 28px;
-  color: #777;
+  color: var(--theme-text-subtle);
 }
 
 .form-error {

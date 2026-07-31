@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 .loading,
 .error {
   display: flex;
@@ -8,33 +10,18 @@
 }
 
 .loading {
-  color: #666;
+  color: var(--theme-text-secondary);
 }
 
 .error {
   text-align: center;
-  color: #e9546b;
+  color: var(--color-pink);
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #ed6ea0;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+  @include mixins.loading-spinner(40px, 3px, var(--theme-border-faint), var(--color-pink));
   margin-bottom: 1rem;
 }
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 /* 文章容器动画 */
 .articles-container {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -84,7 +71,7 @@
   left: 50%;
   width: 8px;
   height: 8px;
-  background: #ed6ea0;
+  background: var(--color-pink);
   border-radius: 50%;
   transform: translateX(-50%);
   box-shadow: 0 0 10px rgba(237, 110, 160, 0.5);
@@ -98,7 +85,7 @@
   left: 50%;
   width: 8px;
   height: 8px;
-  background: #ed6ea0;
+  background: var(--color-pink);
   border-radius: 50%;
   transform: translateX(-50%);
   box-shadow: 0 0 10px rgba(237, 110, 160, 0.5);
@@ -132,7 +119,7 @@
 .year-text {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #333;
+  color: var(--theme-text);
   margin: 0;
   background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
   -webkit-background-clip: text;
@@ -157,7 +144,7 @@
 .month-text {
   font-size: 1.8rem;
   font-weight: 600;
-  color: #ed6ea0;
+  color: var(--color-pink);
   margin: 0;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
@@ -187,7 +174,7 @@
 .node-dot {
   width: 16px;
   height: 16px;
-  background: #fff;
+  background: var(--theme-surface);
   border: 3px solid #ed6ea0;
   border-radius: 50%;
   box-shadow: 0 0 15px rgba(237, 110, 160, 0.4);
@@ -214,7 +201,7 @@
   left: 50%;
   width: 6px;
   height: 6px;
-  background: #ed6ea0;
+  background: var(--color-pink);
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
@@ -273,7 +260,7 @@
 .node-dot {
   width: 16px;
   height: 16px;
-  background: #fff;
+  background: var(--theme-surface);
   border: 3px solid #ed6ea0;
   border-radius: 50%;
   box-shadow: 0 0 15px rgba(237, 110, 160, 0.4);
@@ -324,7 +311,7 @@
   align-items: center;
   justify-content: center;
   margin-left: 1rem;
-  color: #ed6ea0;
+  color: var(--color-pink);
   font-size: 1.2rem;
 }
 
@@ -462,7 +449,7 @@
 .year-text {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #333;
+  color: var(--theme-text);
   margin: 0;
   background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
   -webkit-background-clip: text;
@@ -487,13 +474,13 @@
 .month-text {
   font-size: 1.8rem;
   font-weight: 600;
-  color: #ed6ea0;
+  color: var(--color-pink);
   margin: 0;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .archives-container {
     max-width: 100%;
     padding: 1.5rem;
@@ -516,7 +503,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .archives-container {
     max-width: 100%;
     padding: 0.75rem;

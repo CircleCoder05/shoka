@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 .page-header {
   text-align: center;
   margin-bottom: 3rem;
@@ -6,7 +8,7 @@
 .page-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #333;
+  color: var(--theme-text);
   margin: 0 0 1rem 0;
   background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
   -webkit-background-clip: text;
@@ -16,7 +18,7 @@
 
 .page-subtitle {
   font-size: 1.1rem;
-  color: #666;
+  color: var(--theme-text-secondary);
   margin: 0;
 }
 
@@ -30,33 +32,18 @@
 }
 
 .loading {
-  color: #666;
+  color: var(--theme-text-secondary);
 }
 
 .error {
   text-align: center;
-  color: #e9546b;
+  color: var(--color-pink);
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #ed6ea0;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+  @include mixins.loading-spinner(40px, 3px, var(--theme-border-faint), var(--color-pink));
   margin-bottom: 1rem;
 }
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 /* 图表区域 */
 .charts-section {
   display: grid;
@@ -68,7 +55,7 @@
 }
 
 .chart-container {
-  background: #fff;
+  background: var(--theme-surface);
   border-radius: 16px;
   padding: 1.5rem;
   border: 1px solid rgba(237, 110, 160, 0.1);
@@ -87,13 +74,13 @@
 .chart-header h3 {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text);
   margin: 0 0 0.5rem 0;
 }
 
 .chart-header p {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--theme-text-secondary);
   margin: 0;
 }
 
@@ -117,13 +104,13 @@
 .section-header h3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text);
   margin: 0 0 0.5rem 0;
 }
 
 .section-header p {
   font-size: 1rem;
-  color: #666;
+  color: var(--theme-text-secondary);
   margin: 0;
 }
 
@@ -190,7 +177,7 @@
 .category-name {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text);
   margin: 0 0 0.5rem 0;
   white-space: nowrap;
   overflow: hidden;
@@ -199,14 +186,14 @@
 
 .category-count {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--theme-text-secondary);
   margin: 0 0 0.5rem 0;
 }
 
 .category-progress {
   width: 100%;
   height: 4px;
-  background: #f0f0f0;
+  background: var(--theme-surface-active);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -226,7 +213,7 @@
 }
 
 .category-card:hover .category-arrow {
-  color: #ed6ea0;
+  color: var(--color-pink);
   transform: translateX(4px);
 }
 
@@ -245,7 +232,7 @@
   }
 }
 
-@media (max-width: 1024px) {
+@include mixins.respond-below(1024px) {
   .charts-section {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -260,7 +247,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .page-title {
     font-size: 2rem;
   }
@@ -335,7 +322,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .page-header {
     margin-bottom: 2rem;
   }
@@ -370,7 +357,7 @@
   }
 }
 
-@media (max-width: 360px) {
+@include mixins.respond-below(360px) {
   .chart-container {
     min-height: 250px;
   }
@@ -382,67 +369,67 @@
 
 /* 暗色主题样式 */
 html.dark-theme .page-title {
-  color: #abb2bf;
+  color: var(--theme-text);
 }
 
 html.dark-theme .page-subtitle {
-  color: #7f848e;
+  color: var(--theme-text-muted);
 }
 
 html.dark-theme .chart-container {
-  background: #2c313c !important;
-  border-color: #3e4451 !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  background: var(--theme-surface);
+  border-color: var(--theme-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 html.dark-theme .chart-header h3 {
-  color: #abb2bf !important;
+  color: var(--theme-text);
 }
 
 html.dark-theme .chart-header p {
-  color: #7f848e !important;
+  color: var(--theme-text-muted);
 }
 
 html.dark-theme .section-header h3 {
-  color: #abb2bf !important;
+  color: var(--theme-text);
 }
 
 html.dark-theme .section-header p {
-  color: #7f848e !important;
+  color: var(--theme-text-muted);
 }
 
 html.dark-theme .category-card {
-  background: linear-gradient(135deg, #2c313c 0%, #383e4a 100%) !important;
-  border-color: #3e4451 !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  background: linear-gradient(135deg, #2c313c 0%, #383e4a 100%);
+  border-color: var(--theme-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 html.dark-theme .category-card:hover {
-  box-shadow: 0 8px 30px rgba(237, 110, 160, 0.3) !important;
+  box-shadow: 0 8px 30px rgba(237, 110, 160, 0.3);
 }
 
 html.dark-theme .category-name {
-  color: #abb2bf !important;
+  color: var(--theme-text);
 }
 
 html.dark-theme .category-count {
-  color: #7f848e !important;
+  color: var(--theme-text-muted);
 }
 
 html.dark-theme .category-progress {
-  background: #3e4451 !important;
+  background: var(--theme-surface-active);
 }
 
 html.dark-theme .category-arrow {
-  color: #5c6370 !important;
+  color: var(--theme-text-disabled);
 }
 
 html.dark-theme .category-card:hover .category-arrow {
-  color: #ed6ea0 !important;
+  color: var(--color-pink);
 }
 
 /* 分类卡片旗子图标改为白色 */
 html.dark-theme .category-icon,
 html.dark-theme .category-icon i {
-  color: #ffffff !important;
+  color: #ffffff;
 }

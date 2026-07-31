@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 .pagination {
   display: flex;
   gap: 8px;
@@ -8,7 +10,7 @@
 }
 
 button {
-  background: #fff;
+  background: var(--theme-surface);
   border: 1px solid #eee;
   border-radius: 4px;
   padding: 8px 12px;
@@ -26,7 +28,7 @@ button {
 }
 
 button:hover {
-  background: #f5f5f5;
+  background: var(--theme-surface-hover);
   transform: translateY(-1px);
 }
 
@@ -46,12 +48,12 @@ button.active:hover {
 button:disabled {
   color: #ccc;
   cursor: not-allowed;
-  background: #f9f9f9;
+  background: var(--theme-surface-soft);
 }
 
 button:disabled:hover {
   transform: none;
-  background: #f9f9f9;
+  background: var(--theme-surface-soft);
 }
 
 .nav-btn {
@@ -63,7 +65,7 @@ button:disabled:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--theme-text-muted);
   font-size: 0.9rem;
   min-width: 36px;
   height: 36px;
@@ -161,7 +163,7 @@ button:disabled:hover {
 }
 
 /* 小屏手机适配 (480px以下) */
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .pagination {
     gap: 4px;
     margin: 24px 0 0 0;
@@ -187,7 +189,7 @@ button:disabled:hover {
 }
 
 /* 超小屏适配 (360px以下) */
-@media (max-width: 360px) {
+@include mixins.respond-below(360px) {
   .pagination {
     gap: 3px;
     margin: 20px 0 0 0;
@@ -216,7 +218,7 @@ button:disabled:hover {
 @media (hover: none) and (pointer: coarse) {
   button:hover {
     transform: none;
-    background: #fff;
+    background: var(--theme-surface);
   }
 
   button.active:hover {

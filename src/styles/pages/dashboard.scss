@@ -5,7 +5,7 @@
   display: grid;
   grid-template-columns: 230px 1fr;
   min-height: 100vh;
-  color: #333;
+  color: var(--theme-text);
   background: #f7f7fa;
 }
 
@@ -85,7 +85,7 @@
   label {
     display: grid;
     gap: 8px;
-    color: #555;
+    color: var(--theme-text-soft);
     font-weight: 600;
   }
 
@@ -106,18 +106,18 @@
 }
 
 .editor {
-  font-family: 'JetBrains Mono', monospace !important;
+  font-family: 'JetBrains Mono', monospace;
   line-height: 1.6;
   resize: vertical;
 }
 
 .primary {
   padding: 11px 18px;
-  border: 0 !important;
+  border: 0;
   border-radius: $radius-sm;
-  color: white !important;
+  color: white;
   cursor: pointer;
-  background: linear-gradient(135deg, $color-blue, $color-pink) !important;
+  background: linear-gradient(135deg, $color-blue, $color-pink);
 }
 
 .data-row {
@@ -130,13 +130,13 @@
   small {
     display: block;
     margin-top: 5px;
-    color: #999;
+    color: var(--theme-text-muted);
   }
 
   button {
     margin-left: 8px;
     padding: 8px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--theme-border-strong);
     border-radius: 7px;
     cursor: pointer;
     background: white;
@@ -150,7 +150,7 @@
   button {
     margin-left: 8px;
     padding: 8px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--theme-border-strong);
     border-radius: 7px;
     cursor: pointer;
     background: white;
@@ -174,7 +174,7 @@
 
 .empty {
   padding: 40px;
-  color: #999;
+  color: var(--theme-text-muted);
   text-align: center;
 }
 

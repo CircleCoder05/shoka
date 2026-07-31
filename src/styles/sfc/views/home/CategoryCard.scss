@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 /* 样式保持原样 */
 .category-card {
   perspective: 1200px;
@@ -63,7 +65,7 @@
 }
 
 .card-back {
-  background: #fcfcfc;
+  background: var(--theme-surface-gentle);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -135,7 +137,7 @@
 }
 
 .posts a {
-  color: #ed6ea0;
+  color: var(--color-pink);
   text-decoration: none;
   font-size: 0.9rem;
   line-height: 1.3;
@@ -164,7 +166,7 @@
 }
 
 .count {
-  color: #666;
+  color: var(--theme-text-secondary);
   font-size: 0.85rem;
   padding-left: 16px;
   display: flex;
@@ -320,7 +322,7 @@
 }
 
 /* 小屏手机适配 (480px以下) */
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .category-card {
     height: 160px;
   }
@@ -375,7 +377,7 @@
 }
 
 /* 超小屏适配 (360px以下) */
-@media (max-width: 360px) {
+@include mixins.respond-below(360px) {
   .category-card {
     height: 140px;
   }

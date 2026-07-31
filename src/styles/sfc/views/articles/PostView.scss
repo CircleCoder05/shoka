@@ -1,4 +1,5 @@
-/* 密码验证界面样式 */
+@use '@/styles/foundation/mixins' as mixins;
+
 .password-verification {
   display: flex;
   justify-content: center;
@@ -9,7 +10,7 @@
 }
 
 .password-form {
-  background: var(--card-bg, #fff);
+  background: var(--card-bg, var(--theme-surface));
   border: 1px solid var(--border-color, #e1e5e9);
   border-radius: 12px;
   padding: 3rem;
@@ -27,7 +28,7 @@
 
 .password-form h2 {
   margin: 0 0 2rem 0;
-  color: var(--text-color, #333);
+  color: var(--text-color, var(--theme-text));
   font-size: 1.5rem;
   font-weight: 600;
 }
@@ -46,8 +47,8 @@
   font-size: 1rem;
   outline: none;
   transition: border-color 0.2s;
-  background: var(--input-bg, #fff);
-  color: var(--text-color, #333);
+  background: var(--input-bg, var(--theme-surface));
+  color: var(--text-color, var(--theme-text));
 }
 
 .password-input:focus {
@@ -55,7 +56,7 @@
 }
 
 .password-input::placeholder {
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary, var(--theme-text-secondary));
 }
 
 .password-submit-btn {
@@ -82,25 +83,24 @@
   margin-top: 0.5rem;
 }
 
-/* 暗色主题样式 */
 .dark-theme .password-form {
   background: var(--card-bg, #2c313c);
-  border-color: var(--border-color, #3e4451);
+  border-color: var(--border-color, var(--theme-border));
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .dark-theme .password-form h2 {
-  color: var(--text-color, #abb2bf);
+  color: var(--text-color, var(--theme-text));
 }
 
 .dark-theme .password-input {
   background: var(--input-bg, #2c313c);
-  color: var(--text-color, #abb2bf);
-  border-color: var(--border-color, #3e4451);
+  color: var(--text-color, var(--theme-text));
+  border-color: var(--border-color, var(--theme-border));
 }
 
 .dark-theme .password-input::placeholder {
-  color: var(--text-secondary, #5c6370);
+  color: var(--text-secondary, var(--theme-text-disabled));
 }
 
 .dark-theme .password-input:focus {
@@ -111,7 +111,6 @@
   margin-top: 1rem;
 }
 
-/* 重新验证按钮样式 */
 .re-verify-section {
   display: flex;
   justify-content: flex-end;
@@ -141,7 +140,6 @@
   font-size: 0.8rem;
 }
 
-/* 加载和错误状态 */
 .loading,
 .error {
   display: flex;
@@ -152,38 +150,23 @@
 }
 
 .loading {
-  color: #666;
+  color: var(--theme-text-secondary);
 }
 
 .error {
   text-align: center;
-  color: #e9546b;
+  color: var(--color-pink);
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #e9546b;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+  @include mixins.loading-spinner(40px, 4px, var(--theme-border-faint), var(--color-pink));
   margin-bottom: 16px;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* 文章卡片 */
 .post-card-outer {
   width: 100%;
-  max-width: 1050px !important;
-  background: #fff;
+  max-width: 1050px;
+  background: var(--theme-surface);
   border-radius: 0;
   box-shadow:
     0 8px 48px 0 rgba(237, 110, 160, 0.18),
@@ -194,7 +177,6 @@
   box-sizing: border-box;
 }
 
-/* 文章头部 */
 .post-header {
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
@@ -215,7 +197,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
-  color: #666;
+  color: var(--theme-text-secondary);
   font-size: 0.95em;
 }
 
@@ -239,7 +221,7 @@
 
 .tag {
   background: #f3c1d1;
-  color: #e9546b;
+  color: var(--color-pink);
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.85em;
@@ -275,7 +257,6 @@
   font-size: 0.8em;
 }
 
-/* 文章内容 */
 .post-content {
   font-size: 1em;
   line-height: 1.6;
@@ -288,7 +269,6 @@
   letter-spacing: 0.2px;
 }
 
-/* 标题样式 */
 .post-content h1,
 .post-content h2,
 .post-content h3,
@@ -316,7 +296,6 @@
   font-size: 1.4em;
 }
 
-/* 段落和列表 */
 .post-content p,
 .post-content ul,
 .post-content ol {
@@ -340,21 +319,19 @@
   font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'serif';
 }
 
-/* 引用块 */
 .post-content blockquote {
   margin: 0.4em 0;
   padding: 0.4em 0.4em;
   background: #f8f9fa;
-  border-left: 4px solid #e9546b;
+  border-left: 4px solid var(--color-pink);
   border-radius: 0 8px 8px 0;
   font-style: italic;
   color: #555;
 }
 
-/* 代码样式 */
 .post-content code {
   background: #f1f3f4;
-  color: #e9546b;
+  color: var(--color-pink);
   border-radius: 4px;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.9em;
@@ -372,13 +349,12 @@
 
 .post-content pre code {
   background: none;
-  color: #333;
+  color: var(--theme-text);
   font-size: 0.9em;
   line-height: 1.5;
   display: block;
 }
 
-/* 图片样式 */
 .post-content img {
   max-width: 100%;
   width: auto;
@@ -400,21 +376,20 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
-/* 表格样式 */
 .post-content table,
 .post-content .table,
 .post-card-outer .post-content table {
-  width: 100% !important;
-  border-collapse: collapse !important;
-  margin: 1.5em 0 !important;
-  background: #fff !important;
-  border-radius: 12px !important;
-  overflow: hidden !important;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  background: var(--theme-surface);
+  border-radius: 12px;
+  overflow: hidden;
   box-shadow:
     0 4px 16px rgba(237, 84, 107, 0.1),
-    0 2px 8px rgba(0, 0, 0, 0.08) !important;
-  font-size: 0.95em !important;
-  border: 2px solid #f3c1d1 !important;
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  font-size: 0.95em;
+  border: 2px solid #f3c1d1;
 }
 
 .post-content th,
@@ -423,77 +398,73 @@
 .post-content .table td,
 .post-card-outer .post-content th,
 .post-card-outer .post-content td {
-  padding: 1em 1.2em !important;
-  text-align: left !important;
-  border: none !important;
-  vertical-align: top !important;
-  position: relative !important;
+  padding: 1em 1.2em;
+  text-align: left;
+  border: none;
+  vertical-align: top;
+  position: relative;
 }
 
-/* 表格头部 */
 .post-content th,
 .post-content .table th {
-  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%) !important;
-  color: #fff !important;
-  font-weight: 700 !important;
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  color: var(--theme-surface);
+  font-weight: 700;
   font-family:
-    'SimHei', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', 'Arial', 'sans-serif' !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-  letter-spacing: 0.5px !important;
-  border-bottom: 3px solid #2563eb !important;
+    'SimHei', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', 'Arial', 'sans-serif';
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
+  border-bottom: 3px solid #2563eb;
 }
 
-/* 表格行样式 */
 .post-content tr:nth-child(odd),
 .post-content .table tr:nth-child(odd) {
-  background: #ffffff !important;
+  background: var(--theme-surface);
 }
 
 .post-content tr:nth-child(even),
 .post-content .table tr:nth-child(even) {
-  background: #f8f9fa !important;
+  background: #f8f9fa;
 }
 
 .post-content tr:hover,
 .post-content .table tr:hover {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15) !important;
-  transition: all 0.3s ease !important;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+  transition: all 0.3s ease;
 }
 
-/* 表格单元格 */
 .post-content td,
 .post-content .table td {
-  word-break: break-word !important;
-  max-width: 300px !important;
-  border-bottom: 1px solid #dbeafe !important;
-  border-right: 1px solid #eff6ff !important;
-  transition: all 0.2s ease !important;
+  word-break: break-word;
+  max-width: 300px;
+  border-bottom: 1px solid #dbeafe;
+  border-right: 1px solid #eff6ff;
+  transition: all 0.2s ease;
 }
 
 .post-content td:last-child,
 .post-content .table td:last-child {
-  border-right: none !important;
+  border-right: none;
 }
 
 .post-content tr:last-child td,
 .post-content .table tr:last-child td {
-  border-bottom: none !important;
+  border-bottom: none;
 }
 
-/* 表格分割线 */
 .post-content th:not(:last-child)::after,
 .post-content td:not(:last-child)::after,
 .post-content .table th:not(:last-child)::after,
 .post-content .table td:not(:last-child)::after {
-  content: '' !important;
-  position: absolute !important;
-  right: 0 !important;
-  top: 20% !important;
-  height: 60% !important;
-  width: 1px !important;
-  background: linear-gradient(to bottom, transparent, #dbeafe, transparent) !important;
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, #dbeafe, transparent);
 }
 
 .post-content th:not(:last-child)::after,
@@ -503,33 +474,31 @@
     transparent,
     rgba(255, 255, 255, 0.3),
     transparent
-  ) !important;
+  );
 }
 
-/* 链接和强调 */
 .post-content a {
-  color: #e9546b;
+  color: var(--color-pink);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 0.3s ease;
 }
 
 .post-content a:hover {
-  border-bottom-color: #e9546b;
+  border-bottom-color: var(--color-pink);
 }
 
 .post-content strong {
-  color: #e9546b;
+  color: var(--color-pink);
   font-weight: 600;
 }
 
 .post-content em {
-  color: #666;
+  color: var(--theme-text-secondary);
   font-style: italic;
 }
 
-/* 响应式设计 */
-@media (max-width: 1024px) {
+@include mixins.respond-below(1024px) {
   .post-card-outer {
     padding: 2rem;
   }
@@ -538,7 +507,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .post-card-outer {
     padding: 1.5rem;
     border-radius: 12px;
@@ -560,7 +529,7 @@
   }
 
   .meta-row {
-    display: flex !important;
+    display: flex;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
@@ -611,7 +580,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .post-card-outer {
     padding: 1rem;
     border-radius: 8px;
@@ -644,482 +613,264 @@
   }
 }
 
-/* 暗色主题样式 */
 html.dark-theme .post-card-outer {
-  background: #2c313c !important;
+  background: #2c313c;
   box-shadow:
     0 8px 48px 0 rgba(0, 0, 0, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 html.dark-theme .post-header {
-  border-bottom-color: #3e4451 !important;
+  border-bottom-color: var(--theme-border);
 }
 
 html.dark-theme .post-title {
-  color: #abb2bf !important;
+  color: var(--theme-text);
 }
 
 html.dark-theme .post-meta {
-  color: #7f848e !important;
+  color: var(--theme-text-muted);
 }
 
-/* 暗色模式下的标签和分类使用纯白字体 */
 html.dark-theme .post-tags .tag {
-  color: #111111 !important;
+  color: #111111;
 }
 
 html.dark-theme .post-category .category {
-  color: #111111 !important;
+  color: #111111;
 }
 
 html.dark-theme .post-content {
-  color: #abb2bf !important;
-  background: #2c313c !important;
+  color: var(--theme-text);
+  background: #2c313c;
 }
 
 html.dark-theme .post-content h1,
 html.dark-theme .post-content h2,
 html.dark-theme .post-content h3,
 html.dark-theme .post-content h4 {
-  color: #abb2bf !important;
-  border-bottom-color: #3e4451 !important;
+  color: var(--theme-text);
+  border-bottom-color: var(--theme-border);
 }
 
-/* 暗色主题下的单行代码样式 */
 html.dark-theme .post-content code:not(.code-block code) {
-  background: #3e4451 !important;
-  color: #ed6ea0 !important;
-  padding: 0.2em 0.4em !important;
+  background: var(--theme-border);
+  color: #ed6ea0;
+  padding: 0.2em 0.4em;
 }
 
-/* 亮色模式下的代码块样式 */
-html:not(.dark-theme) .post-content .code-block {
-  background: #fafafa !important;
-  border: 1px solid #e1e4e8 !important;
-  border-radius: 8px !important;
+.post-content .code-block {
+  background: var(--theme-code-surface);
+  border: 1px solid var(--theme-code-border);
+  border-radius: 8px;
 }
 
-html:not(.dark-theme) .post-content .code-block .code-header {
-  background: #f6f8fa !important;
-  border-bottom: 1px solid #e1e4e8 !important;
-  color: #24292e !important;
+.post-content .code-block .code-header,
+.post-content .code-block .expand-hint {
+  background: var(--theme-code-header);
+  border-color: var(--theme-code-border);
+  color: var(--theme-code-control-text);
 }
 
-/* 保持语言标签的原有多彩样式，不进行覆盖 */
-
-html:not(.dark-theme) .post-content .code-block .action-btn {
-  background: #ffffff !important;
-  border: 1px solid #d1d5da !important;
-  color: #586069 !important;
+.post-content .code-block .action-btn {
+  background: var(--theme-code-control);
+  border: 1px solid var(--theme-code-control-border);
+  color: var(--theme-code-control-text);
 }
 
-html:not(.dark-theme) .post-content .code-block .action-btn:hover {
-  background: #f6f8fa !important;
-  border-color: #0366d6 !important;
-  color: #0366d6 !important;
+.post-content .code-block .action-btn:hover {
+  background: var(--theme-surface-neutral);
+  border-color: var(--color-pink);
+  color: var(--color-pink);
 }
 
-html:not(.dark-theme) .post-content .code-block .code-content {
-  background: #fafafa !important;
+.post-content .code-block .code-content,
+.post-content .code-block pre,
+.post-content .code-block .hljs {
+  background: var(--theme-code-surface);
+  color: var(--theme-code-text);
 }
 
-html:not(.dark-theme) .post-content .code-block pre {
-  background: #fafafa !important;
-  color: #24292e !important;
-}
+.post-content .code-block .hljs-keyword,
+.post-content .code-block .hljs-selector-tag,
+.post-content .code-block .hljs-built_in { color: var(--theme-code-keyword); font-weight: 600; }
+.post-content .code-block .hljs-string,
+.post-content .code-block .hljs-doctag { color: var(--theme-code-string); }
+.post-content .code-block .hljs-comment,
+.post-content .code-block .hljs-quote { color: var(--theme-code-comment); font-style: italic; }
+.post-content .code-block .hljs-number,
+.post-content .code-block .hljs-literal { color: var(--theme-code-number); }
+.post-content .code-block .hljs-variable,
+.post-content .code-block .hljs-name { color: var(--theme-code-variable); }
+.post-content .code-block .hljs-attr,
+.post-content .code-block .hljs-attribute { color: var(--theme-code-attribute); }
+.post-content .code-block .hljs-title,
+.post-content .code-block .hljs-class .hljs-title,
+.post-content .code-block .hljs-type { color: var(--theme-code-title); font-weight: 600; }
+.post-content .code-block .hljs-function .hljs-title { color: var(--theme-code-function); font-weight: 600; }
+.post-content .code-block .hljs-operator,
+.post-content .code-block .hljs-symbol { color: var(--theme-code-operator); font-weight: 600; }
+.post-content .code-block .hljs-regexp { color: var(--theme-code-regexp); }
+.post-content .code-block .hljs-meta { color: var(--theme-code-meta); }
+.post-content .code-block .hljs-template-variable,
+.post-content .code-block .hljs-template-tag { color: var(--theme-code-template); }
 
-/* 亮色模式的highlight.js语法高亮样式 */
-html:not(.dark-theme) .post-content .code-block .hljs {
-  background: #fafafa !important;
-  color: #24292e !important;
+.post-content .code-block .expand-hint { border-top: 1px solid var(--theme-code-border); }
+.post-content .code-block .expand-hint:hover {
+  background: var(--theme-surface-neutral);
+  color: var(--theme-code-text);
 }
-
-/* 亮色模式 - 关键字（紫色） */
-html:not(.dark-theme) .post-content .code-block .hljs-keyword,
-html:not(.dark-theme) .post-content .code-block .hljs-selector-tag,
-html:not(.dark-theme) .post-content .code-block .hljs-built_in {
-  color: #8b5cf6 !important;
-  font-weight: 600 !important;
-}
-
-/* 亮色模式 - 字符串（绿色） */
-html:not(.dark-theme) .post-content .code-block .hljs-string,
-html:not(.dark-theme) .post-content .code-block .hljs-doctag {
-  color: #16a085 !important;
-}
-
-/* 亮色模式 - 注释（灰色斜体） */
-html:not(.dark-theme) .post-content .code-block .hljs-comment,
-html:not(.dark-theme) .post-content .code-block .hljs-quote {
-  color: #6a737d !important;
-  font-style: italic !important;
-}
-
-/* 亮色模式 - 数字（橙色） */
-html:not(.dark-theme) .post-content .code-block .hljs-number,
-html:not(.dark-theme) .post-content .code-block .hljs-literal {
-  color: #e67e22 !important;
-}
-
-/* 亮色模式 - 变量名（深红色） */
-html:not(.dark-theme) .post-content .code-block .hljs-variable,
-html:not(.dark-theme) .post-content .code-block .hljs-name {
-  color: #c0392b !important;
-}
-
-/* 亮色模式 - 属性（深青色） */
-html:not(.dark-theme) .post-content .code-block .hljs-attr,
-html:not(.dark-theme) .post-content .code-block .hljs-attribute {
-  color: #2980b9 !important;
-}
-
-/* 亮色模式 - 类名/类型（紫罗兰色） */
-html:not(.dark-theme) .post-content .code-block .hljs-title,
-html:not(.dark-theme) .post-content .code-block .hljs-class .hljs-title,
-html:not(.dark-theme) .post-content .code-block .hljs-type {
-  color: #9b59b6 !important;
-  font-weight: 600 !important;
-}
-
-/* 亮色模式 - 函数名（蓝色） */
-html:not(.dark-theme) .post-content .code-block .hljs-function .hljs-title {
-  color: #3498db !important;
-  font-weight: 600 !important;
-}
-
-/* 亮色模式 - 操作符（深灰色） */
-html:not(.dark-theme) .post-content .code-block .hljs-operator,
-html:not(.dark-theme) .post-content .code-block .hljs-symbol {
-  color: #34495e !important;
-  font-weight: 600 !important;
-}
-
-/* 亮色模式 - 正则表达式（墨绿色） */
-html:not(.dark-theme) .post-content .code-block .hljs-regexp {
-  color: #27ae60 !important;
-}
-
-/* 亮色模式 - 元标签（深蓝色） */
-html:not(.dark-theme) .post-content .code-block .hljs-meta {
-  color: #2c3e50 !important;
-}
-
-/* 亮色模式 - 模板变量（品红色） */
-html:not(.dark-theme) .post-content .code-block .hljs-template-variable,
-html:not(.dark-theme) .post-content .code-block .hljs-template-tag {
-  color: #e91e63 !important;
-}
-
-/* 亮色模式 - 展开提示区域 */
-html:not(.dark-theme) .post-content .code-block .expand-hint {
-  background: #f6f8fa !important;
-  color: #586069 !important;
-  border-top: 1px solid #e1e4e8 !important;
-}
-
-html:not(.dark-theme) .post-content .code-block .expand-hint:hover {
-  background: #f1f3f4 !important;
-  color: #24292e !important;
-}
-
-/* 暗色模式下的代码块样式 */
-html.dark-theme .post-content .code-block {
-  background: #21252b !important;
-  border: 1px solid #3e4451 !important;
-  border-radius: 8px !important;
-}
-
-html.dark-theme .post-content .code-block .code-header {
-  background: #282c34 !important;
-  border-bottom: 1px solid #3e4451 !important;
-  color: #abb2bf !important;
-}
-
-/* 暗色模式下语言标签使用黑色字体 */
-html.dark-theme .post-content .code-block .language-tag {
-  color: #000000 !important;
-}
-
-html.dark-theme .post-content .code-block .action-btn {
-  background: #21252b !important;
-  border: 1px solid #3e4451 !important;
-  color: #abb2bf !important;
-}
-
-html.dark-theme .post-content .code-block .action-btn:hover {
-  background: #3e4451 !important;
-  border-color: #ed6ea0 !important;
-  color: #ed6ea0 !important;
-}
-
-html.dark-theme .post-content .code-block .code-content {
-  background: #21252b !important;
-}
-
-html.dark-theme .post-content .code-block pre {
-  background: #21252b !important;
-  color: #abb2bf !important;
-}
-
-/* 暗色模式的highlight.js语法高亮样式 */
-html.dark-theme .post-content .code-block .hljs {
-  background: #21252b !important;
-  color: #abb2bf !important;
-}
-
-/* 暗色模式 - 关键字 */
-html.dark-theme .post-content .code-block .hljs-keyword,
-html.dark-theme .post-content .code-block .hljs-selector-tag,
-html.dark-theme .post-content .code-block .hljs-built_in {
-  color: #c678dd !important;
-}
-
-/* 暗色模式 - 字符串 */
-html.dark-theme .post-content .code-block .hljs-string,
-html.dark-theme .post-content .code-block .hljs-doctag {
-  color: #98c379 !important;
-}
-
-/* 暗色模式 - 注释 */
-html.dark-theme .post-content .code-block .hljs-comment,
-html.dark-theme .post-content .code-block .hljs-quote {
-  color: #5c6370 !important;
-  font-style: italic !important;
-}
-
-/* 暗色模式 - 数字 */
-html.dark-theme .post-content .code-block .hljs-number,
-html.dark-theme .post-content .code-block .hljs-literal {
-  color: #d19a66 !important;
-}
-
-/* 暗色模式 - 变量名 */
-html.dark-theme .post-content .code-block .hljs-variable,
-html.dark-theme .post-content .code-block .hljs-name {
-  color: #e06c75 !important;
-}
-
-/* 暗色模式 - 属性 */
-html.dark-theme .post-content .code-block .hljs-attr,
-html.dark-theme .post-content .code-block .hljs-attribute {
-  color: #e06c75 !important;
-}
-
-/* 暗色模式 - 标题/类名 */
-html.dark-theme .post-content .code-block .hljs-title,
-html.dark-theme .post-content .code-block .hljs-class .hljs-title,
-html.dark-theme .post-content .code-block .hljs-type {
-  color: #e5c07b !important;
-}
-
-/* 暗色模式 - 函数 */
-html.dark-theme .post-content .code-block .hljs-function .hljs-title {
-  color: #61dafb !important;
-}
-
-/* 暗色模式 - 操作符 */
-html.dark-theme .post-content .code-block .hljs-operator,
-html.dark-theme .post-content .code-block .hljs-symbol {
-  color: #56b6c2 !important;
-}
-
-/* 暗色模式 - 正则表达式 */
-html.dark-theme .post-content .code-block .hljs-regexp {
-  color: #98c379 !important;
-}
-
-/* 暗色模式 - 元标签 */
-html.dark-theme .post-content .code-block .hljs-meta {
-  color: #61dafb !important;
-}
-
-/* 暗色模式 - 模板变量 */
-html.dark-theme .post-content .code-block .hljs-template-variable,
-html.dark-theme .post-content .code-block .hljs-template-tag {
-  color: #e06c75 !important;
-}
-
-/* 暗色模式 - 展开提示区域 */
-html.dark-theme .post-content .code-block .expand-hint {
-  background: #282c34 !important;
-  color: #abb2bf !important;
-  border-top: 1px solid #3e4451 !important;
-}
-
-html.dark-theme .post-content .code-block .expand-hint:hover {
-  background: #3e4451 !important;
-  color: #ffffff !important;
-}
-
-/* 暗色主题下的引用块 */
 html.dark-theme .post-content blockquote {
-  background: #3e4451 !important;
-  color: #abb2bf !important;
-  border-left-color: #ed6ea0 !important;
+  background: var(--theme-border);
+  color: var(--theme-text);
+  border-left-color: #ed6ea0;
 }
 
-/* 暗色主题下的表格 */
 html.dark-theme .post-content table {
-  background: #2c313c !important;
-  border-color: #3e4451 !important;
+  background: #2c313c;
+  border-color: var(--theme-border);
   box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 html.dark-theme .post-content th {
-  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%) !important;
-  border-bottom-color: #ed6ea0 !important;
+  background: linear-gradient(135deg, #ed6ea0 0%, #ec8c69 100%);
+  border-bottom-color: #ed6ea0;
 }
 
 html.dark-theme .post-content tr:nth-child(odd) {
-  background: #2c313c !important;
+  background: #2c313c;
 }
 
 html.dark-theme .post-content tr:nth-child(even) {
-  background: #383e4a !important;
+  background: #383e4a;
 }
 
 html.dark-theme .post-content tr:hover {
-  background: linear-gradient(135deg, #3e4451 0%, #4a5568 100%) !important;
+  background: linear-gradient(135deg, var(--theme-border) 0%, #4a5568 100%);
 }
 
 html.dark-theme .post-content td {
-  border-bottom-color: #3e4451 !important;
-  border-right-color: #383e4a !important;
+  border-bottom-color: var(--theme-border);
+  border-right-color: #383e4a;
 }
 
-/* 暗色主题下的链接 */
 html.dark-theme .post-content a {
-  color: #ed6ea0 !important;
+  color: #ed6ea0;
 }
 
 html.dark-theme .post-content a:hover {
-  border-bottom-color: #ed6ea0 !important;
+  border-bottom-color: #ed6ea0;
 }
 
-/* 暗色主题下的强调文本 */
 html.dark-theme .post-content strong {
-  color: #ed6ea0 !important;
+  color: #ed6ea0;
 }
 
 html.dark-theme .post-content em {
-  color: #abb2bf !important;
+  color: var(--theme-text);
 }
 
-/* 暗色主题下的列表 */
 html.dark-theme .post-content ul,
 html.dark-theme .post-content ol {
-  color: #abb2bf !important;
+  color: var(--theme-text);
 }
 
 html.dark-theme .post-content li {
-  color: #abb2bf !important;
+  color: var(--theme-text);
 }
 
 html.dark-theme .post-content li::marker {
-  color: #ed6ea0 !important;
+  color: #ed6ea0;
 }
 
-/* 暗色主题下的分割线 */
 html.dark-theme .post-content hr {
-  border-color: #3e4451 !important;
-  background: #3e4451 !important;
+  border-color: var(--theme-border);
+  background: var(--theme-border);
 }
 
-/* 暗色主题下的图片 */
 html.dark-theme .post-content img {
-  border-radius: 8px !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-/* 暗色主题下的删除线文本 */
 html.dark-theme .post-content del {
-  color: #7f848e !important;
+  color: var(--theme-text-muted);
 }
 
-/* 暗色主题下的标记文本 */
 html.dark-theme .post-content mark {
-  background: rgba(237, 110, 160, 0.3) !important;
-  color: #abb2bf !important;
-  padding: 0.1em 0.2em !important;
-  border-radius: 3px !important;
+  background: rgba(237, 110, 160, 0.3);
+  color: var(--theme-text);
+  padding: 0.1em 0.2em;
+  border-radius: 3px;
 }
 
-/* 暗色主题下的键盘按键样式 */
 html.dark-theme .post-content kbd {
-  background: #3e4451 !important;
-  color: #abb2bf !important;
-  border: 1px solid #5c6370 !important;
-  border-bottom: 3px solid #5c6370 !important;
-  box-shadow: inset 0 -1px 0 #5c6370 !important;
+  background: var(--theme-border);
+  color: var(--theme-text);
+  border: 1px solid var(--theme-text-disabled);
+  border-bottom: 3px solid var(--theme-text-disabled);
+  box-shadow: inset 0 -1px 0 var(--theme-text-disabled);
 }
 
-/* 暗色主题下的小字体文本 */
 html.dark-theme .post-content small {
-  color: #7f848e !important;
+  color: var(--theme-text-muted);
 }
 
-/* 暗色主题下的子标题和副标题 */
 html.dark-theme .post-content h5,
 html.dark-theme .post-content h6 {
-  color: #abb2bf !important;
-  border-bottom-color: #3e4451 !important;
+  color: var(--theme-text);
+  border-bottom-color: var(--theme-border);
 }
 
-/* 暗色主题下的段落 */
 html.dark-theme .post-content p {
-  color: #abb2bf !important;
-  line-height: 1.8 !important;
+  color: var(--theme-text);
+  line-height: 1.8;
 }
 
-/* 暗色主题下的预格式化文本（非代码块） */
 html.dark-theme .post-content pre:not(.code-block pre) {
-  background: #2c3132 !important;
-  color: #abb2bf !important;
-  border: 1px solid #5c6370 !important;
+  background: #2c3132;
+  color: var(--theme-text);
+  border: 1px solid var(--theme-text-disabled);
 }
 
-/* 暗色主题下的PostFooter组件样式 */
 html.dark-theme .post-footer {
-  border-top-color: #3e4451 !important;
+  border-top-color: var(--theme-border);
 }
 
 html.dark-theme .post-footer .copyright-info {
-  background: #2c313c !important;
-  border-color: #3e4451 !important;
-  color: #abb2bf !important;
+  background: #2c313c;
+  border-color: var(--theme-border);
+  color: var(--theme-text);
 }
 
 html.dark-theme .post-footer .copyright-item {
-  color: #abb2bf !important;
+  color: var(--theme-text);
 }
 
 html.dark-theme .post-footer .label {
-  color: #7f848e !important;
+  color: var(--theme-text-muted);
 }
 
 html.dark-theme .post-footer .value {
-  color: #abb2bf !important;
+  color: var(--theme-text);
 }
 
 html.dark-theme .post-footer .value.link {
-  color: #ed6ea0 !important;
+  color: #ed6ea0;
 }
 
 html.dark-theme .post-footer .post-navigation {
-  background: #2c313c !important;
-  border-top-color: #3e4451 !important;
-  border-bottom-color: #3e4451 !important;
+  background: #2c313c;
+  border-top-color: var(--theme-border);
+  border-bottom-color: var(--theme-border);
 }
 
-/* 导航项目在暗色模式下的样式调整 */
 html.dark-theme .post-footer .nav-content {
-  /* nav-content已经在main.css中被排除，现在只需要确保透明 */
-  background: transparent !important;
+  background: transparent;
 }
 
 html.dark-theme .post-footer .nav-item:not(:last-child) {
-  border-right-color: rgba(255, 255, 255, 0.2) !important;
+  border-right-color: rgba(255, 255, 255, 0.2);
 }

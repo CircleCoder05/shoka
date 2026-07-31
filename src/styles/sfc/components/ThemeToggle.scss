@@ -1,3 +1,5 @@
+@use '@/styles/foundation/mixins' as mixins;
+
 .theme-toggle-btn {
   display: flex;
   align-items: center;
@@ -43,7 +45,7 @@
 }
 
 /* 移动端适配 */
-@media (max-width: 768px) {
+@include mixins.respond-below(768px) {
   .theme-toggle-btn {
     padding: 6px;
     font-size: 14px;
@@ -52,7 +54,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@include mixins.respond-below(480px) {
   .theme-toggle-btn {
     padding: 6px;
     min-width: 32px;
@@ -422,7 +424,7 @@
 
 .star {
   position: absolute;
-  background: #fff;
+  background: var(--theme-surface);
   clip-path: polygon(
     50% 0%,
     61% 35%,
