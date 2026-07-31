@@ -35,11 +35,15 @@
             <strong>{{ comment.author_name }}</strong>
             <span v-if="comment.is_owner_reply" class="owner-badge">博主</span>
             <time>{{ formatDate(comment.created_at) }}</time>
+            <button v-if="isBlogOwner" class="comment-delete" @click="removeComment(comment)">删除</button>
           </div>
           <p>{{ comment.content }}</p>
           <div v-if="comment.replies?.length" class="reply-list">
             <div v-for="reply in comment.replies" :key="reply.id" class="reply-item">
-              <strong>{{ reply.author_name }} <span v-if="reply.is_owner_reply">· 博主</span></strong>
+              <div class="reply-meta">
+                <strong>{{ reply.author_name }} <span v-if="reply.is_owner_reply">· 博主</span></strong>
+                <button v-if="isBlogOwner" class="comment-delete" @click="removeComment(reply)">删除</button>
+              </div>
               <p>{{ reply.content }}</p>
               <time>{{ formatDate(reply.created_at) }}</time>
             </div>
@@ -51,12 +55,14 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, watch } from 'vue'
-import { apiGet, apiPost } from '@/services/api'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { apiDelete, apiGet, apiPost } from '@/services/api'
 import { useBlogStore } from '@/stores/blog'
+import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps({ postSlug: { type: String, required: true } })
 const blogStore = useBlogStore()
+const authStore = useAuthStore()
 const comments = ref([])
 const total = ref(0)
 const likeCount = ref(0)
@@ -65,6 +71,9 @@ const loading = ref(false)
 const submitting = ref(false)
 const busyLike = ref(false)
 const error = ref('')
+const isBlogOwner = computed(() =>
+  Boolean(authStore.user?.id && authStore.user.id === blogStore.blog?.owner_id),
+)
 const form = reactive({
   author_name: localStorage.getItem('shoka_comment_name') || '',
   author_email: localStorage.getItem('shoka_comment_email') || '',
@@ -125,6 +134,16 @@ async function toggleLike() {
     error.value = err.message
   } finally {
     busyLike.value = false
+  }
+}
+async function removeComment(comment) {
+  if (!confirm('删除这条评论？此操作会同时删除它的回复。')) return
+  error.value = ''
+  try {
+    await apiDelete(`/api/dashboard/comments/${comment.id}`)
+    await load()
+  } catch (err) {
+    error.value = err.message
   }
 }
 const formatDate = (value) => new Date(value).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' })

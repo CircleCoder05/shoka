@@ -19,10 +19,12 @@ input:focus, textarea:focus { outline: 2px solid rgba(237,110,160,.2); border-co
 .comment-card { display: grid; grid-template-columns: 44px 1fr; gap: 1rem; padding: 1.25rem 0; border-bottom: 1px solid var(--theme-border); }
 .comment-avatar { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; color: #fff; font-weight: 800; background: linear-gradient(135deg, #ed6ea0, #60a5fa); }
 .comment-meta { display: flex; align-items: center; gap: .6rem; }
+.comment-delete { margin-left: auto; padding: .25rem .55rem; border: 1px solid rgba(237,110,160,.28); border-radius: .45rem; color: var(--color-pink); background: rgba(237,110,160,.06); cursor: pointer; font-size: .78rem; }
 .comment-body p { white-space: pre-wrap; line-height: 1.75; }
 .owner-badge { padding: .15rem .45rem; border-radius: 999px; background: rgba(237,110,160,.14); color: var(--color-pink); font-size: .72rem; }
 .reply-list { margin-top: 1rem; padding-left: 1rem; border-left: 3px solid var(--theme-border-accent); display: grid; gap: .75rem; }
 .reply-item { padding: .85rem 1rem; border-radius: .75rem; background: var(--theme-surface-muted); }
+.reply-meta { display: flex; align-items: center; gap: .75rem; }
 .reply-item p { margin: .35rem 0; }
 .comment-empty, .comment-error { text-align: center; padding: 2rem; color: var(--theme-text-muted); }
 .comment-error { color: var(--color-pink); }

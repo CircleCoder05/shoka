@@ -43,18 +43,17 @@
             </section>
             <aside class="overview-side">
               <section class="studio-card quick-panel"><h2>快速操作</h2><button @click="newPost"><i>✎</i><span>写文章<small>开始创作新内容</small></span></button><button @click="section = 'taxonomy'"><i>▰</i><span>分类管理<small>管理文章分类</small></span></button><button @click="openSettings('appearance')"><i>◉</i><span>主题外观<small>设置颜色与背景</small></span></button></section>
-              <section class="studio-card comment-preview"><header><h2>最新评论</h2><button @click="section = 'comments'">查看全部</button></header><p v-if="!comments.length">还没有评论</p><article v-for="comment in comments.slice(0, 3)" :key="comment.id"><b>{{ comment.author_name }}</b><span>{{ comment.content }}</span><small>{{ formatDate(comment.created_at) }}</small></article></section>
             </aside>
           </div>
         </template>
 
         <template v-else-if="section === 'posts'">
-          <header class="page-heading"><div><h1>文章管理</h1><p>查看、筛选和管理所有文章。</p></div><button class="primary" @click="newPost">✎ 写新文章</button></header>
           <section class="studio-card post-manager">
             <div class="filter-bar">
               <label>⌕<input v-model="postQuery" placeholder="搜索标题或摘要" /></label>
               <select v-model="postStatus"><option value="">全部状态</option><option value="published">已发布</option><option value="draft">草稿</option></select>
               <select v-model="postCategory"><option value="">全部分类</option><option v-for="item in categories" :key="item.id" :value="String(item.id)">{{ item.name }}</option></select>
+              <button class="primary" @click="newPost">✎ 写新文章</button>
             </div>
             <div class="content-table">
               <div class="table-head"><span>文章</span><span>状态</span><span>分类</span><span>标签</span><span>更新时间</span><span>操作</span></div>
@@ -62,7 +61,7 @@
                 <div class="post-cell"><img :src="post.cover_url || '/default-cover.jpg'" alt="" /><div><strong>{{ post.title }}</strong><small>{{ post.excerpt || '暂无摘要' }}</small></div></div>
                 <span :class="['status-pill', post.status]">{{ post.status === 'published' ? '已发布' : '草稿' }}</span>
                 <span>{{ categoryName(post) }}</span>
-                <div class="tag-stack"><b v-for="tag in post.tags?.slice(0, 2)" :key="tag">{{ tag }}</b></div>
+                <div class="tag-stack"><b v-for="tag in post.tags?.slice(0, 2)" :key="tag" :class="tagTone(tag)">{{ tag }}</b></div>
                 <time>{{ formatDate(post.updated_at) }}</time>
                 <div class="table-actions"><button @click="editPost(post)">编辑</button><button v-if="post.status !== 'published'" @click="publishPost(post)">发布</button><button class="danger" @click="removePost(post)">删除</button></div>
               </article>
@@ -72,11 +71,10 @@
         </template>
 
         <template v-else-if="section === 'editor'">
-          <header class="editor-topline"><div><button @click="section = 'posts'">←</button><div><h1>{{ editingPostId ? '编辑文章' : '写文章' }}</h1><p>支持 Markdown 与 LaTeX 数学公式实时预览</p></div></div><div><button @click="savePost('draft')">保存草稿</button><button class="primary" @click="savePost('published')">发布文章</button></div></header>
+          <header class="editor-topline"><button @click="section = 'posts'">← 返回文章管理</button><div><button @click="savePost('draft')">保存草稿</button><button class="primary" @click="savePost('published')">发布文章</button></div></header>
           <div class="editor-layout">
             <section class="editor-main studio-card">
               <label class="title-field"><span>文章标题</span><input v-model="postForm.title" placeholder="输入一个吸引人的标题" maxlength="255" /><small>{{ postForm.title.length }}/255</small></label>
-              <label class="cover-uploader"><input type="file" accept="image/*" @change="uploadCover" /><img v-if="postForm.cover_url" :src="postForm.cover_url" alt="" /><span v-else>▧<b>点击上传封面图</b><small>支持 JPG、PNG、WebP</small></span></label>
               <div class="editor-mode"><button :class="{ active: editorMode === 'write' }" @click="editorMode = 'write'">编辑</button><button :class="{ active: editorMode === 'split' }" @click="editorMode = 'split'">分栏预览</button><button :class="{ active: editorMode === 'preview' }" @click="editorMode = 'preview'">仅预览</button><select v-model="postForm.kind"><option value="markdown">Markdown</option><option value="latex">Markdown + LaTeX</option></select></div>
               <div :class="['writing-surface', `mode-${editorMode}`]">
                 <textarea v-if="editorMode !== 'preview'" v-model="postForm.content" class="source-editor" spellcheck="false" placeholder="开始写下你的想法…&#10;&#10;LaTeX 示例：$E = mc^2$ 或 $$\\int_0^1 x^2 dx$$"></textarea>
@@ -85,22 +83,21 @@
               <label class="excerpt-field">文章摘要<textarea v-model="postForm.excerpt" rows="3" maxlength="300" placeholder="可选，将显示在文章列表中"></textarea><small>{{ postForm.excerpt.length }}/300</small></label>
             </section>
             <aside class="editor-settings">
-              <section class="studio-card"><h2>发布设置</h2><label>路径标识<input v-model="postForm.slug" placeholder="article-slug" /></label><label>发布状态<select v-model="postForm.status"><option value="draft">草稿</option><option value="published">立即发布</option></select></label><label>分类<select v-model="postForm.category_id"><option :value="null">未分类</option><option v-for="item in categories" :key="item.id" :value="item.id">{{ item.name }}</option></select></label><label>标签<input v-model="tagsText" placeholder="用逗号分隔" /></label></section>
+              <section class="studio-card"><h2>封面图</h2><label class="cover-uploader"><input type="file" accept="image/*" @change="uploadCover" /><img v-if="postForm.cover_url" :src="postForm.cover_url" alt="" /><span v-else>▧<b>点击上传封面图</b><small>支持 JPG、PNG、WebP</small></span></label></section>
+              <section class="studio-card"><h2>发布设置</h2><label>发布状态<select v-model="postForm.status"><option value="draft">草稿</option><option value="published">立即发布</option></select></label><label>分类<select v-model="postForm.category_id"><option :value="null">未分类</option><option v-for="item in categories" :key="item.id" :value="item.id">{{ item.name }}</option></select></label><label>标签<input v-model="tagsText" placeholder="用逗号分隔" /></label></section>
               <section class="studio-card editor-stat"><h2>字数统计</h2><div><strong>{{ editorStats.characters }}</strong><span>字符</span><strong>{{ editorStats.minutes }}</strong><span>分钟</span></div><small>{{ editorStats.paragraphs }} 个段落 · {{ editorStats.images }} 张图片</small></section>
             </aside>
           </div>
         </template>
 
         <template v-else-if="section === 'taxonomy'">
-          <header class="page-heading"><div><h1>分类 / 标签</h1><p>让内容组织更清晰，查找更高效。</p></div><div class="taxonomy-metrics"><span>分类 <b>{{ categories.length }}</b></span><span>标签 <b>{{ tags.length }}</b></span></div></header>
           <div class="taxonomy-grid">
             <section class="studio-card taxonomy-panel"><header><h2>新增分类</h2></header><form class="inline-form" @submit.prevent="saveCategory"><input v-model="categoryForm.name" placeholder="分类名称" required /><input v-model="categoryForm.slug" placeholder="别名，如 tech" required /><input v-model="categoryForm.description" placeholder="分类描述（可选）" /><button class="primary">{{ editingCategoryId ? '保存修改' : '新增分类' }}</button></form><h3>分类列表</h3><article v-for="item in categories" :key="item.id"><span class="taxonomy-icon">▦</span><div><strong>{{ item.name }}</strong><small>{{ item.slug }} · {{ item.description }}</small></div><b>{{ countCategory(item.id) }} 篇</b><button @click="editCategory(item)">编辑</button><button class="danger" @click="removeCategory(item)">删除</button></article></section>
-            <section class="studio-card taxonomy-panel"><header><h2>标签列表</h2></header><p class="taxonomy-hint">标签来自文章；重命名或删除会同步更新相关文章。</p><article v-for="tag in tags" :key="tag.name"><span class="taxonomy-icon tag-icon">◆</span><div><strong>{{ tag.name }}</strong><small>用于 {{ tag.post_count }} 篇文章</small></div><b>{{ tag.post_count }} 篇</b><button @click="renameTag(tag)">重命名</button><button class="danger" @click="removeTag(tag)">删除</button></article><p v-if="!tags.length" class="empty">还没有标签。</p></section>
+            <section class="studio-card taxonomy-panel"><header><h2>标签列表</h2></header><p class="taxonomy-hint">标签来自文章；重命名或删除会同步更新相关文章。</p><article v-for="tag in tags" :key="tag.name"><span :class="['taxonomy-icon', 'tag-icon', tagTone(tag.name)]">◆</span><div><strong :class="['tag-name', tagTone(tag.name)]">{{ tag.name }}</strong><small>用于 {{ tag.post_count }} 篇文章</small></div><b>{{ tag.post_count }} 篇</b><button @click="renameTag(tag)">重命名</button><button class="danger" @click="removeTag(tag)">删除</button></article><p v-if="!tags.length" class="empty">还没有标签。</p></section>
           </div>
         </template>
 
         <template v-else-if="section === 'settings' && blog">
-          <header class="page-heading"><div><h1>博客设置</h1><p>管理站点信息、个人资料、外观和友链。</p></div></header>
           <nav class="settings-tabs"><button v-for="tab in settingTabs" :key="tab.key" :class="{ active: settingsTab === tab.key }" @click="settingsTab = tab.key">{{ tab.label }}</button></nav>
           <form v-if="settingsTab === 'basic'" class="settings-layout" @submit.prevent="saveBlog">
             <section class="studio-card settings-form"><h2>站点信息</h2><label>博客标题<input v-model="blog.title" /></label><label>个性签名<input v-model="blog.subtitle" /></label><label>博客简介<textarea v-model="blog.description" rows="4"></textarea></label><label>博客地址标识<input v-model="blog.slug" /></label><button class="primary">保存设置</button></section>
@@ -116,9 +113,7 @@
           <section v-else class="studio-card friend-settings"><header><div><h2>友链管理</h2><p>公开展示在友链页面的站点。</p></div><button class="primary" @click="newFriend">＋ 新增友链</button></header><article v-for="friend in friends" :key="friend.id"><img :src="friend.avatar_url || fallbackAvatar" alt="" /><div><strong>{{ friend.name }}</strong><small>{{ friend.category }} · {{ friend.url }}</small></div><button @click="editFriend(friend)">编辑</button><button class="danger" @click="removeFriend(friend)">删除</button></article></section>
         </template>
 
-        <form v-else-if="section === 'friend-editor'" class="studio-card friend-editor" @submit.prevent="saveFriend"><header><button type="button" @click="openSettings('friends')">←</button><h1>{{ editingFriendId ? '编辑友链' : '新增友链' }}</h1></header><div><label>名称<input v-model="friendForm.name" required /></label><label>分组<input v-model="friendForm.category" required /></label><label>网址<input v-model="friendForm.url" type="url" required /></label><label>头像 URL<input v-model="friendForm.avatar_url" /></label><label>简介<textarea v-model="friendForm.description"></textarea></label><label>标签<input v-model="friendTagsText" placeholder="逗号分隔" /></label></div><button class="primary">保存友链</button></form>
-
-        <section v-else-if="section === 'comments'" class="studio-card comment-admin"><header><h1>评论管理</h1></header><article v-for="comment in comments" :key="comment.id"><div><strong>{{ comment.author_name }}</strong><time>{{ formatDate(comment.created_at) }}</time><p>{{ comment.content }}</p></div><div class="reply-compose"><input v-model="replyDrafts[comment.id]" placeholder="以博主身份回复…" /><button @click="replyComment(comment)">回复</button><button class="danger" @click="removeComment(comment)">删除</button></div></article><p v-if="!comments.length" class="empty">还没有评论。</p></section>
+        <form v-else-if="section === 'friend-editor'" class="studio-card friend-editor" @submit.prevent="saveFriend"><header><button type="button" @click="openSettings('friends')">← 返回友链管理</button></header><div><label>名称<input v-model="friendForm.name" required /></label><label>分组<input v-model="friendForm.category" required /></label><label>网址<input v-model="friendForm.url" type="url" required /></label><label>头像 URL<input v-model="friendForm.avatar_url" /></label><label>简介<textarea v-model="friendForm.description"></textarea></label><label>标签<input v-model="friendTagsText" placeholder="逗号分隔" /></label></div><button class="primary">保存友链</button></form>
       </main>
     </div>
   </div>
@@ -138,18 +133,18 @@ import '@/styles/pages/dashboard.scss'
 const md = new MarkdownIt({ html: false, linkify: true, breaks: true }).use(texmath, { engine: katex, delimiters: 'dollars' })
 const router = useRouter(), auth = useAuthStore()
 const section = ref('overview'), settingsTab = ref('basic'), editorMode = ref('split')
-const blog = ref(null), posts = ref([]), categories = ref([]), tags = ref([]), friends = ref([]), comments = ref([])
+const blog = ref(null), posts = ref([]), categories = ref([]), tags = ref([]), friends = ref([])
 const notice = ref(''), postQuery = ref(''), postStatus = ref(''), postCategory = ref(''), tagsText = ref(''), profileText = ref('{}'), friendTagsText = ref('')
-const editingPostId = ref(null), editingCategoryId = ref(null), editingFriendId = ref(null), replyDrafts = reactive({})
+const editingPostId = ref(null), editingCategoryId = ref(null), editingFriendId = ref(null)
 const fallbackAvatar = '/img/avatar.png'
-const postDefaults = () => ({ title:'', slug:'', excerpt:'', content:'', content_url:null, cover_url:null, attachment_url:null, kind:'markdown', tags:[], category_id:null, status:'draft', password:null, published_at:null })
+const postDefaults = () => ({ title:'', excerpt:'', content:'', content_url:null, cover_url:null, attachment_url:null, kind:'markdown', tags:[], category_id:null, status:'draft', password:null, published_at:null })
 const categoryDefaults = () => ({ name:'', slug:'', description:'', cover_url:null, sort_order:0 })
 const friendDefaults = () => ({ category:'朋友们', name:'', url:'', avatar_url:null, description:'', tags:[], background:null, sort_order:0, is_visible:true })
 const postForm = reactive(postDefaults()), categoryForm = reactive(categoryDefaults()), friendForm = reactive(friendDefaults())
 const appearance = reactive({ accent:'#ed6ea0', banner_url:'', background_url:'', show_archives:true, show_friends:true })
 const accentColors = ['#ed6ea0','#ff9f43','#f7c948','#42b883','#22b8cf','#5b7cfa','#9b6df5']
 const settingTabs = [{key:'basic',label:'基本信息'},{key:'profile',label:'个人资料'},{key:'appearance',label:'主题外观'},{key:'friends',label:'友链管理'}]
-const navigation = computed(() => [{key:'overview',label:'仪表盘',icon:'⌂'},{key:'posts',label:'文章管理',icon:'▤',count:posts.value.length},{key:'editor',label:'写文章',icon:'✎'},{key:'taxonomy',label:'分类 / 标签',icon:'▦'},{key:'settings',label:'博客设置',icon:'⚙'},{key:'comments',label:'评论管理',icon:'◌',count:comments.value.length}])
+const navigation = computed(() => [{key:'overview',label:'仪表盘',icon:'⌂'},{key:'posts',label:'文章管理',icon:'▤',count:posts.value.length},{key:'taxonomy',label:'分类 / 标签',icon:'▦'},{key:'settings',label:'博客设置',icon:'⚙'}])
 const pageTitle = computed(() => navigation.value.find(item => item.key === section.value)?.label || (section.value === 'friend-editor' ? '友链编辑' : '写文章'))
 const metrics = computed(() => [{label:'文章总数',value:posts.value.length,note:`${publishedCount.value} 篇已发布`,icon:'▤',tone:'pink'},{label:'草稿数',value:posts.value.length-publishedCount.value,note:'继续完成创作',icon:'✎',tone:'orange'},{label:'分类数',value:categories.value.length,note:'内容组织清晰',icon:'▦',tone:'purple'},{label:'标签数',value:tags.value.length,note:'知识关联网络',icon:'◆',tone:'blue'}])
 const publishedCount = computed(() => posts.value.filter(post => post.status === 'published').length)
@@ -163,7 +158,7 @@ const previewHtml = computed(() => {
 })
 const editorStats = computed(() => { const text=postForm.content||''; return {characters:text.replace(/\s/g,'').length,minutes:Math.max(1,Math.ceil(text.length/500)),paragraphs:text.split(/\n\s*\n/).filter(Boolean).length,images:(text.match(/!\[/g)||[]).length} })
 
-async function load(){ [blog.value,categories.value,posts.value,tags.value,friends.value,comments.value]=await Promise.all(['/api/dashboard/blog','/api/dashboard/categories','/api/dashboard/posts','/api/dashboard/tags','/api/dashboard/friends','/api/dashboard/comments'].map(apiGet)); profileText.value=JSON.stringify(blog.value.profile||{},null,2);Object.assign(appearance,{...appearance,...(blog.value.settings?.appearance||{})}) }
+async function load(){ [blog.value,categories.value,posts.value,tags.value,friends.value]=await Promise.all(['/api/dashboard/blog','/api/dashboard/categories','/api/dashboard/posts','/api/dashboard/tags','/api/dashboard/friends'].map(apiGet)); profileText.value=JSON.stringify(blog.value.profile||{},null,2);Object.assign(appearance,{...appearance,...(blog.value.settings?.appearance||{})}) }
 function flash(text){notice.value=text;setTimeout(()=>notice.value='',2400)}
 function openSection(key){ if(key==='editor') newPost(); else section.value=key }
 function openSettings(tab){settingsTab.value=tab;section.value='settings'}
@@ -185,8 +180,7 @@ function newFriend(){editingFriendId.value=null;Object.assign(friendForm,friendD
 function editFriend(item){editingFriendId.value=item.id;Object.assign(friendForm,item);friendTagsText.value=(item.tags||[]).join(', ');section.value='friend-editor'}
 async function saveFriend(){const payload={...friendForm,tags:friendTagsText.value.split(',').map(x=>x.trim()).filter(Boolean)};await (editingFriendId.value?apiPut(`/api/dashboard/friends/${editingFriendId.value}`,payload):apiPost('/api/dashboard/friends',payload));friends.value=await apiGet('/api/dashboard/friends');openSettings('friends');flash('友链已保存')}
 async function removeFriend(item){if(confirm(`删除友链“${item.name}”？`)){await apiDelete(`/api/dashboard/friends/${item.id}`);friends.value=friends.value.filter(x=>x.id!==item.id)}}
-async function replyComment(item){const content=replyDrafts[item.id]?.trim();if(!content)return;await apiPost(`/api/dashboard/comments/${item.id}/reply`,{content});replyDrafts[item.id]='';comments.value=await apiGet('/api/dashboard/comments');flash('回复已发送')}
-async function removeComment(item){if(confirm('删除这条评论及回复？')){await apiDelete(`/api/dashboard/comments/${item.id}`);comments.value=comments.value.filter(x=>x.id!==item.id)}}
+function tagTone(value){let hash=0;for(const char of value)hash=(hash*31+char.codePointAt(0))%6;return `tag-tone-${hash}`}
 const formatDate=value=>new Date(value).toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit',year:'numeric'})
 function logout(){auth.logout();router.push('/')}
 onMounted(load)
