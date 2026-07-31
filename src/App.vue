@@ -4,7 +4,8 @@ import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import Sidebar from './components/Sidebar.vue'
 import Banner from './components/Banner.vue'
-import OhMyLive2d from './components/OhMyLive2d.vue'
+
+import PetWidget from './components/PetWidget.vue'
 import SearchModal from './components/SearchModal.vue'
 import { useBannerStore } from './stores/banner'
 import { useThemeStore } from './stores/theme'
@@ -69,8 +70,9 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- OhMyLive2d -->
-    <OhMyLive2d />
+
+    <!-- AI 宠物 -->
+    <PetWidget />
 
     <!-- 搜索模态框 -->
     <SearchModal />

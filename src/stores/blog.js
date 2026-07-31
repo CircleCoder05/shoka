@@ -2,7 +2,7 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { apiGet } from '@/services/api'
 
-const DEFAULT_BLOG = import.meta.env.VITE_DEFAULT_BLOG || 'circlecoder'
+const DEFAULT_BLOG = import.meta.env.VITE_BLOG_SLUG || 'circlecoder'
 
 export const useBlogStore = defineStore('blog', () => {
   const selectedSlug = ref(localStorage.getItem('shoka_blog') || DEFAULT_BLOG)

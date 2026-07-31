@@ -249,12 +249,6 @@ body {
 }
 
 /* Theme-specific colors live in foundation/_themes.scss. */
-body:has(.auth-page) #oml2d-stage,
-body:has(.auth-page) #oml2d-statusBar,
-body:has(.dashboard-page) #oml2d-stage,
-body:has(.dashboard-page) #oml2d-statusBar {
-  display: none !important;
-}
 
 body:has(.auth-page) {
   overflow: hidden;

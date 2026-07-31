@@ -115,7 +115,22 @@
             </div>
             <div class="site-admin-column">
               <section class="studio-card social-settings"><header><div><h2>社交链接</h2><p>按列表维护前台侧边栏展示的链接。</p></div><el-button @click="openSocialDialog()">＋ 添加链接</el-button></header><div class="social-link-list"><article v-for="(item,index) in socialItems" :key="`${item.key}-${index}`"><span class="social-label"><i :class="['ic',socialIcon(item)]"></i><strong>{{ item.label }}</strong><small>{{ item.url }}</small></span><div><button type="button" class="icon-action" title="编辑链接" aria-label="编辑链接" @click="openSocialDialog(item,index)"><ActionIcon name="edit" /></button><button type="button" class="danger icon-action trash-action" title="删除链接" aria-label="删除链接" @click="removeSocialLink(index)"><ActionIcon /></button></div></article><p v-if="!socialItems.length" class="empty-inline">暂无社交链接，点击右上角添加。</p></div></section>
-              <section class="studio-card feature-settings"><h2>页面功能</h2><label class="switch-line live2d-toggle"><span><strong>启用看板娘</strong><small>在前台左下角显示原有 Live2D 看板娘</small></span><input v-model="live2dEnabled" type="checkbox" /></label></section>
+              <section class="studio-card pet-config-settings feature-settings">
+                <header class="pet-card-header"><h2>AI 宠物设置</h2><label class="switch-line pet-toggle"><input v-model="petConfig.pet_enabled" type="checkbox" /></label></header>
+                <div v-if="petConfig.pet_enabled" class="pet-card-body">
+                  <div class="pet-current-row">
+                    <span class="pet-current-preview" :style="petFrameStyle(activePetChar.image_url, 56)"></span>
+                    <div class="pet-current-info">
+                      <strong>{{ activePetChar.name }}</strong>
+                      <small>{{ activePetChar.is_builtin ? '内置宠物' : '自定义宠物' }}</small>
+                    </div>
+                    <el-button type="primary" plain @click="openPetPicker">选择宠物</el-button>
+                  </div>
+                  <label class="switch-line"><span><strong>显示思考过程</strong></span><input v-model="petConfig.pet_thinking_enabled" type="checkbox" /></label>
+                  <label>宠物名称<input v-model="petConfig.pet_name" placeholder="小助手" maxlength="20" /></label>
+                  <label>风格<textarea v-model="petConfig.system_prompt" rows="6" placeholder="描述宠物的性格和说话风格，例如：&#10;你是一只傲娇的猫娘，说话带「喵~」尾音，喜欢吐槽但不讨厌读者。&#10;留空则使用默认风格。"></textarea><small>定义宠物的性格和说话方式，不要写身份描述。留空则使用该角色的默认风格。</small></label>
+                </div>
+              </section>
             </div>
           </form>
         </template>
@@ -126,6 +141,36 @@
     <el-dialog v-model="tagEditDialogVisible" :title="editingTagName ? '编辑标签' : '新建标签'" width="480px" append-to-body><form class="dialog-form" @submit.prevent="saveTag"><label>标签名称<input v-model="tagForm.name" required /></label><label>颜色<div class="tag-color-editor"><input v-model="tagForm.color" type="color" /><input v-model="tagForm.color" type="text" maxlength="7" placeholder="#A78BFA" /><span :style="{backgroundColor:tagForm.color}"></span></div></label><label>说明<textarea v-model="tagForm.description" rows="3"></textarea></label></form><template #footer><el-button @click="tagEditDialogVisible=false">取消</el-button><el-button type="primary" @click="saveTag">保存</el-button></template></el-dialog>
     <el-dialog v-model="socialDialogVisible" :title="editingSocialIndex === null ? '添加社交链接' : '编辑社交链接'" width="520px" append-to-body><form class="dialog-form" @submit.prevent="saveSocialLink"><label>平台类型<el-select v-model="socialForm.key"><el-option v-for="network in socialNetworks" :key="network.key" :label="network.label" :value="network.key" /></el-select></label><label>显示名称<input v-model="socialForm.label" required placeholder="如 GitHub" /></label><label>链接地址<input v-model="socialForm.url" required placeholder="https://..." /></label></form><template #footer><el-button @click="socialDialogVisible=false">取消</el-button><el-button type="primary" @click="saveSocialLink">保存</el-button></template></el-dialog>
     <el-dialog v-model="friendDialogVisible" :title="editingFriendId ? '编辑友链' : '新增友链'" width="560px" append-to-body><form class="dialog-form" @submit.prevent="saveFriend"><label>名称<input v-model="friendForm.name" required /></label><label>分组<input v-model="friendForm.category" required /></label><label>网址<input v-model="friendForm.url" type="url" required /></label><label>头像 URL<input v-model="friendForm.avatar_url" /></label><label>简介<textarea v-model="friendForm.description" rows="3"></textarea></label><label>标签<input v-model="friendTagsText" placeholder="逗号分隔" /></label></form><template #footer><el-button @click="friendDialogVisible=false">取消</el-button><el-button type="primary" @click="saveFriend">保存</el-button></template></el-dialog>
+    <el-dialog v-model="petPickerVisible" title="选择宠物" width="640px" append-to-body>
+      <div class="pet-character-grid">
+        <button
+          v-for="char in petCharacters"
+          :key="char.character_key"
+          type="button"
+          class="pet-character-item"
+          :class="{ active: char.character_key === activePetChar.character_key }"
+          @click="selectPetCharacter(char)"
+        >
+          <span class="pet-character-preview" :style="petFrameStyle(char.image_url, 72)"></span>
+          <span class="pet-character-name">{{ char.name }}</span>
+          <span v-if="!char.is_builtin" class="pet-character-edit" @click.stop="openPetEdit(char)">编辑</span>
+          <span v-if="!char.is_builtin" class="pet-character-del" @click.stop="removePetCharacter(char)">删除</span>
+        </button>
+        <button type="button" class="pet-character-item pet-character-add" @click="openPetCreate">
+          <span class="pet-add-icon">＋</span>
+          <span class="pet-character-name">自定义</span>
+        </button>
+      </div>
+    </el-dialog>
+    <el-dialog v-model="petEditVisible" :title="petEditKey ? '编辑宠物' : '创建宠物'" width="560px" append-to-body>
+      <form class="dialog-form" @submit.prevent="savePetCharacter">
+        <label>宠物 ID<input v-model="petEditForm.character_key" :disabled="!!petEditKey" placeholder="如 my-dog（字母数字下划线连字符）" required /></label>
+        <label>名称<input v-model="petEditForm.name" placeholder="如 狗子" required /></label>
+        <label>精灵图<el-upload :show-file-list="false" accept="image/webp,image/*" :http-request="uploadPetSprite"><div class="dialog-cover"><div v-if="petEditForm.image_url" class="img-upload-wrap" :class="{ 'is-uploading': isBlobUrl(petEditForm.image_url) }"><img :src="petEditForm.image_url" alt="" /><span class="upload-spinner"></span></div><span v-else>点击上传 webp 精灵图，上传后自动保存到 OSS</span></div></el-upload></label>
+        <label>性格提示词<textarea v-model="petEditForm.system_prompt" rows="4" placeholder="描述这个宠物的性格和说话风格"></textarea></label>
+      </form>
+      <template #footer><el-button @click="petEditVisible=false">取消</el-button><el-button type="primary" @click="savePetCharacter">保存</el-button></template>
+    </el-dialog>
   </div>
 </template>
 
@@ -150,17 +195,18 @@ import 'element-plus/es/components/upload/style/css'
 import { api, apiDelete, apiGet, apiPatch, apiPost, apiPut } from '@/services/api'
 import { useAuthStore } from '@/stores/auth'
 import { useConfigStore } from '@/stores/config'
-import { useOml2dStore } from '@/stores/oml2d'
+import { usePetStore } from '@/stores/pet'
 import { renderMarkdown } from '@/utils/markdownRenderer'
+import { petFrameStyle } from '@/utils/petSprite'
 import ArticleContent from '@/components/ArticleContent.vue'
 import ActionIcon from '@/components/dashboard/ActionIcon.vue'
 import '@/styles/pages/dashboard.scss'
 
-const router = useRouter(), route = useRoute(), auth = useAuthStore(), configStore = useConfigStore(), oml2dStore = useOml2dStore()
+const router = useRouter(), route = useRoute(), auth = useAuthStore(), configStore = useConfigStore(), petStore = usePetStore()
 const dashboardSections = new Set(['posts','editor','taxonomy','profile','friends','site'])
 const section = ref(dashboardSections.has(route.params.section) ? route.params.section : 'posts'), editorMode = ref('write')
 const blog = ref(null), profile = ref(null), posts = ref([]), categories = ref([]), tags = ref([]), friends = ref([])
-const notice = ref(''), postQuery = ref(''), postStatus = ref(''), postCategory = ref(''), tagsText = ref(''), friendTagsText = ref(''), typewriterText = ref(''), live2dEnabled = ref(true)
+const notice = ref(''), postQuery = ref(''), postStatus = ref(''), postCategory = ref(''), tagsText = ref(''), friendTagsText = ref(''), typewriterText = ref('')
 const editingPostId = ref(null), editingCategoryId = ref(null), editingFriendId = ref(null)
 const currentPage = ref(1), pageSize = ref(10), tagDialogVisible = ref(false), selectedPostTags = ref([]), sourceEditor = ref(null)
 const categoryDialogVisible = ref(false), tagEditDialogVisible = ref(false), friendDialogVisible = ref(false), socialDialogVisible = ref(false), editingTagName = ref('')
@@ -174,6 +220,12 @@ const tagDefaults = () => ({ name:'', color:'#a78bfa', description:'' })
 const friendDefaults = () => ({ category:'朋友们', name:'', url:'', avatar_url:null, description:'', tags:[], background:null, sort_order:0, is_visible:true })
 const postForm = reactive(postDefaults()), categoryForm = reactive(categoryDefaults()), tagForm = reactive(tagDefaults()), friendForm = reactive(friendDefaults())
 const appearance = reactive({ accent:'#ed6ea0', banner_url:'', banners:[], use_system_banners:true, background_url:'', show_archives:true, show_friends:true })
+const petConfig = reactive({ pet_name:'小助手', system_prompt:'', pet_enabled:true, pet_thinking_enabled:false, active_character:'ikun' })
+const petCharacters = ref([])
+const petPickerVisible = ref(false)
+const petEditVisible = ref(false)
+const petEditKey = ref(null)
+const petEditForm = reactive({ character_key:'', name:'', image_url:'', system_prompt:'' })
 const profileDefaults = () => ({display_mode:'default',markdown_content:'',portrait_url:null,introduction:'',traits:Array.from({length:6},()=>({title:''})),skills:[],timeline:[],snapshots:[],contact_email:'',contact_message:''})
 const profileForm = reactive(profileDefaults())
 const socialNetworks = [{key:'github',label:'GitHub',icon:'i-github',placeholder:'https://github.com/...'},{key:'music',label:'网易云音乐',icon:'i-cloud-music',placeholder:'https://music.163.com/...'},{key:'email',label:'邮箱',icon:'i-envelope',placeholder:'mailto:hello@example.com'},{key:'twitter',label:'Twitter',icon:'i-twitter',placeholder:'https://twitter.com/...'},{key:'facebook',label:'Facebook',icon:'i-facebook',placeholder:'https://facebook.com/...'},{key:'youtube',label:'YouTube',icon:'i-youtube',placeholder:'https://youtube.com/...'},{key:'weibo',label:'微博',icon:'i-weibo',placeholder:'https://weibo.com/...'},{key:'bilibili',label:'B站',icon:'i-tv',placeholder:'https://space.bilibili.com/...'}]
@@ -207,12 +259,84 @@ async function load(){
   while(profileForm.traits.length<6)profileForm.traits.push({title:''})
   profileForm.snapshots=[...(profile.value.snapshots||[])].map(item=>({url:item.url,title:item.title||item.description||''}))
   Object.assign(appearance,{...appearance,...(blog.value.settings?.appearance||{})})
+  try {
+    const cfg = await apiGet(`/api/pet/config/${blog.value.slug}`)
+    if (cfg) {
+      petConfig.pet_enabled = cfg.pet_enabled !== false
+      petConfig.pet_thinking_enabled = cfg.pet_thinking_enabled === true
+      petConfig.active_character = cfg.active_character || 'ikun'
+      petCharacters.value = cfg.characters || []
+      syncPetConfigFromActive()
+    }
+  } catch {}
   socialItems.value=normalizeSocialItems(blog.value.settings||{})
   typewriterText.value=(blog.value.settings?.typewriter_text?.length ? blog.value.settings.typewriter_text : [blog.value.subtitle]).filter(Boolean).join(' · ')
-  live2dEnabled.value=blog.value.settings?.live2d_enabled!==false
 }
 function flash(text,type='success'){ElMessage({message:text,type,plain:true,showClose:false,duration:2400})}
 function isBlobUrl(url){return url && url.startsWith('blob:')}
+
+// ---- AI 宠物：角色选择 / 自定义 ----
+const activePetChar = computed(() =>
+  petCharacters.value.find(c => c.character_key === petConfig.active_character) || petCharacters.value[0] || { name:'小助手', image_url:'', is_builtin:true }
+)
+function syncPetConfigFromActive(){
+  const c = activePetChar.value
+  petConfig.pet_name = c.name || '小助手'
+  petConfig.system_prompt = c.system_prompt || ''
+}
+function openPetPicker(){ petPickerVisible.value = true }
+function selectPetCharacter(char){
+  petConfig.active_character = char.character_key
+  syncPetConfigFromActive()
+  petPickerVisible.value = false
+}
+function openPetCreate(){
+  petEditKey.value = null
+  Object.assign(petEditForm,{ character_key:'', name:'', image_url:'', system_prompt:'' })
+  petEditVisible.value = true
+}
+function openPetEdit(char){
+  petEditKey.value = char.character_key
+  Object.assign(petEditForm,{ character_key:char.character_key, name:char.name, image_url:char.image_url, system_prompt:char.system_prompt })
+  petEditVisible.value = true
+}
+async function savePetCharacter(){
+  try {
+    if (petEditKey.value) {
+      await apiPatch(`/api/dashboard/pet-characters/${petEditKey.value}`,{ name:petEditForm.name, system_prompt:petEditForm.system_prompt, image_url:petEditForm.image_url })
+    } else {
+      await apiPost('/api/dashboard/pet-characters',{ ...petEditForm })
+    }
+    await reloadPetCharacters()
+    petEditVisible.value = false
+    flash('宠物已保存')
+  } catch (err) { flash(err?.message || '保存失败','error') }
+}
+async function removePetCharacter(char){
+  if(!confirm(`删除自定义宠物「${char.name}」？`)) return
+  try {
+    await apiDelete(`/api/dashboard/pet-characters/${char.character_key}`)
+    await reloadPetCharacters()
+    flash('宠物已删除')
+  } catch (err) { flash(err?.message || '删除失败','error') }
+}
+async function reloadPetCharacters(){
+  const cfg = await apiGet(`/api/pet/config/${blog.value.slug}`)
+  if (cfg) {
+    petConfig.pet_enabled = cfg.pet_enabled !== false
+    petConfig.pet_thinking_enabled = cfg.pet_thinking_enabled === true
+    petConfig.active_character = cfg.active_character || 'ikun'
+    petCharacters.value = cfg.characters || []
+    syncPetConfigFromActive()
+  }
+}
+async function uploadPetSprite({ file }){
+  const body = new FormData()
+  body.append('file', file)
+  const result = await api(`/api/dashboard/uploads?folder=pets`,{ method:'POST', body })
+  petEditForm.image_url = result.url
+  flash('精灵图已上传')
+}
 function navigateSection(key){section.value=key;if(route.params.section!==key)router.push(`/dashboard/${key}`)}
 function openSection(key){ if(key==='editor') newPost(); else navigateSection(key) }
 function newPost(){editingPostId.value=null;Object.assign(postForm,postDefaults());tagsText.value='';selectedPostTags.value=[];navigateSection('editor')}
@@ -294,12 +418,20 @@ async function saveSiteSettings(){
   const normalizedSocialItems=socialItems.value.map(item=>({key:item.key||'link',label:item.label||socialNetwork(item.key)?.label||item.key||'链接',url:item.url||''})).filter(item=>item.url)
   const socialLinks=Object.fromEntries(normalizedSocialItems.map(item=>[item.key,item.url]))
   const subtitle=typewriterText.value.trim()
-  blog.value.settings={...(blog.value.settings||{}),appearance:{...appearance},social_links:socialLinks,social_links_list:normalizedSocialItems,typewriter_text:subtitle?[subtitle]:[],live2d_enabled:live2dEnabled.value}
+  blog.value.settings={...(blog.value.settings||{}),appearance:{...appearance},social_links:socialLinks,social_links_list:normalizedSocialItems,typewriter_text:subtitle?[subtitle]:[]}
   blog.value.subtitle=subtitle
   blog.value=await apiPatch('/api/dashboard/blog',blog.value)
+  await apiPatch('/api/dashboard/pet-config',{
+    pet_enabled: petConfig.pet_enabled,
+    pet_thinking_enabled: petConfig.pet_thinking_enabled,
+    active_character: petConfig.active_character,
+    name: petConfig.pet_name,
+    system_prompt: petConfig.system_prompt,
+  })
+  await petStore.loadPetConfig(blog.value.slug)
   configStore.invalidateConfig()
   await configStore.loadConfig()
-  await oml2dStore.setEnabled(live2dEnabled.value,{start:false})
+
   flash('站点设置已保存')
 }
 function localPreviewUrl(file){return file ? URL.createObjectURL(file) : ''}

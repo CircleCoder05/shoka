@@ -95,8 +95,10 @@ import PdfContent from '@/views/articles/PdfContent.vue'
 import CommentSystem from '@/components/CommentSystem.vue'
 import ArticleContent from '@/components/ArticleContent.vue'
 import { useSidebarStore } from '@/stores/sidebar'
+import { usePetStore } from '@/stores/pet'
 
 const route = useRoute()
+const petStore = usePetStore()
 const articlesStore = useArticlesStore()
 const bannerStore = useBannerStore()
 const sidebarStore = useSidebarStore()
@@ -287,6 +289,8 @@ const loadArticle = async (slug) => {
           passwordVerified.value = true
           await loadArticleContent()
           loading.value = false
+          const blogStore = (await import('@/stores/blog')).useBlogStore()
+          petStore.enterArticle(blogStore.selectedSlug, slug, article.value?.title || '')
           return
         } catch {
           clearPasswordState(slug)
@@ -298,6 +302,9 @@ const loadArticle = async (slug) => {
 
     // 不需要密码或密码已验证，加载文章内容
     await loadArticleContent()
+    // AI 宠物导读
+    const blogStore = (await import('@/stores/blog')).useBlogStore()
+    petStore.enterArticle(blogStore.selectedSlug, slug, article.value?.title || '')
   } catch (err) {
     error.value = err.message
     console.error('Failed to load article:', err)
